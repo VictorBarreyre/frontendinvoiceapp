@@ -8,20 +8,20 @@ const Header = () => {
 
   return (
     <Flex
+    className='neue-up'
       position='static'
-   
       as="nav"
       align="center"
       justify="space-between"
       wrap="wrap"
       padding="1rem"
       color="white"
-      borderBottom='1px solid black'
+      backgroundColor="white"
     >
       <Flex align="center" mr={5}>
         <Heading as="h1" fontWeight='600' size="md">
           <Link as={RouterLink} pl='4' fontWeight='600' color='black' to="/" _hover={{ textDecoration: 'none' }}>
-            Easypay
+            db
           </Link>
         </Heading>
       </Flex>

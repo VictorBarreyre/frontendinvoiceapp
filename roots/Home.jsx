@@ -2,11 +2,14 @@ import React, { useState } from 'react';
 import { Flex, Box, Heading, Text, Button } from '@chakra-ui/react';
 import { Link } from 'react-router-dom'; // Pour la navigation
 import InvoiceCreator from '../src/components/InvoiceCreator'; // Assurez-vous que le chemin d'importation est correct
-import TestMail from '../src/components/TestMail';
+import InvoicePDF from '../src/components/InvoicePDF';
+import { PDFViewer } from '@react-pdf/renderer';
+
 
 const CustomSection = () => {
     // État local pour gérer l'affichage de InvoiceCreator
     const [showInvoiceCreator, setShowInvoiceCreator] = useState(false);
+
 
     return (
         <Flex
@@ -39,7 +42,8 @@ const CustomSection = () => {
             )}
             {showInvoiceCreator && (
                    
-                    <InvoiceCreator />
+                   <InvoiceCreator />
+                    
             )}
         </Flex>
     );

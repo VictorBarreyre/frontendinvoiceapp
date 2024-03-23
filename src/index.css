@@ -26,6 +26,8 @@
 }
 
 .chakra-ui-light{
+ /*  background-color: #FFDEE9;
+  background-image: linear-gradient(0deg, #FFDEE9 0%, #B5FFFC 100%);*/
   background-color: #f7f7f7;
   min-width: 100vw;
   overflow-x: hidden;
