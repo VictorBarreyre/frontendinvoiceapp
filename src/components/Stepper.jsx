@@ -1,4 +1,5 @@
 import {
+    Stack,
     Box,
     Step,
     StepDescription,
@@ -10,6 +11,7 @@ import {
     StepTitle,
     Stepper,
     useSteps,
+    Text,
   } from '@chakra-ui/react'
 
 
@@ -25,23 +27,24 @@ const steps = [
       index: 0,
       count: steps.length,
     })
-  
+
+    const activeStepText = steps[activeStep].description
     return (
-      <Stepper mb='3vh' colorScheme='black' index={activeStep}>
-        {steps.map((step, index) => (
-          <Step key={index}>
-          <StepIndicator>
-              <StepStatus complete={<StepIcon />} />
-            </StepIndicator>
-  
-            <Box flexShrink='0'>
-              <StepTitle>{step.title}</StepTitle>
-              <StepDescription>{step.description}</StepDescription>
-            </Box>
-            <StepSeparator minWidth="3vh"/>
-          </Step>
-        ))}
-      </Stepper>
+        <Stack w='10vw' mb='3vw'>
+        <Stepper size='sm' colorScheme='black' index={activeStep} gap='0'>
+          {steps.map((step, index) => (
+            <Step key={index} gap='0'>
+              <StepIndicator>
+                <StepStatus complete={<StepIcon />} />
+              </StepIndicator>
+              <StepSeparator _horizontal={{ ml: '0' }} />
+            </Step>
+          ))}
+        </Stepper>
+        <Text w='max-content'>
+          Step {activeStep + 1}: <b>{activeStepText}</b>
+        </Text>
+      </Stack>
     )
   }
   
