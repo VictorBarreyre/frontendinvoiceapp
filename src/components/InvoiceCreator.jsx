@@ -1,12 +1,17 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { pdf, PDFViewer } from '@react-pdf/renderer';
-import { Table, Thead, Tbody, Tfoot, Tr, Th, Td, Box, Input, InputGroup, InputRightElement, Button, Heading, Text, VStack, IconButton, Flex, Link } from '@chakra-ui/react';
+import {
+  Stack,
+  Table, Thead, Tbody, Tfoot, Tr, Th, Td, Box, Input, InputGroup, InputRightElement, Button, Heading, Text, VStack, IconButton, Flex, Link,
+} from '@chakra-ui/react';
 import { AddIcon, DeleteIcon } from '@chakra-ui/icons';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import CustomInput from './CustomIpunt';
 import InvoicePDF from './InvoicePDF';
 import { useInvoiceData } from '../context/InvoiceDataContext';
+import PaymentScheduleForm from './PaymentScheduleForm';
+import Stepper from './Stepper';
 
 
 const InvoiceCreator = () => {
@@ -126,9 +131,9 @@ const InvoiceCreator = () => {
   const handleInvoiceAction = async () => {
     const { number, issuer, client } = invoiceData;
     const areAllRequiredFieldsValid = number !== '' && issuer.name !== '' && client.name !== '';
-  
+
     const baseUrl = "http://localhost:8000";
-  
+
     if (!areAllRequiredFieldsValid) {
       setRequiredFieldsValid({
         number: number !== '',
@@ -138,13 +143,13 @@ const InvoiceCreator = () => {
       console.log('Champs requis manquants ou invalides');
       return;
     }
-  
+
     try {
       const file = <InvoicePDF invoiceData={invoiceData} />;
       const asPDF = pdf([]);
       asPDF.updateContainer(file);
       const pdfBlob = await asPDF.toBlob();
-  
+
       if (client.email && isValidEmail(client.email)) {
         const formData = new FormData();
         formData.append('file', pdfBlob, `Facture-${number}.pdf`);
@@ -152,18 +157,18 @@ const InvoiceCreator = () => {
         formData.append('montant', invoiceData.total);
         formData.append('emetteur', JSON.stringify(invoiceData.issuer));
         formData.append('destinataire', JSON.stringify(invoiceData.client));
-        
+
         // Première requête pour créer la facture et récupérer le factureId
         const createResponse = await fetch(`${baseUrl}/email/sendEmail`, {
           method: "POST",
           body: formData,
         });
-  
+
         if (createResponse.status >= 200 && createResponse.status < 300) {
           const createData = await createResponse.json();
           const factureId = createData.factureId;
           const confirmationLink = `http://localhost:5173/confirmation?facture=${factureId}&montant=${invoiceData.total}`;
-  
+
           // Construction du messageEmail avec le factureId
           const messageEmail = `Cher ${client.name},
   
@@ -179,17 +184,17 @@ const InvoiceCreator = () => {
   
   Cordialement,
   ${issuer.name}`;
-  
+
           // Ajout de subject et messageEmail pour l'envoi de l'email
           formData.append('subject', 'Votre Facture'); // Assurez-vous d'avoir défini un sujet approprié
           formData.append('message', messageEmail); // Ajoutez le messageEmail
-  
+
           // Deuxième requête pour envoyer l'email avec le messageEmail inclus
           const emailResponse = await fetch(`${baseUrl}/email/sendEmail`, {
             method: "POST",
             body: formData, // Réutilisation de formData avec les données ajoutées
           });
-  
+
           if (emailResponse.status >= 200 && emailResponse.status < 300) {
             alert("Facture envoyée avec succès !");
           } else {
@@ -212,18 +217,18 @@ const InvoiceCreator = () => {
       console.error('Erreur lors de la génération ou de l’envoi du PDF', error);
     }
   };
-  
-  
-  
-  
-  
+
+
+
+
+
 
 
   //*définir les slugs obligatoires pour la création de facture (car si exemple pas de num de facture pas de facture téléchargeable)
   return (
     <Flex mt="5rem" alignContent='center' alignItems="center" direction='column' >
       <Flex direction='column' textAlign='center' alignContent='center' alignItems="center" mb='8' w='45vw' >
-        <Heading  color='black' mb="4">
+        <Heading color='black' mb="4">
           Votre facture
         </Heading>
         <Text fontSize="lg" color="#4A5568">
@@ -231,11 +236,14 @@ const InvoiceCreator = () => {
           new consumers, and everyone in between.
         </Text>
       </Flex>
+
+      <Stepper/>
+
       <Box mb='2rem' backgroundColor='white' p='3rem' maxWidth='70vw' borderRadius="1vw" className='neue-up'>
         <VStack w='60vw' boxShadow=' 1px solid black' spacing={6} align="start">
           <Flex w='25vw' justifyContent='space-between' width='-webkit-fill-available'>
             <Flex direction='column' justifyContent='space-between' pb="2rem" >
-              <Heading mb='1rem'  size="md">Facture n° :</Heading>
+              <Heading mb='1rem' size="md">Facture n° :</Heading>
               <Input
                 className={requiredClassnameField(attemptedDownloadWithoutRequiredFields, requiredFieldsValid)}
                 placeholder="Numéro de facture*" name="number" value={invoiceData.number} onChange={handleChange} />
@@ -415,6 +423,8 @@ const InvoiceCreator = () => {
           </Button>
         </VStack>
       </Box>
+
+      <PaymentScheduleForm />
 
       {pdfInstance && (
         <PDFViewer style={{ width: '100%', height: '180vh' }}>

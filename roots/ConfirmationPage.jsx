@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Flex, Heading, Text, Input, Button, FormControl } from '@chakra-ui/react';
-import { useInvoiceData } from '.././src/context/InvoiceDataContext';
+import { useInvoiceData } from '../src/context/InvoiceDataContext';
 import { Elements, PaymentElement, IbanElement, useStripe, useElements } from '@stripe/react-stripe-js'
 import { loadStripe } from '@stripe/stripe-js';
 
@@ -136,8 +136,10 @@ function ConfirmationPage() {
       <Flex alignContent='center' alignItems="center" direction='column' mt="5rem" >
         <Flex className='neue-up' direction='column' alignContent='center' alignItems='center' gap='4px' borderRadius='1vw' backgroundColor='white' p='3rem' w='36vw'>
           <Heading size="lg" textAlign='center' mb="3">Signature et Paiement</Heading>
-          <Text w='30vw' textAlign='center' p='2' mb="4">Merci pour votre confirmation. Votre contrat et intention de paiement pour la facture ont été enregistrés avec succès. </Text>
-           <Heading size='md'> Total à payer : {montant} {invoiceData.devise}</Heading>  
+          <Text w='30vw' textAlign='center' p='2' mb="4">Afin de finaliser la signature de la facture n°{invoiceData.number} émise par {invoiceData.issuer.name}, nous avons besoin de votre IBAN. <br/> Votre paiement sera traité avec soin et en respectant les échéances convenues dans nos termes contractuels. <br/> Merci 
+        !
+</Text>
+           <Heading textAlign='end' size='md'> Total à payer : {montant} {invoiceData.devise}</Heading>  
           <PaymentForm clientSecret={clientSecret} />
         </Flex>
       </Flex>
