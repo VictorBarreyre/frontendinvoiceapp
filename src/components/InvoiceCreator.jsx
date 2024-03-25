@@ -14,7 +14,7 @@ import PaymentScheduleForm from './PaymentScheduleForm';
 import Stepper from './Stepper';
 
 
-const InvoiceCreator = () => {
+const InvoiceCreator = ({steps}) => {
 
   const [subject, setSubject] = useState("Votre Facture");
   const [message, setMessage] = useState("Voici votre facture");
@@ -42,6 +42,7 @@ const InvoiceCreator = () => {
     handleChange,
     isValidEmail,
   } = useInvoiceData();
+
 
 
   //fonction pour ajouter un item à la facture
@@ -232,14 +233,13 @@ const InvoiceCreator = () => {
           Votre facture
         </Heading>
         <Text fontSize="lg" color="#4A5568">
-          Bring blockchain to the people. Solana supports experiences for power users,
-          new consumers, and everyone in between.
+        Créez votre facture numérique en suivant trois étapes simples, intègrant également un processus de paiement automatique pour plus d'efficacité et de rapidité.
         </Text>
       </Flex>
 
-      <Stepper/>
+      <Stepper steps={steps} />
 
-      <Box mb='2rem' backgroundColor='white' p='3rem' maxWidth='70vw' borderRadius="1vw" className='neue-up'>
+      <Box borderWidth="1px" mb='2rem' backgroundColor='white' p='3rem' maxWidth='70vw' borderRadius="1vw" className='neue-up'>
         <VStack w='60vw' boxShadow=' 1px solid black' spacing={6} align="start">
           <Flex w='25vw' justifyContent='space-between' width='-webkit-fill-available'>
             <Flex direction='column' justifyContent='space-between' pb="2rem" >

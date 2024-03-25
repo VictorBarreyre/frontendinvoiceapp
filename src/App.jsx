@@ -13,6 +13,10 @@ import ConfirmationPage from '../roots/ConfirmationPage';
 
 
 function App() {
+
+  const steps = ['Étape 1', 'Étape 2', 'Étape 3'];
+
+
   return (
     <>
       <ChakraProvider>
@@ -20,7 +24,7 @@ function App() {
         <Router>
           <Header/>
           <Routes> 
-            <Route path="/" element={<InvoiceCreator />} /> 
+            <Route path="/" element={<InvoiceCreator steps={steps} />} /> 
             <Route path="/about" element={<About />} />
             <Route path="/login" element={<Login />} />
             <Route path="/confirmation" element={<ConfirmationPage/>} />
