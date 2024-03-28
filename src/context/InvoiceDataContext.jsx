@@ -44,11 +44,16 @@ export const InvoiceDataProvider = ({ children }) => {
     });
     const [pdfInstance, setPdfInstance] = useState(null);
     const [startDate, setStartDate] = useState(new Date());
-    const [showIbanField, setShowIbanField] = useState(false);
     const [buttonLabel, setButtonLabel] = useState(null);
     const [attemptedDownloadWithoutRequiredFields, setAttemptedDownloadWithoutRequiredFields] = useState(false);
     const [showErrorMessage, setShowErrorMessage] = useState('');
     const [itemsnames, setItemsNames] = useState('');
+    const [payments, setPayments] = useState([
+        { percentage: 25, dueDate: new Date() },
+        { percentage: 75, dueDate: new Date() }
+      ]);
+      const [isTotalPercentage100, setIsTotalPercentage100] = useState(false);
+      const [remainingPercentage, setRemainingPercentage] = useState(100);
 
 
     const handleInvoiceDataChange = (newData) => {
@@ -108,8 +113,6 @@ export const InvoiceDataProvider = ({ children }) => {
             setPdfInstance,
             startDate,
             setStartDate,
-            showIbanField,
-            setShowIbanField,
             buttonLabel,
             setButtonLabel,
             attemptedDownloadWithoutRequiredFields,
@@ -120,7 +123,12 @@ export const InvoiceDataProvider = ({ children }) => {
             setItemsNames,
             handleChange,
             isValidEmail,
-
+            payments, 
+            setPayments,
+            isTotalPercentage100, 
+            setIsTotalPercentage100,
+            remainingPercentage, 
+            setRemainingPercentage
         }}>
             {children}
         </InvoiceDataContext.Provider>

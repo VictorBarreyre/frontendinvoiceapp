@@ -8,18 +8,25 @@ import { ChakraProvider } from '@chakra-ui/react';
 import InvoiceCreator from './components/InvoiceCreator';
 import { InvoiceDataProvider } from './context/InvoiceDataContext';
 import ConfirmationPage from '../roots/ConfirmationPage';
+import { extendTheme } from '@chakra-ui/react';
 
 
-
+const theme = extendTheme({
+  breakpoints: {
+    sm: '320px',
+    md: '768px',
+    lg: '1024px',
+    xl: '1280px',
+  },
+});
 
 function App() {
 
   const steps = ['Étape 1', 'Étape 2', 'Étape 3'];
 
-
   return (
     <>
-      <ChakraProvider>
+      <ChakraProvider theme={theme}>
       <InvoiceDataProvider>  
         <Router>
           <Header/>

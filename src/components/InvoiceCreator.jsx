@@ -4,7 +4,7 @@ import {
   Stack,
   Table, Thead, Tbody, Tfoot, Tr, Th, Td, Box, Input, InputGroup, InputRightElement, Button, Heading, Text, VStack, IconButton, Flex, Link,
 } from '@chakra-ui/react';
-import { AddIcon, DeleteIcon } from '@chakra-ui/icons';
+import { AddIcon, DeleteIcon, ArrowForwardIcon } from '@chakra-ui/icons';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import CustomInput from './CustomIpunt';
@@ -12,9 +12,10 @@ import InvoicePDF from './InvoicePDF';
 import { useInvoiceData } from '../context/InvoiceDataContext';
 import PaymentScheduleForm from './PaymentScheduleForm';
 import Stepper from './Stepper';
+import InvoiceSummary from './InvoiceSummary';
 
 
-const InvoiceCreator = ({steps}) => {
+const InvoiceCreator = ({ steps }) => {
 
   const [subject, setSubject] = useState("Votre Facture");
   const [message, setMessage] = useState("Voici votre facture");
@@ -29,8 +30,6 @@ const InvoiceCreator = ({steps}) => {
     setPdfInstance,
     startDate,
     setStartDate,
-    showIbanField,
-    setShowIbanField,
     buttonLabel,
     setButtonLabel,
     attemptedDownloadWithoutRequiredFields,
@@ -119,7 +118,7 @@ const InvoiceCreator = ({steps}) => {
     const updateButtonLabel = () => {
       const email = invoiceData.client.email;
       if (email && isValidEmail(email)) {
-        setButtonLabel('Envoyer la facture par email');
+        setButtonLabel('Définir les échéances de paiement');
       } else {
         setButtonLabel('Télécharger la facture');
       }
@@ -222,25 +221,30 @@ const InvoiceCreator = ({steps}) => {
 
 
 
-
-
-
   //*définir les slugs obligatoires pour la création de facture (car si exemple pas de num de facture pas de facture téléchargeable)
   return (
-    <Flex mt="5rem" alignContent='center' alignItems="center" direction='column' >
-      <Flex direction='column' textAlign='center' alignContent='center' alignItems="center" mb='8' w='45vw' >
-        <Heading color='black' mb="4">
+
+    <Flex mt="3rem" alignContent='center' alignItems="center" direction='column' >
+      <Flex direction='column' textAlign='center' alignContent='center' alignItems="center" mb='8' w={{ base: '90vw', lg: '60vw' }}>
+        <Heading fontSize='26px' color='black' mb="4">
           Votre facture
         </Heading>
         <Text fontSize="lg" color="#4A5568">
-        Créez votre facture numérique en suivant trois étapes simples, intègrant également un processus de paiement automatique pour plus d'efficacité et de rapidité.
+          Créez votre facture numérique en suivant trois étapes simples, intègrant également un processus de paiement automatique pour plus d'efficacité et de rapidité.
         </Text>
       </Flex>
-
       <Stepper steps={steps} />
 
-      <Box borderWidth="1px" mb='2rem' backgroundColor='white' p='3rem' maxWidth='70vw' borderRadius="1vw" className='neue-up'>
-        <VStack w='60vw' boxShadow=' 1px solid black' spacing={6} align="start">
+      <Box
+        borderWidth="1px"
+        mb="2rem"
+        backgroundColor="white"
+        p={{ base: '1rem', md: '3rem' }} // 1rem sur mobiles, 3rem au-dessus du breakpoint md
+        maxWidth={{ base: '97vw', lg: '60vw' }} // 97vw sur mobiles, 60vw au-dessus du breakpoint md
+        borderRadius="1vw"
+        className='neue-up'
+      >
+        <VStack boxShadow=' 1px solid black' spacing={6} align="start">
           <Flex w='25vw' justifyContent='space-between' width='-webkit-fill-available'>
             <Flex direction='column' justifyContent='space-between' pb="2rem" >
               <Heading mb='1rem' size="md">Facture n° :</Heading>
@@ -248,7 +252,7 @@ const InvoiceCreator = ({steps}) => {
                 className={requiredClassnameField(attemptedDownloadWithoutRequiredFields, requiredFieldsValid)}
                 placeholder="Numéro de facture*" name="number" value={invoiceData.number} onChange={handleChange} />
             </Flex>
-            <Box direction='column' w='25vw' justifyContent='space-between' pb="2rem" >
+            <Box direction='column'  w='25vw' justifyContent='space-between' pb="2rem" >
               <Heading mb='1rem' size="sm">Date :</Heading>
               <DatePicker
                 className='neue-down'
@@ -265,7 +269,7 @@ const InvoiceCreator = ({steps}) => {
               />
             </Box>
           </Flex>
-          <Flex w='25vw' justifyContent='space-between' width='-webkit-fill-available' pb="2rem" >
+          <Flex  flexDirection={{ base: 'column', lg: 'row' }} w='25vw' justifyContent='space-between' width='-webkit-fill-available' pb="2rem" >
             <Flex direction="column" alignItems='start'>
               <Heading mb='1rem' size="sm">Informations sur l'émetteur :</Heading>
               <Input className={requiredClassnameField(attemptedDownloadWithoutRequiredFields, requiredFieldsValid)}
@@ -280,7 +284,7 @@ const InvoiceCreator = ({steps}) => {
             </Flex>
 
 
-            <Flex w='25vw' mt='5rem' direction="column" alignItems='start'>
+            <Flex w={{ base: 'unset', lg: '25vw' }}  mt={{ base: '3rem', lg: '5rem' }} direction="column" alignItems='start'>
               <Heading mb='1rem' size="sm">Informations sur le client :</Heading>
               <Input className={requiredClassnameField(attemptedDownloadWithoutRequiredFields, requiredFieldsValid)}
                 placeholder="Nom et Prénom / Société*" name="client.name" value={invoiceData.client.name} onChange={handleChange} />
@@ -394,43 +398,37 @@ const InvoiceCreator = ({steps}) => {
 
           </Flex>
           <Flex direction="column" alignItems='start' mt="4">
-            <Heading mb='1rem' size="sm">Saisissez un IBAN si vous voulez recevoir le paiement</Heading>
-            {showIbanField && (
-              <Input
-                className='neue-down'
-                placeholder="IBAN"
-                name="issuer.iban"
-                value={invoiceData.issuer.iban}
-                onChange={(e) => {
-                  const newIban = e.target.value;
-                  handleInvoiceDataChange({
-                    ...invoiceData,
-                    issuer: { ...invoiceData.issuer, iban: newIban }
-                  });
-                }}
-              />
-
-            )}
-            {!showIbanField && (
-              <Link color="blue.500" onClick={() => setShowIbanField(true)}>
-                Ajouter votre IBAN
-              </Link>
-            )}
+            <Heading mb='1rem' size="sm">Saisissez un IBAN pour recevoir le paiement</Heading>
+            <Input
+              className='neue-down'
+              placeholder="IBAN"
+              name="issuer.iban"
+              value={invoiceData.issuer.iban}
+              onChange={(e) => {
+                const newIban = e.target.value;
+                handleInvoiceDataChange({
+                  ...invoiceData,
+                  issuer: { ...invoiceData.issuer, iban: newIban }
+                });
+              }}
+            />
           </Flex>
+
           <Text color='red' >{showErrorMessage}</Text>
-          <Button color='white' borderRadius='30px' backgroundColor='black' mt="4" colorScheme="gray" onClick={() => handleInvoiceAction(invoiceData)}>
+          <Button rightIcon={<ArrowForwardIcon />} color='white' borderRadius='30px' backgroundColor='black' mt="4" colorScheme="gray" onClick={() => handleInvoiceAction(invoiceData)}>
             {buttonLabel}
           </Button>
         </VStack>
       </Box>
 
       <PaymentScheduleForm />
-
-      {pdfInstance && (
+      <InvoiceSummary />
+       {pdfInstance && (
         <PDFViewer style={{ width: '100%', height: '180vh' }}>
           <InvoicePDF invoiceData={invoiceData} />
         </PDFViewer>
       )}
+
 
     </Flex>
 

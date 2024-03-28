@@ -1,32 +1,140 @@
-import React, { useState } from 'react';
-import { Box, Button, FormControl, FormLabel, Input, Stack, IconButton, Link, Heading, Table, Thead, Tbody, Tfoot, Tr, Th, Td, } from '@chakra-ui/react';
-import { AddIcon, DeleteIcon } from '@chakra-ui/icons';
+import React, {  useEffect } from 'react';
+import { Box, Button, InputGroup, InputRightElement, Input, Text, IconButton, Heading, Link, Table, Thead, Tbody, Tfoot, Tr, Th, Td, } from '@chakra-ui/react';
+import { AddIcon, DeleteIcon, ArrowForwardIcon} from '@chakra-ui/icons';
 import DatePicker from 'react-datepicker';
 import { useInvoiceData } from '../context/InvoiceDataContext';
 import CustomInput from './CustomIpunt';
 
 const PaymentScheduleForm = ({ onSubmit }) => {
-  const [payments, setPayments] = useState([{ amount: '', dueDate: '' }]);
+  const { invoiceData, 
+          setStartDate, 
+          startDate, 
+          payments, 
+          setPayments,
+          isTotalPercentage100,
+          setIsTotalPercentage100,
+          remainingPercentage,
+          setRemainingPercentage
+        } = useInvoiceData();
 
-  const {
-    startDate,
-    setStartDate,
-  } = useInvoiceData();
 
-  const handleChange = (index, key, value) => {
-    const updatedPayments = [...payments];
-    updatedPayments[index][key] = value;
-    setPayments(updatedPayments);
+
+  useEffect(() => {
+    // Assurez-vous que le total de invoiceData est défini avant de procéder
+    if (invoiceData.total) {
+      // Calculez les montants initiaux des paiements basés sur les pourcentages
+      const initialPaymentsWithAmounts = payments.map(payment => ({
+        ...payment,
+        // Utilisez parseFloat pour s'assurer que les valeurs sont traitées correctement comme des nombres
+        amount: ((parseFloat(invoiceData.total) * parseFloat(payment.percentage)) / 100).toFixed(2),
+      }));
+
+      // Mettez à jour l'état des paiements avec ces nouveaux montants
+      setPayments(initialPaymentsWithAmounts);
+    }
+  }, []); // Un tableau de dépendances vide signifie que cet effet s'exécutera une seule fois au montage
+
+
+  useEffect(() => {
+    let shouldUpdate = false;
+    const updatedPayments = payments.map((payment, index) => {
+      if ('percentage' in payment && payment.percentage !== "") {
+        const newAmount = (invoiceData.total * payment.percentage) / 100;
+        if (payment.amount !== newAmount.toFixed(2)) {
+          shouldUpdate = true; // Seulement si le nouveau montant diffère
+          return { ...payment, amount: newAmount.toFixed(2) };
+        }
+      }
+      return payment;
+    });
+
+    if (shouldUpdate) {
+      setPayments(updatedPayments);
+    }
+  }, [payments, invoiceData.total]); // Assurez-vous que `invoiceData.total` est stable
+
+
+  const updatePayment = (index, key, value) => {
+    // Calculer le total actuel des pourcentages avant la mise à jour
+    const totalPercentageBeforeUpdate = payments.reduce((acc, curr, i) => {
+      return acc + (i === index ? 0 : parseFloat(curr.percentage));
+    }, 0);
+
+    // Calculer le nouveau total en prenant en compte la valeur mise à jour
+    const newTotalPercentage = totalPercentageBeforeUpdate + parseFloat(value);
+
+    // Vérifier si le nouveau total ne dépasse pas 100% avant de procéder à la mise à jour
+    if (key === 'percentage' && newTotalPercentage <= 100) {
+      setPayments(currentPayments => {
+        return currentPayments.map((payment, i) => {
+          if (i === index) {
+            const updatedPayment = { ...payment, [key]: value };
+            if (key === 'percentage') {
+              const newAmount = (invoiceData.total * parseFloat(value)) / 100;
+              updatedPayment.amount = newAmount.toFixed(2);
+            }
+            return updatedPayment;
+          }
+          return payment;
+        });
+      });
+    } else if (key !== 'percentage') {
+      // Si la clé mise à jour n'est pas 'percentage', procéder à la mise à jour sans vérifier le total
+      setPayments(currentPayments => {
+        return currentPayments.map((payment, i) => i === index ? { ...payment, [key]: value } : payment);
+      });
+    } else {
+      // Optionnel : gérer le cas où la mise à jour dépasse 100%
+      console.log("La mise à jour du pourcentage dépasse 100%.");
+    }
   };
 
-  const addPayment = () => {
-    setPayments([...payments, { amount: '', dueDate: '' }]);
+
+  const addPaymentWithCalculatedPercentage = () => {
+    const totalPercentageUsed = payments.reduce((acc, curr) => acc + Number(curr.percentage), 0);
+    let newPercentage = 100 - totalPercentageUsed;
+
+    if (payments.length > 0) {
+      const lastPaymentPercentage = Number(payments[payments.length - 1].percentage);
+      if (lastPaymentPercentage > 25) {
+        newPercentage *= 0.75; // Ajustez cette partie selon votre logique spécifique
+      }
+    }
+
+    newPercentage = Math.max(0, newPercentage); // Assurez-vous que le nouveau pourcentage n'est pas négatif
+    newPercentage = Math.round(newPercentage); // Arrondit à l'entier le plus proche
+
+    // Vérifier si le total des pourcentages dépasse déjà 100%
+    if (totalPercentageUsed >= 100) {
+      alert("Le total des pourcentages est déjà de 100%, vous ne pouvez plus ajouter d'échéances.");
+      return; // Arrête l'exécution de la fonction si le total est déjà à 100%
+    }
+
+    const newPayment = {
+      percentage: newPercentage, // Utilisez le pourcentage arrondi sans .toFixed(2) pour garder un entier
+      amount: ((invoiceData.total * newPercentage) / 100).toFixed(2),
+      dueDate: new Date()
+    };
+
+    setPayments([...payments, newPayment]);
   };
+
+  useEffect(() => {
+    const totalPercentageUsed = payments.reduce((acc, curr) => acc + Number(curr.percentage), 0);
+    const remaining = 100 - totalPercentageUsed;
+
+    // Mise à jour pour indiquer si le total atteint ou dépasse 100%
+    setIsTotalPercentage100(totalPercentageUsed >= 100);
+
+    // Mise à jour du pourcentage restant
+    setRemainingPercentage(remaining);
+  }, [payments]);
+
 
   const removePayment = (index) => {
-    const updatedPayments = [...payments];
-    updatedPayments.splice(index, 1);
-    setPayments(updatedPayments);
+    let newPayments = [...payments];
+    newPayments.splice(index, 1);
+    setPayments(newPayments);
   };
 
   const handleSubmit = (e) => {
@@ -35,66 +143,80 @@ const PaymentScheduleForm = ({ onSubmit }) => {
   };
 
   return (
-    <Box w='65vw' p='3rem' backgroundColor='white' className='neue-up' borderWidth="1px" borderRadius="md">
-      <Heading mb='1rem' size="md">Définissez vos échéances de paiement</Heading>
+    <Box className='neue-up' width='60vw' pt='2rem' pl='3rem'pr='3rem' pb='2rem' backgroundColor='white' borderWidth="1px" borderRadius="1vw" mb='4vh'>  
+      <Heading mb='2rem' fontSize='24px'>Définissez vos échéances de paiement</Heading>
       <form onSubmit={handleSubmit}>
-        <Stack spacing={4}>
-          {payments.map((payment, index) => (
-          <Table variant="simple" borderRadius='10px' >
+        <Table variant="simple" borderRadius='10px' pb='1rem'>
           <Thead>
             <Tr>
-              <Th pl='0'>Montant</Th>
-              <Th>Date d'échéance</Th>
-              <Th></Th>
+              <Th className='head-tab' pl='0'>Pourcentage %</Th>
+              <Th className='head-tab'>Date d'échéance</Th>
+              <Th w='content' className='head-tab'>Montant</Th>
+
             </Tr>
           </Thead>
           <Tbody>
-            <Tr key={index}>
-              <Td pl='0'>
-                <FormControl>
-                  <Input
-                    className='neue-down'
-                    type="number"
-                    value={payment.amount}
-                    onChange={(e) => handleChange(index, 'amount', e.target.value)}
-                    placeholder="Montant"
-                  />
-                </FormControl>
-              </Td>
-              <Td>
-                <FormControl>
+            {payments.map((payment, index) => (
+              <Tr key={index}>
+                <Td pl='0'>
+                  <InputGroup>
+                    <Input
+                      className='neue-down'
+                      type="number"
+                      value={payment.percentage}
+                      onChange={(e) => updatePayment(index, 'percentage', e.target.value)}
+                    />
+                    <InputRightElement pointerEvents="none" children="%" />
+                  </InputGroup>
+                </Td>
+                <Td>
                   <DatePicker
-                    className='neue-down'
-                    boxShadow='rgba(174, 174, 192, 0.4) -1.5px -1.5px 3px 0px, rgb(255, 255, 255) 1.5px 1.5px 3px 0px !important'
-                    position='static !important'
-                    backgroundColor='white'
-                    color="#0B3860"
-                    selected={startDate}
-                    onChange={(date) => setStartDate(date)}
-                    minDate={new Date()}
-                    maxDate={new Date().setFullYear(new Date().getFullYear() + 1)}
-                    dateFormat="dd/MM/yyyy"
+                    selected={payment.dueDate}
+                    onChange={(date) => updatePayment(index, 'dueDate', date)}
                     customInput={<CustomInput />}
                   />
-                </FormControl>
-              </Td>
-              <Td>
-                <IconButton
-                  aria-label="Supprimer l'article"
-                  icon={<DeleteIcon />}
-                  size="sm"
-                  backgroundColor="transparent"
-                  onClick={() => removePayment(index)}
-                />
+                </Td>
+                <Td>
+                  <Heading size='sm'>
+                    {payment.amount} {invoiceData.devise}
+                  </Heading>
+                </Td>
+                <Td>
+                  <IconButton
+                    background='none'
+                    aria-label="Supprimer le paiement"
+                    icon={<DeleteIcon />}
+                    onClick={() => removePayment(index)}
+                  />
+                </Td>
+              </Tr>
+            ))}
+          </Tbody>
+          <Tfoot>
+            <Tr>
+              <Td pl='0' colSpan={4}>
+                {
+                  isTotalPercentage100 ? (
+                    <p color="red">Somme totale égale à 100%</p>
+                  ) : (
+                    <Link onClick={addPaymentWithCalculatedPercentage} display='flex' alignItems='center' color="blue.500">
+                      Ajouter une échéance <AddIcon w='2.5' ml="2" />
+                    </Link>
+                  )
+                }
               </Td>
             </Tr>
-          </Tbody>
+          </Tfoot>
         </Table>
-          ))}
-          <Link color="blue.500" onClick={addPayment}>Ajouter une échéance  <AddIcon w='2.5' ml="2" /></Link>
-          <Button color='white' borderRadius='30px' backgroundColor='black' mt="4" colorScheme="gray" type="submit">Enregistrer les échéances</Button>
-        </Stack>
+        {remainingPercentage > 0 ? (
+          <Button borderRadius='30px' color="red" isDisabled={remainingPercentage <= 0}>Pourcentage restant à attribuer : {remainingPercentage}%</Button>
+        ) : (
+          <Button onClick={handleSubmit} rightIcon={<ArrowForwardIcon />} color='white' borderRadius='30px' backgroundColor='black' mt="4" colorScheme="gray">
+            Vérifier les informations de facturation
+          </Button>
+        )}
       </form>
+
     </Box>
   );
 };

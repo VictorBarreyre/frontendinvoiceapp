@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { IoIosArrowBack,IoIosArrowForward } from 'react-icons/io';
 
 const Stepper = () => {
   const [activeStep, setActiveStep] = useState(1); // Premier step comme étape active par défaut
@@ -19,7 +20,7 @@ const Stepper = () => {
             margin:'0.5vh',
             width: step === activeStep ? '22px' : '12px', // Plus large si actif
             height: step === activeStep ? '12px' : '12px',
-            borderRadius: step === activeStep ? '10px' : '15px', // Moins arrondi si actif
+            borderRadius: step === activeStep ? '10px' : '29px', // Moins arrondi si actif
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
