@@ -218,41 +218,20 @@ const InvoiceCreator = ({ steps }) => {
     }
   };
 
-
-
-
   //*définir les slugs obligatoires pour la création de facture (car si exemple pas de num de facture pas de facture téléchargeable)
   return (
 
-    <Flex mt="3rem" alignContent='center' alignItems="center" direction='column' >
-      <Flex direction='column' textAlign='center' alignContent='center' alignItems="center" mb='8' w={{ base: '90vw', lg: '60vw' }}>
-        <Heading fontSize='26px' color='black' mb="4">
-          Votre facture
-        </Heading>
-        <Text fontSize="lg" color="#4A5568">
-          Créez votre facture numérique en suivant trois étapes simples, intègrant également un processus de paiement automatique pour plus d'efficacité et de rapidité.
-        </Text>
-      </Flex>
-      <Stepper steps={steps} />
-
-      <Box
-        borderWidth="1px"
-        mb="2rem"
-        backgroundColor="white"
-        p={{ base: '1rem', md: '3rem' }} // 1rem sur mobiles, 3rem au-dessus du breakpoint md
-        maxWidth={{ base: '97vw', lg: '60vw' }} // 97vw sur mobiles, 60vw au-dessus du breakpoint md
-        borderRadius="1vw"
-        className='neue-up'
-      >
-        <VStack boxShadow=' 1px solid black' spacing={6} align="start">
+    <>
+     
+        <VStack mt='2rem' boxShadow=' 1px solid black' spacing={6} align="start">
           <Flex w='25vw' justifyContent='space-between' width='-webkit-fill-available'>
             <Flex direction='column' justifyContent='space-between' pb="2rem" >
-              <Heading mb='1rem' size="md">Facture n° :</Heading>
+              <Heading mb='1rem' size="sm">Facture n° :</Heading>
               <Input
                 className={requiredClassnameField(attemptedDownloadWithoutRequiredFields, requiredFieldsValid)}
                 placeholder="Numéro de facture*" name="number" value={invoiceData.number} onChange={handleChange} />
             </Flex>
-            <Box direction='column'  w='25vw' justifyContent='space-between' pb="2rem" >
+            <Box direction='column' w='25vw' justifyContent='space-between' pb="2rem" >
               <Heading mb='1rem' size="sm">Date :</Heading>
               <DatePicker
                 className='neue-down'
@@ -269,7 +248,7 @@ const InvoiceCreator = ({ steps }) => {
               />
             </Box>
           </Flex>
-          <Flex  flexDirection={{ base: 'column', lg: 'row' }} w='25vw' justifyContent='space-between' width='-webkit-fill-available' pb="2rem" >
+          <Flex flexDirection={{ base: 'column', lg: 'row' }} w='25vw' justifyContent='space-between' width='-webkit-fill-available' pb="2rem" >
             <Flex direction="column" alignItems='start'>
               <Heading mb='1rem' size="sm">Informations sur l'émetteur :</Heading>
               <Input className={requiredClassnameField(attemptedDownloadWithoutRequiredFields, requiredFieldsValid)}
@@ -284,7 +263,7 @@ const InvoiceCreator = ({ steps }) => {
             </Flex>
 
 
-            <Flex w={{ base: 'unset', lg: '25vw' }}  mt={{ base: '3rem', lg: '5rem' }} direction="column" alignItems='start'>
+            <Flex w={{ base: 'unset', lg: '25vw' }} mt={{ base: '3rem', lg: '5rem' }} direction="column" alignItems='start'>
               <Heading mb='1rem' size="sm">Informations sur le client :</Heading>
               <Input className={requiredClassnameField(attemptedDownloadWithoutRequiredFields, requiredFieldsValid)}
                 placeholder="Nom et Prénom / Société*" name="client.name" value={invoiceData.client.name} onChange={handleChange} />
@@ -296,10 +275,9 @@ const InvoiceCreator = ({ steps }) => {
           </Flex>
 
 
-          <Flex direction='column' className='neue-up' borderRadius='10px' pl='2rem' pr='2rem' pb='1rem' pt='1rem' w='100%'>
-
-            <Heading size="sm">{itemsnames}</Heading>
-            <Table variant="simple" borderRadius='10px' pb='1rem'>
+          <Flex direction='column' className='neue-up' borderWidth='1px' borderRadius='10px' pt='1rem' pl='2rem' pr='2rem' pb='1rem' w='100%'>
+            <Heading mb='1rem' mt='1rem' size="md">{itemsnames}</Heading>
+            <Table variant="simple" borderRadius='10px'>
               <Thead>
                 <Tr>
                   <Th className='head-tab' pl='0'>Description</Th>
@@ -362,7 +340,7 @@ const InvoiceCreator = ({ steps }) => {
               <Tfoot>
                 <Tr>
                   <Td pl='0' colSpan="4" borderBottom="none">
-                    <Link onClick={handleAddItem} display='flex' alignItems='center' color="blue.500" >
+                    <Link onClick={handleAddItem} display='flex' alignItems='center' color="#745FF2" >
                       Ajouter un article
                       <AddIcon w='2.5' ml="2" />
                     </Link>
@@ -419,13 +397,7 @@ const InvoiceCreator = ({ steps }) => {
             {buttonLabel}
           </Button>
         </VStack>
-      </Box>
-
-      <PaymentScheduleForm />
-      <InvoiceSummary />
-   
-    </Flex>
-
+    </>
   );
 };
 

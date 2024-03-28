@@ -1,38 +1,105 @@
 import React, { useState } from 'react';
-import { IoIosArrowBack,IoIosArrowForward } from 'react-icons/io';
+import { Heading, Tabs, TabList, TabPanels, Tab, TabPanel, Flex } from '@chakra-ui/react'
+import InvoiceCreator from './InvoiceCreator';
+import PaymentScheduleForm from './PaymentScheduleForm';
+import InvoiceSummary from './InvoiceSummary';
 
 const Stepper = () => {
-  const [activeStep, setActiveStep] = useState(1); // Premier step comme étape active par défaut
-  const steps = [1, 2, 3]; // Identifiants des steps
 
-  // Gestion du clic pour changer l'étape active
-  const handleStepClick = (step) => {
-    setActiveStep(step);
-  };
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'space-around', marginBottom: '20px' }}>
-      {steps.map((step) => (
-        <div
-          key={step}
-          onClick={() => handleStepClick(step)}
-          style={{
-            margin:'0.5vh',
-            width: step === activeStep ? '22px' : '12px', // Plus large si actif
-            height: step === activeStep ? '12px' : '12px',
-            borderRadius: step === activeStep ? '10px' : '29px', // Moins arrondi si actif
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            cursor: 'pointer',
-            transition: 'all 0.3s ease',
-            backgroundColor: step === activeStep ? 'black' : 'lightgrey',
+
+    
+    <Flex mt='2rem' direction='column' alignContent='center' alignItems='center'> 
+    <Tabs className='neue-up' width='65vw' pt='2rem' pl='3rem' pr='3rem' pb='2rem' background='white' borderRadius='1vw'>
+      <TabList className='neutre'>
+        <Tab
+          _selected={{
+            border: 'none',
+            borderBottom: '2px solid #745FF2',
+            borderRadius: '0px',
+            color: '#745FF2'
           }}
-        >
-          
-        </div>
-      ))}
-    </div>
+          _hover={{
+            borderRadius: '0px',
+            backgroundColor: 'rgb(247, 249, 252)!important',
+            boxShadow: 'none',
+            color: '#745FF2'
+          }}
+          _focus={{
+            boxShadow: 'none',
+            outline: 'none'
+          }}
+          sx={{
+            fontFamily: "'SF Pro Display', sans-serif",
+            fontWeight: '400',
+            // Appliquer d'autres styles neutres ici si nécessaire
+          }}
+        > Facture</Tab>
+        <Tab
+          _selected={{
+            border: 'none',
+            borderBottom: '2px solid #745FF2',
+            borderRadius: '0px',
+            color: '#745FF2'
+          }}
+          _hover={{
+            borderRadius: '0px',
+            backgroundColor: 'rgb(247, 249, 252)!important',
+            boxShadow: 'none',
+            color: '#745FF2'
+          }}
+          _focus={{
+            boxShadow: 'none',
+            outline: 'none'
+          }}
+          sx={{
+            fontFamily: "'SF Pro Display', sans-serif",
+            fontWeight: '400',
+            // Appliquer d'autres styles neutres ici si nécessaire
+          }}
+        >Échéances & Paiements</Tab>
+        <Tab
+          _selected={{
+            border: 'none',
+            borderBottom: '2px solid #745FF2',
+            borderRadius: '0px',
+            color: '#745FF2'
+          }}
+          _hover={{
+            borderRadius: '0px',
+            backgroundColor: 'rgb(247, 249, 252)!important',
+            boxShadow: 'none',
+            color: '#745FF2'
+          }}
+          _focus={{
+            boxShadow: 'none',
+            outline: 'none !important'
+          }}
+          sx={{
+            fontFamily: "'SF Pro Display', sans-serif",
+            fontWeight: '400',
+            // Appliquer d'autres styles neutres ici si nécessaire
+          }}
+        >Envoie</Tab>
+      </TabList>
+
+      <TabPanels>
+        <TabPanel pt="2rem">
+          <Heading mb='1rem' size="md">Créez votre facture</Heading>
+          <InvoiceCreator/>
+        </TabPanel>
+        <TabPanel pt="2rem">
+          <Heading mb='1rem' size="md">Créez votre facture</Heading>
+          <PaymentScheduleForm/>
+        </TabPanel>
+        <TabPanel pt="2rem">
+          <Heading mb='1rem' size="md">Créez votre facture</Heading>
+          <InvoiceSummary />
+        </TabPanel>
+      </TabPanels>
+    </Tabs>
+    </Flex>
   );
 };
 

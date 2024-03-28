@@ -31,13 +31,11 @@ const Header = () => {
           À propos
         </Link>
         <Button
-          as={RouterLink}
           to="/login"
           size={buttonSize}
           backgroundColor='black'
           color='white'
           borderRadius='30px'
-          border= '1px solid black'
         >
           Connexion
         </Button>

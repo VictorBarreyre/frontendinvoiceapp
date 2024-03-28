@@ -4,6 +4,7 @@ import './App.css';
 import About from '../roots/About';
 import Login from '../roots/Login';
 import Header from './components/Header';
+import Stepper from './components/Stepper';
 import { ChakraProvider } from '@chakra-ui/react';
 import InvoiceCreator from './components/InvoiceCreator';
 import { InvoiceDataProvider } from './context/InvoiceDataContext';
@@ -22,7 +23,6 @@ const theme = extendTheme({
 
 function App() {
 
-  const steps = ['Étape 1', 'Étape 2', 'Étape 3'];
 
   return (
     <>
@@ -31,7 +31,7 @@ function App() {
         <Router>
           <Header/>
           <Routes> 
-            <Route path="/" element={<InvoiceCreator steps={steps} />} /> 
+            <Route path="/" element={<Stepper />} /> 
             <Route path="/about" element={<About />} />
             <Route path="/login" element={<Login />} />
             <Route path="/confirmation" element={<ConfirmationPage/>} />

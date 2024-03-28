@@ -90,8 +90,12 @@ const InvoiceSummary = () => {
             textAlign: 'end'
         },
         issuerAndClient: {
-            bg: "#f7f7f7",
-            p: "20px",
+            paddingTop:'0px',
+            backgroundColor: '#fdfdfd',
+            borderWidth: '1px',
+            pl: "20px",
+            pr: "20px",
+            pb: "20px",
             borderRadius: "5px",
             marginY: "20px",
             width: '100%'

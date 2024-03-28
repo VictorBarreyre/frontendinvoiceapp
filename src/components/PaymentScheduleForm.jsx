@@ -199,7 +199,7 @@ const PaymentScheduleForm = ({ onSubmit }) => {
                   isTotalPercentage100 ? (
                     <p color="red">Somme totale égale à 100%</p>
                   ) : (
-                    <Link onClick={addPaymentWithCalculatedPercentage} display='flex' alignItems='center' color="blue.500">
+                    <Link onClick={addPaymentWithCalculatedPercentage} display='flex' alignItems='center' color="#745FF2">
                       Ajouter une échéance <AddIcon w='2.5' ml="2" />
                     </Link>
                   )
@@ -209,9 +209,9 @@ const PaymentScheduleForm = ({ onSubmit }) => {
           </Tfoot>
         </Table>
         {remainingPercentage > 0 ? (
-          <Button borderRadius='30px' color="red" isDisabled={remainingPercentage <= 0}>Pourcentage restant à attribuer : {remainingPercentage}%</Button>
+          <Button borderRadius='30px' mt="4" color="red" isDisabled={remainingPercentage <= 0}>Pourcentage restant à attribuer : {remainingPercentage}%</Button>
         ) : (
-          <Button onClick={handleSubmit} rightIcon={<ArrowForwardIcon />} color='white' borderRadius='30px' backgroundColor='black' mt="4" colorScheme="gray">
+          <Button onClick={handleSubmit} rightIcon={<ArrowForwardIcon />} color='white' borderRadius='30px' backgroundColor='black' mt="4" >
             Vérifier les informations de facturation
           </Button>
         )}
