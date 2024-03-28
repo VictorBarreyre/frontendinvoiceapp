@@ -423,13 +423,7 @@ const InvoiceCreator = ({ steps }) => {
 
       <PaymentScheduleForm />
       <InvoiceSummary />
-       {pdfInstance && (
-        <PDFViewer style={{ width: '100%', height: '180vh' }}>
-          <InvoicePDF invoiceData={invoiceData} />
-        </PDFViewer>
-      )}
-
-
+   
     </Flex>
 
   );
