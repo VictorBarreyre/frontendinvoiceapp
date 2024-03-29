@@ -143,16 +143,13 @@ const PaymentScheduleForm = ({ onSubmit }) => {
   };
 
   return (
-    <Box className='neue-up' width='60vw' pt='2rem' pl='3rem'pr='3rem' pb='2rem' backgroundColor='white' borderWidth="1px" borderRadius="1vw" mb='4vh'>  
-      <Heading mb='2rem' fontSize='24px'>Définissez vos échéances de paiement</Heading>
       <form onSubmit={handleSubmit}>
-        <Table variant="simple" borderRadius='10px' pb='1rem'>
+        <Table variant="simple" className='neue-up' mt='2rem' mb='1rem' borderWidth='1px' pt='1rem' pl='2rem' pr='2rem' pb='1rem' w='100%' borderRadius='10px' >
           <Thead>
             <Tr>
               <Th className='head-tab' pl='0'>Pourcentage %</Th>
               <Th className='head-tab'>Date d'échéance</Th>
               <Th w='content' className='head-tab'>Montant</Th>
-
             </Tr>
           </Thead>
           <Tbody>
@@ -216,8 +213,6 @@ const PaymentScheduleForm = ({ onSubmit }) => {
           </Button>
         )}
       </form>
-
-    </Box>
   );
 };
 

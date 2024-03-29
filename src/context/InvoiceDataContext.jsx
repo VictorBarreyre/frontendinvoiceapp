@@ -12,23 +12,23 @@ export const InvoiceDataProvider = ({ children }) => {
 
     //partie facture // changer les data en : '', quand on veut rendre les champs vident
     const [invoiceData, setInvoiceData] = useState({
-        number: '000243',
+        number: '',
         date: new Date().toISOString().split('T')[0],
         issuer: {
-            name: 'Jean Dupont',
-            adresse: '43 rue de La Paix 75001 Paris',
-            siret: '761289800089',
-            email: 'jeandupont@gmail.com',
-            iban: 'FR76 1020 4000 4533 3444 5678'
+            name: '',
+            adresse: '',
+            siret: '',
+            email: '',
+            iban: ''
         },
         client: {
-            name: 'Victor Barreyre',
-            adresse: '43 grande rue 91450 Étiolles',
-            siret: '761289800089',
-            email: 'barreyrevictor.contact@gmail.com',
+            name: '',
+            adresse: '',
+            siret: '',
+            email: '',
             iban:'',
         },
-        items: [{ description: 'test', quantity: 1, unitPrice: 0 }],
+        items: [{ description: '', quantity: 0, unitPrice: 0 }],
         subtotal: 0,
         vatRate: 20,
         total: 0,
