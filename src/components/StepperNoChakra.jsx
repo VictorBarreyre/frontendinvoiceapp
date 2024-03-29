@@ -35,7 +35,7 @@ const Stepper = () => {
         }
     };
 
-
+    
     const handleNavigateToPaymentSchedule = () => {
         // Vérifie si l'onglet actuel est le dernier ou si les conditions pour passer à l'onglet suivant sont remplies
         if (isStepNextAvailable && tabIndex < 3 - 1) {
@@ -45,10 +45,6 @@ const Stepper = () => {
             setAttemptedNavigation(true);
         }
     };
-
-
-    const allFieldsInvalid = Object.values(requiredFieldsValid).every(value => value === false);
-
     return (
         <div className="stepper-container">
             <div className="tabs-container">
@@ -57,22 +53,8 @@ const Stepper = () => {
                 </div>
                 <div className="tab-list">
                     <button className={`tab ${tabIndex === 0 ? 'active' : ''}`} onClick={() => handleTabClick(0)}>Facture</button>
-                    <button
-                        className={`tab ${tabIndex === 1 ? 'active' : ''} ${allFieldsInvalid ? 'disabled' : ''}`}
-                        onClick={() => handleTabClick(1)}
-                        disabled={!isStepNextAvailable}
-                    >
-                        Échéances & Paiements
-                    </button>
-                    {/* Assurez-vous d'ajuster la logique pour le dernier bouton en fonction de vos besoins */}
-                    <button
-                        className={`tab ${tabIndex === 2 ? 'active' : ''} disabled`}
-                        onClick={() => handleTabClick(2)}
-                        disabled={true}
-                    >
-                        Envoi
-                    </button>
-                
+                    <button className={`tab ${tabIndex === 1 ? 'active' : ''}`} onClick={() => handleTabClick(1)} >Échéances & Paiements</button>
+                    <button className={`tab ${tabIndex === 2 ? 'active' : ''}`} onClick={() => handleTabClick(2)} >Envoi</button>
                 </div>
                 <div className="tab-panel">
                     {tabIndex === 0 && <InvoiceCreator navigateToPaymentSchedule={handleNavigateToPaymentSchedule} />}
