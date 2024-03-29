@@ -83,7 +83,6 @@
 }
 
 
-
 .form-iban {
   display: flex;
   flex-direction: column;
@@ -103,6 +102,12 @@
   margin-top: 16px;
   cursor: pointer;
 }
+
+.inputError {
+  border: 1px solid red;
+}
+
+
 
 
 @keyframes logo-spin {

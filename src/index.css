@@ -201,9 +201,12 @@ input:focus {
 }
 
 .tab.active {
-
   border-bottom: 2px solid #745FF2;
   color: #745FF2;
+}
+
+.tab.disabled{
+  color:#718096;
 }
 
 .tab-panel h3 {

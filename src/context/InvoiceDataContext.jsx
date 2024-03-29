@@ -55,6 +55,7 @@ export const InvoiceDataProvider = ({ children }) => {
       const [isTotalPercentage100, setIsTotalPercentage100] = useState(false);
       const [remainingPercentage, setRemainingPercentage] = useState(100);
 
+      const [attemptedNavigation, setAttemptedNavigation] = useState(false);
 
     const handleInvoiceDataChange = (newData) => {
         setInvoiceData(newData);
@@ -101,6 +102,14 @@ export const InvoiceDataProvider = ({ children }) => {
         return /\S+@\S+\.\S+/.test(email);
     };
 
+      //fonction pour definir le contour rouge si l'input est pas rempli
+  const requiredClassnameField = (fieldName) => {
+    // Utilisez requiredFieldsValid pour déterminer si le champ est valide
+    const isFieldValid = requiredFieldsValid[fieldName];
+    return attemptedNavigation && !isFieldValid ? 'emptyinput' : 'classicinput';
+};
+
+
 
 
     return (
@@ -128,7 +137,10 @@ export const InvoiceDataProvider = ({ children }) => {
             isTotalPercentage100, 
             setIsTotalPercentage100,
             remainingPercentage, 
-            setRemainingPercentage
+            setRemainingPercentage,
+            requiredClassnameField, 
+            attemptedNavigation,
+            setAttemptedNavigation
         }}>
             {children}
         </InvoiceDataContext.Provider>

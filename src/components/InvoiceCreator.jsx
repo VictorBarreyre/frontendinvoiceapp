@@ -11,11 +11,7 @@ import CustomInput from './CustomIpunt';
 import InvoicePDF from './InvoicePDF';
 import { useInvoiceData } from '../context/InvoiceDataContext';
 
-const InvoiceCreator = ({ steps }) => {
-
-  const [subject, setSubject] = useState("Votre Facture");
-  const [message, setMessage] = useState("Voici votre facture");
-
+const InvoiceCreator = ({  navigateToPaymentSchedule }) => {
 
   const {
     invoiceData,
@@ -36,6 +32,8 @@ const InvoiceCreator = ({ steps }) => {
     setItemsNames,
     handleChange,
     isValidEmail,
+    requiredClassnameField,
+    attemptedNavigation
   } = useInvoiceData();
 
 
@@ -58,14 +56,7 @@ const InvoiceCreator = ({ steps }) => {
     handleInvoiceDataChange(prevState => ({ ...prevState, vatRate: parseFloat(e.target.value) || 0 }));
   };
 
-  //fonction pour definir le contour rouge si l'input est pas rempli
-  const requiredClassnameField = (attemptedDownloadWithoutRequiredFields, requiredFieldsValid) => {
-    if (attemptedDownloadWithoutRequiredFields === false && requiredFieldsValid['issuer.name'] === false) {
-      return 'emptyinput';
-    } else {
-      return 'classicinput';
-    }
-  };
+
 
   useEffect(() => {
     const generatePdfDocument = async () => {
@@ -120,7 +111,7 @@ const InvoiceCreator = ({ steps }) => {
             <Flex direction='column' justifyContent='space-between' pb="2rem" >
               <Heading mb='1rem' size="sm">Facture n° :</Heading>
               <Input
-                className={requiredClassnameField(attemptedDownloadWithoutRequiredFields, requiredFieldsValid)}
+                 className={requiredClassnameField('issuer.name')} // Assurez-vous que le nom du champ correspond exactement à la clé dans invoiceData
                 placeholder="Numéro de facture*" name="number" value={invoiceData.number} onChange={handleChange} />
             </Flex>
             <Box direction='column' w='25vw' justifyContent='space-between' pb="2rem" >
@@ -285,7 +276,7 @@ const InvoiceCreator = ({ steps }) => {
           </Flex>
 
           <Text color='red' >{showErrorMessage}</Text>
-          <Button rightIcon={<ArrowForwardIcon />} color='white' borderRadius='30px' backgroundColor='black' mt="4" colorScheme="gray" >
+          <Button  onClick={navigateToPaymentSchedule} rightIcon={<ArrowForwardIcon />} color='white' borderRadius='30px' backgroundColor='black' mt="4" colorScheme="gray" >
           Définir les échéances de paiement
           </Button>
         </VStack>
