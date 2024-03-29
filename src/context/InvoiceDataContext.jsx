@@ -42,6 +42,7 @@ export const InvoiceDataProvider = ({ children }) => {
         clientName: false,
         // Ajoutez d'autres champs obligatoires ici selon vos besoins
     });
+    
     const [pdfInstance, setPdfInstance] = useState(null);
     const [startDate, setStartDate] = useState(new Date());
     const [buttonLabel, setButtonLabel] = useState(null);
@@ -110,6 +111,16 @@ export const InvoiceDataProvider = ({ children }) => {
 };
 
 
+const handleNavigateToPaymentSchedule = () => {
+    // Vérifie si l'onglet actuel est le dernier ou si les conditions pour passer à l'onglet suivant sont remplies
+    if (isStepTwoAvailable && tabIndex < 3 - 1) {
+        setTabIndex(prevTabIndex => prevTabIndex + 1); // Naviguez vers l'onglet suivant
+    } else {
+        console.warn("Les champs requis pour passer à l'étape suivante ne sont pas tous remplis.");
+        setAttemptedNavigation(true);
+    }
+};
+
 
 
     return (
@@ -140,7 +151,8 @@ export const InvoiceDataProvider = ({ children }) => {
             setRemainingPercentage,
             requiredClassnameField, 
             attemptedNavigation,
-            setAttemptedNavigation
+            setAttemptedNavigation,
+            handleNavigateToPaymentSchedule
         }}>
             {children}
         </InvoiceDataContext.Provider>

@@ -57,7 +57,6 @@ const InvoiceCreator = ({  navigateToPaymentSchedule }) => {
   };
 
 
-
   useEffect(() => {
     const generatePdfDocument = async () => {
       const doc = <InvoicePDF invoiceData={invoiceData} />;
@@ -69,13 +68,6 @@ const InvoiceCreator = ({  navigateToPaymentSchedule }) => {
     generatePdfDocument();
   }, [invoiceData]);
 
-
-  //useeffect pour afficher ou pas le message d'erreur
-  useEffect(() => {
-    if (attemptedDownloadWithoutRequiredFields === false && requiredFieldsValid['issuer.name'] === false) {
-      setShowErrorMessage('Veuillez renseigner les champs obligatoires');
-    }
-  }, [attemptedDownloadWithoutRequiredFields, requiredFieldsValid]);
 
 
   //useeffect qui met à jour le calcul de la tva et du total
