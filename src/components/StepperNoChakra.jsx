@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useInvoiceData } from '../context/InvoiceDataContext';
 import InvoiceCreator from './InvoiceCreator';
-import { Heading } from '@chakra-ui/react';
+import { Heading, Text } from '@chakra-ui/react';
 import PaymentScheduleForm from './PaymentScheduleForm';
 import InvoiceSummary from './InvoiceSummary';
 
@@ -9,6 +9,7 @@ const Stepper = () => {
     const [tabIndex, setTabIndex] = useState(0);
     const { invoiceData, attemptedNavigation, setAttemptedNavigation } = useInvoiceData(); // Accéder aux données de la facture depuis le contexte
     const [isStepNextAvailable, setIsStepNextAvailable] = useState(false);
+    const [showError, setShowError] = useState(false); 
 
     useEffect(() => {
         // Cette fonction vérifie si les champs requis pour activer l'étape suivante sont remplis.
@@ -26,8 +27,10 @@ const Stepper = () => {
     const handleTabClick = (index) => {
         if (index > 0 && !isStepNextAvailable) {
             setAttemptedNavigation(true);
+            setShowError(true); 
         } else {
             setTabIndex(index);
+            setShowError(false) // Réinitialiser le message d'erreur
         }
     };
 
@@ -40,7 +43,7 @@ const Stepper = () => {
             setAttemptedNavigation(true);
         }
     };
-    
+
     return (
         <div className="stepper-container">
             <div className="tabs-container">
@@ -52,6 +55,11 @@ const Stepper = () => {
                     <button className={`tab ${tabIndex === 1 ? 'active' : ''} ${!isStepNextAvailable ? 'disabled' : ''}`} onClick={() => handleTabClick(1)} >Échéances & Paiements</button>
                     <button className={`tab ${tabIndex === 2 ? 'active' : ''} ${!isStepNextAvailable ? 'disabled' : ''}`} onClick={() => handleTabClick(2)} >Envoi</button>
                 </div>
+
+
+                {showError && <Text color="red.500">Veuillez remplir tous les champs requis avant de continuer.</Text>}
+
+
                 <div className="tab-panel">
                     {tabIndex === 0 && <InvoiceCreator navigateToPaymentSchedule={handleNavigateToPaymentSchedule} />}
                     {tabIndex === 1 && <PaymentScheduleForm />}

@@ -93,7 +93,7 @@ const InvoiceCreator = ({  navigateToPaymentSchedule }) => {
               <Heading  mb='1rem' size="sm">Facture n° :</Heading>
               <Input
              className={getClassForField(invoiceData.number)} // Assurez-vous que le nom du champ correspond exactement à la clé dans invoiceData
-                placeholder="Numéro de facture*" name="number" value={invoiceData.number} onChange={handleChange} />
+                placeholder="Numéro de facture" name="number" value={invoiceData.number} onChange={handleChange} />
             </Flex>
             <Box direction='column' w='25vw' justifyContent='space-between' pb="2rem" >
               <Heading mb='1rem' size="sm">Date :</Heading>
@@ -116,12 +116,12 @@ const InvoiceCreator = ({  navigateToPaymentSchedule }) => {
             <Flex direction="column" alignItems='start'>
               <Heading mb='1rem' size="sm">Informations sur l'émetteur :</Heading>
               <Input className={getClassForField(invoiceData.issuer.name)}
-                placeholder="Nom et Prénom / Société*"
+                placeholder="Nom et Prénom / Société"
                 name="issuer.name"
                 value={invoiceData.issuer.name}
                 onChange={handleChange} />
               <Input className={getClassForField(invoiceData.issuer.adresse)}
-                placeholder="Adresse*" name="issuer.adresse" value={invoiceData.issuer.adresse} onChange={handleChange} />
+                placeholder="Adresse" name="issuer.adresse" value={invoiceData.issuer.adresse} onChange={handleChange} />
               <Input className={getClassForField(invoiceData.issuer.siret)} placeholder="N° Siret" name="issuer.siret" value={invoiceData.issuer.siret} onChange={handleChange} />
               <Input className={getClassForField(invoiceData.issuer.email)} placeholder="Email de l'émetteur" name="issuer.email" value={invoiceData.issuer.email} onChange={handleChange} />
             </Flex>
@@ -130,9 +130,9 @@ const InvoiceCreator = ({  navigateToPaymentSchedule }) => {
             <Flex w={{ base: 'unset', lg: '25vw' }} mt={{ base: '3rem', lg: '5rem' }} direction="column" alignItems='start'>
               <Heading mb='1rem' size="sm">Informations sur le client :</Heading>
               <Input className={getClassForField(invoiceData.client.name)}
-                placeholder="Nom et Prénom / Société*" name="client.name" value={invoiceData.client.name} onChange={handleChange} />
+                placeholder="Nom et Prénom / Société" name="client.name" value={invoiceData.client.name} onChange={handleChange} />
               <Input className={getClassForField(invoiceData.client.adresse)}
-                placeholder="Adresse*" name="client.adresse" value={invoiceData.client.adresse} onChange={handleChange} />
+                placeholder="Adresse" name="client.adresse" value={invoiceData.client.adresse} onChange={handleChange} />
               <Input className={getClassForField(invoiceData.client.siret)} placeholder="N° Siret" name="client.siret" value={invoiceData.client.siret} onChange={handleChange} />
               <Input className={getClassForField(invoiceData.client.email)} placeholder="Email du client " name="client.email" value={invoiceData.client.email} onChange={handleChange} />
             </Flex>
@@ -156,7 +156,7 @@ const InvoiceCreator = ({  navigateToPaymentSchedule }) => {
                     <Td pl='0'>
                       <Input
                        className={getClassForField(item.description)}
-                        placeholder="Description*"
+                        placeholder="Description"
                         name={`items.${index}.description`}
                         value={item.description}
                         onChange={handleChange}
