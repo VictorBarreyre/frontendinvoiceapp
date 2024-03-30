@@ -16,26 +16,16 @@ const InvoiceCreator = ({  navigateToPaymentSchedule }) => {
   const {
     invoiceData,
     handleInvoiceDataChange,
-    requiredFieldsValid,
-    setRequiredFieldsValid,
+    getClassForField,
     pdfInstance,
     setPdfInstance,
     startDate,
     setStartDate,
-    buttonLabel,
-    setButtonLabel,
-    attemptedDownloadWithoutRequiredFields,
-    setAttemptedDownloadWithoutRequiredFields,
-    showErrorMessage,
-    setShowErrorMessage,
     itemsnames,
     setItemsNames,
     handleChange,
     isValidEmail,
-    requiredClassnameField,
-    attemptedNavigation
   } = useInvoiceData();
-
 
 
   //fonction pour ajouter un item à la facture
@@ -69,7 +59,6 @@ const InvoiceCreator = ({  navigateToPaymentSchedule }) => {
   }, [invoiceData]);
 
 
-
   //useeffect qui met à jour le calcul de la tva et du total
   useEffect(() => {
     const subtotal = invoiceData.items.reduce((acc, curr) => acc + curr.quantity * curr.unitPrice, 0);
@@ -101,9 +90,9 @@ const InvoiceCreator = ({  navigateToPaymentSchedule }) => {
         <VStack mt='2rem' boxShadow=' 1px solid black' spacing={6} align="start">
           <Flex w='25vw' justifyContent='space-between' width='-webkit-fill-available'>
             <Flex direction='column' justifyContent='space-between' pb="2rem" >
-              <Heading mb='1rem' size="sm">Facture n° :</Heading>
+              <Heading  mb='1rem' size="sm">Facture n° :</Heading>
               <Input
-                 className={requiredClassnameField('issuer.name')} // Assurez-vous que le nom du champ correspond exactement à la clé dans invoiceData
+             className={getClassForField(invoiceData.number)} // Assurez-vous que le nom du champ correspond exactement à la clé dans invoiceData
                 placeholder="Numéro de facture*" name="number" value={invoiceData.number} onChange={handleChange} />
             </Flex>
             <Box direction='column' w='25vw' justifyContent='space-between' pb="2rem" >
@@ -126,26 +115,26 @@ const InvoiceCreator = ({  navigateToPaymentSchedule }) => {
           <Flex flexDirection={{ base: 'column', lg: 'row' }} w='25vw' justifyContent='space-between' width='-webkit-fill-available' pb="2rem" >
             <Flex direction="column" alignItems='start'>
               <Heading mb='1rem' size="sm">Informations sur l'émetteur :</Heading>
-              <Input className={requiredClassnameField(attemptedDownloadWithoutRequiredFields, requiredFieldsValid)}
+              <Input className={getClassForField(invoiceData.issuer.name)}
                 placeholder="Nom et Prénom / Société*"
                 name="issuer.name"
                 value={invoiceData.issuer.name}
                 onChange={handleChange} />
-              <Input className={requiredClassnameField(attemptedDownloadWithoutRequiredFields, requiredFieldsValid)}
+              <Input className={getClassForField(invoiceData.issuer.adresse)}
                 placeholder="Adresse*" name="issuer.adresse" value={invoiceData.issuer.adresse} onChange={handleChange} />
-              <Input className='classicinput' placeholder="N° Siret" name="issuer.siret" value={invoiceData.issuer.siret} onChange={handleChange} />
-              <Input className='classicinput' placeholder="Email de l'émetteur" name="issuer.email" value={invoiceData.issuer.email} onChange={handleChange} />
+              <Input className={getClassForField(invoiceData.issuer.siret)} placeholder="N° Siret" name="issuer.siret" value={invoiceData.issuer.siret} onChange={handleChange} />
+              <Input className={getClassForField(invoiceData.issuer.email)} placeholder="Email de l'émetteur" name="issuer.email" value={invoiceData.issuer.email} onChange={handleChange} />
             </Flex>
 
 
             <Flex w={{ base: 'unset', lg: '25vw' }} mt={{ base: '3rem', lg: '5rem' }} direction="column" alignItems='start'>
               <Heading mb='1rem' size="sm">Informations sur le client :</Heading>
-              <Input className={requiredClassnameField(attemptedDownloadWithoutRequiredFields, requiredFieldsValid)}
+              <Input className={getClassForField(invoiceData.client.name)}
                 placeholder="Nom et Prénom / Société*" name="client.name" value={invoiceData.client.name} onChange={handleChange} />
-              <Input className={requiredClassnameField(attemptedDownloadWithoutRequiredFields, requiredFieldsValid)}
+              <Input className={getClassForField(invoiceData.client.adresse)}
                 placeholder="Adresse*" name="client.adresse" value={invoiceData.client.adresse} onChange={handleChange} />
-              <Input className='classicinput' placeholder="N° Siret" name="client.siret" value={invoiceData.client.siret} onChange={handleChange} />
-              <Input className='classicinput' placeholder="Email du client " name="client.email" value={invoiceData.client.email} onChange={handleChange} />
+              <Input className={getClassForField(invoiceData.client.siret)} placeholder="N° Siret" name="client.siret" value={invoiceData.client.siret} onChange={handleChange} />
+              <Input className={getClassForField(invoiceData.client.email)} placeholder="Email du client " name="client.email" value={invoiceData.client.email} onChange={handleChange} />
             </Flex>
           </Flex>
 
@@ -166,7 +155,7 @@ const InvoiceCreator = ({  navigateToPaymentSchedule }) => {
                   <Tr key={index}>
                     <Td pl='0'>
                       <Input
-                        className={requiredClassnameField(attemptedDownloadWithoutRequiredFields, requiredFieldsValid)}
+                       className={getClassForField(item.description)}
                         placeholder="Description*"
                         name={`items.${index}.description`}
                         value={item.description}
@@ -197,7 +186,7 @@ const InvoiceCreator = ({  navigateToPaymentSchedule }) => {
                     </Td>
                     <Td>
                       <Input
-                        className={requiredClassnameField(attemptedDownloadWithoutRequiredFields, requiredFieldsValid)}
+                      className={getClassForField(item.description)}
                         alignItems='end'
                         placeholder="Prix unitaire*"
                         name={`items.${index}.unitPrice`}
@@ -253,7 +242,7 @@ const InvoiceCreator = ({  navigateToPaymentSchedule }) => {
           <Flex direction="column" alignItems='start' mt="4">
             <Heading mb='1rem' size="sm">Saisissez un IBAN pour recevoir le paiement</Heading>
             <Input
-              className='neue-down'
+            className={getClassForField(invoiceData.issuer.name)}
               placeholder="Votre IBAN"
               name="issuer.iban"
               value={invoiceData.issuer.iban}
@@ -266,8 +255,6 @@ const InvoiceCreator = ({  navigateToPaymentSchedule }) => {
               }}
             />
           </Flex>
-
-          <Text color='red' >{showErrorMessage}</Text>
           <Button  onClick={navigateToPaymentSchedule} rightIcon={<ArrowForwardIcon />} color='white' borderRadius='30px' backgroundColor='black' mt="4" colorScheme="gray" >
           Définir les échéances de paiement
           </Button>

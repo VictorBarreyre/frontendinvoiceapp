@@ -10,7 +10,6 @@ export const InvoiceDataProvider = ({ children }) => {
     const [subject, setSubject] = useState("Votre Facture");
     const [message, setMessage] = useState("Voici votre facture");
 
-    //partie facture // changer les data en : '', quand on veut rendre les champs vident
     const [invoiceData, setInvoiceData] = useState({
         number: '',
         date: new Date().toISOString().split('T')[0],
@@ -26,7 +25,7 @@ export const InvoiceDataProvider = ({ children }) => {
             adresse: '',
             siret: '',
             email: '',
-            iban:'',
+            iban: '',
         },
         items: [{ description: '', quantity: 0, unitPrice: 0 }],
         subtotal: 0,
@@ -36,123 +35,102 @@ export const InvoiceDataProvider = ({ children }) => {
     });
 
 
-    const [requiredFieldsValid, setRequiredFieldsValid] = useState({
-        number: false,
-        issuerName: false,
-        clientName: false,
-        // Ajoutez d'autres champs obligatoires ici selon vos besoins
-    });
-    
     const [pdfInstance, setPdfInstance] = useState(null);
     const [startDate, setStartDate] = useState(new Date());
-    const [buttonLabel, setButtonLabel] = useState(null);
-    const [attemptedDownloadWithoutRequiredFields, setAttemptedDownloadWithoutRequiredFields] = useState(false);
-    const [showErrorMessage, setShowErrorMessage] = useState('');
     const [itemsnames, setItemsNames] = useState('');
     const [payments, setPayments] = useState([
         { percentage: 25, dueDate: new Date() },
         { percentage: 75, dueDate: new Date() }
-      ]);
-      const [isTotalPercentage100, setIsTotalPercentage100] = useState(false);
-      const [remainingPercentage, setRemainingPercentage] = useState(100);
+    ]);
 
-      const [attemptedNavigation, setAttemptedNavigation] = useState(false);
+    const [isTotalPercentage100, setIsTotalPercentage100] = useState(false);
+    const [remainingPercentage, setRemainingPercentage] = useState(100);
+
+    const [attemptedNavigation, setAttemptedNavigation] = useState(false);
 
     const handleInvoiceDataChange = (newData) => {
         setInvoiceData(newData);
     };
 
 
-    //fonction pour remplir les inputs
     const handleChange = (e) => {
         const { name, value } = e.target;
-        // Cas où le champ appartient à l'array des items
+        // Gère les champs de l'objet items
         if (name.startsWith('items.')) {
-            const [_, index, field] = name.split('.');
-            handleInvoiceDataChange(prevState => {
+            const [, index, field] = name.split('.');
+            handleInvoiceDataChange((prevState) => {
                 const newItems = [...prevState.items];
-                const newItem = { ...newItems[index], [field]: value };
-                newItems[index] = newItem;
+                newItems[index] = { ...newItems[index], [field]: value };
                 return { ...prevState, items: newItems };
             });
         } else {
-            // Cas pour les champs simples et les champs d'objets comme issuer et client
-            // Sépare le nom du champ pour identifier les objets imbriqués
+            // Gère les champs simples et les champs d'objets comme issuer et client
             const keys = name.split('.');
             if (keys.length === 2) {
-                // Gestion des champs d'objets imbriqués comme issuer.name
+                // Pour les champs d'objets imbriqués comme issuer.name
                 const [section, field] = keys;
-                handleInvoiceDataChange(prevState => ({
+                handleInvoiceDataChange((prevState) => ({
                     ...prevState,
                     [section]: {
                         ...prevState[section],
                         [field]: value,
                     },
                 }));
-                setRequiredFieldsValid(true)
             } else {
-                // Gestion des champs simples
-                handleInvoiceDataChange(prevState => ({ ...prevState, [name]: value }));
+                // Pour les champs simples
+                handleInvoiceDataChange((prevState) => ({ ...prevState, [name]: value }));
             }
         }
     };
-
+    
 
     //fonction afin de savoir si le mail est validegui
     const isValidEmail = (email) => {
         return /\S+@\S+\.\S+/.test(email);
     };
 
-      //fonction pour definir le contour rouge si l'input est pas rempli
-  const requiredClassnameField = (fieldName) => {
-    // Utilisez requiredFieldsValid pour déterminer si le champ est valide
-    const isFieldValid = requiredFieldsValid[fieldName];
-    return attemptedNavigation && !isFieldValid ? 'emptyinput' : 'classicinput';
-};
+ 
+    const getClassForField = (fieldValue) => {
+        // S'assure que la valeur existe avant de tenter d'appeler .trim() sur elle
+        // Utilise l'opérateur optionnel ?. pour éviter les erreurs si la valeur est undefined
+        return fieldValue?.trim() === '' && attemptedNavigation ? 'emptyinput' : 'classicinput';
+      };
+      
+      
 
-
-const handleNavigateToPaymentSchedule = () => {
-    // Vérifie si l'onglet actuel est le dernier ou si les conditions pour passer à l'onglet suivant sont remplies
-    if (isStepTwoAvailable && tabIndex < 3 - 1) {
-        setTabIndex(prevTabIndex => prevTabIndex + 1); // Naviguez vers l'onglet suivant
-    } else {
-        console.warn("Les champs requis pour passer à l'étape suivante ne sont pas tous remplis.");
-        setAttemptedNavigation(true);
-    }
-};
-
+    const handleNavigateToPaymentSchedule = () => {
+        // Vérifie si l'onglet actuel est le dernier ou si les conditions pour passer à l'onglet suivant sont remplies
+        if (isStepTwoAvailable && tabIndex < 3 - 1) {
+            setTabIndex(prevTabIndex => prevTabIndex + 1); // Naviguez vers l'onglet suivant
+        } else {
+            console.warn("Les champs requis pour passer à l'étape suivante ne sont pas tous remplis.");
+            setAttemptedNavigation(true);
+        }
+    };
 
 
     return (
         <InvoiceDataContext.Provider value={{
             invoiceData,
             handleInvoiceDataChange,
-            requiredFieldsValid,
-            setRequiredFieldsValid,
             pdfInstance,
             setPdfInstance,
             startDate,
             setStartDate,
-            buttonLabel,
-            setButtonLabel,
-            attemptedDownloadWithoutRequiredFields,
-            setAttemptedDownloadWithoutRequiredFields,
-            showErrorMessage,
-            setShowErrorMessage,
             itemsnames,
             setItemsNames,
             handleChange,
             isValidEmail,
-            payments, 
+            payments,
             setPayments,
-            isTotalPercentage100, 
+            isTotalPercentage100,
             setIsTotalPercentage100,
-            remainingPercentage, 
+            remainingPercentage,
             setRemainingPercentage,
-            requiredClassnameField, 
             attemptedNavigation,
             setAttemptedNavigation,
-            handleNavigateToPaymentSchedule
+            handleNavigateToPaymentSchedule,
+            getClassForField
         }}>
             {children}
         </InvoiceDataContext.Provider>

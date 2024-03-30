@@ -7,31 +7,27 @@ import InvoiceSummary from './InvoiceSummary';
 
 const Stepper = () => {
     const [tabIndex, setTabIndex] = useState(0);
-    const { invoiceData, requiredFieldsValid, attemptedNavigation, setAttemptedNavigation } = useInvoiceData(); // Accéder aux données de la facture depuis le contexte
+    const { invoiceData, attemptedNavigation, setAttemptedNavigation } = useInvoiceData(); // Accéder aux données de la facture depuis le contexte
     const [isStepNextAvailable, setIsStepNextAvailable] = useState(false);
-
-    console.log(attemptedNavigation, requiredFieldsValid)
-
 
     useEffect(() => {
         // Cette fonction vérifie si les champs requis pour activer l'étape suivante sont remplis.
         const checkStepNextAvailability = () => {
-            const { number, issuer, client } = invoiceData;
-            const issuerAndClientNamesFilled = issuer.name.trim() && client.name.trim();
-            // Ajoutez toute autre logique de validation nécessaire ici
-            return number.trim() && issuerAndClientNamesFilled;
+            const isNumberFilled = invoiceData.number.trim() !== '';
+            const isIssuerNameFilled = invoiceData.issuer.name.trim() !== '';
+            const isClientNameFilled = invoiceData.client.name.trim() !== '';
+            // Ajoutez d'autres vérifications si nécessaire
+            return isNumberFilled && isIssuerNameFilled && isClientNameFilled;
         };
 
         setIsStepNextAvailable(checkStepNextAvailability());
     }, [invoiceData]); // Se déclenche à chaque fois que invoiceData change
-
 
     const handleTabClick = (index) => {
         if (index > 0 && !isStepNextAvailable) {
             setAttemptedNavigation(true);
         } else {
             setTabIndex(index);
-            // Ne réinitialisez pas ici attemptedNavigation à false
         }
     };
 
@@ -44,10 +40,6 @@ const Stepper = () => {
             setAttemptedNavigation(true);
         }
     };
-
-    const areAllFieldsValid = (fields) => {
-        return Object.values(fields).every(value => value);
-    };
     
     return (
         <div className="stepper-container">
@@ -57,8 +49,8 @@ const Stepper = () => {
                 </div>
                 <div className="tab-list">
                     <button className={`tab ${tabIndex === 0 ? 'active' : ''}`} onClick={() => handleTabClick(0)}>Facture</button>
-                    <button className={`tab ${tabIndex === 1 ? 'active' : ''} ${!areAllFieldsValid(requiredFieldsValid) ? 'disabled' : ''}`} onClick={() => handleTabClick(1)} >Échéances & Paiements</button>
-                    <button className={`tab ${tabIndex === 2 ? 'active' : ''} ${!areAllFieldsValid(requiredFieldsValid) ? 'disabled' : ''}`} onClick={() => handleTabClick(2)} >Envoi</button>
+                    <button className={`tab ${tabIndex === 1 ? 'active' : ''} ${!isStepNextAvailable ? 'disabled' : ''}`} onClick={() => handleTabClick(1)} >Échéances & Paiements</button>
+                    <button className={`tab ${tabIndex === 2 ? 'active' : ''} ${!isStepNextAvailable ? 'disabled' : ''}`} onClick={() => handleTabClick(2)} >Envoi</button>
                 </div>
                 <div className="tab-panel">
                     {tabIndex === 0 && <InvoiceCreator navigateToPaymentSchedule={handleNavigateToPaymentSchedule} />}
