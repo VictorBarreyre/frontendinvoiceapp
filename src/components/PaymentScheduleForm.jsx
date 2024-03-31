@@ -5,7 +5,7 @@ import DatePicker from 'react-datepicker';
 import { useInvoiceData } from '../context/InvoiceDataContext';
 import CustomInput from './CustomIpunt';
 
-const PaymentScheduleForm = ({ onSubmit }) => {
+const PaymentScheduleForm = ({ onSubmit, handleNavigateToInvoiceConfirn }) => {
   const { invoiceData, 
           setStartDate, 
           startDate, 
@@ -142,7 +142,8 @@ const PaymentScheduleForm = ({ onSubmit }) => {
     onSubmit(payments);
   };
 
-  return (
+  return ( <> 
+    <Heading size='md'>Définissez les dates auxquelles vous voulez être payé</Heading>
       <form onSubmit={handleSubmit}>
         <Table variant="simple" className='neue-up' mt='2rem' mb='1rem' borderWidth='1px' pt='1rem' pl='2rem' pr='2rem' pb='1rem' w='100%' borderRadius='10px' >
           <Thead>
@@ -158,6 +159,7 @@ const PaymentScheduleForm = ({ onSubmit }) => {
                 <Td pl='0'>
                   <InputGroup>
                     <Input
+                      _focus={{ borderColor: "#745FF2", boxShadow: "none" }}
                       className='neue-down'
                       type="number"
                       value={payment.percentage}
@@ -194,7 +196,7 @@ const PaymentScheduleForm = ({ onSubmit }) => {
               <Td pl='0' colSpan={4}>
                 {
                   isTotalPercentage100 ? (
-                    <p color="red">Somme totale égale à 100%</p>
+                    <p color="red">Somme totale des échéances égale à 100% </p>
                   ) : (
                     <Link onClick={addPaymentWithCalculatedPercentage} display='flex' alignItems='center' color="#745FF2">
                       Ajouter une échéance <AddIcon w='2.5' ml="2" />
@@ -208,11 +210,12 @@ const PaymentScheduleForm = ({ onSubmit }) => {
         {remainingPercentage > 0 ? (
           <Button borderRadius='30px' mt="4" color="#FB7575" isDisabled={remainingPercentage <= 0}>Pourcentage restant à attribuer : {remainingPercentage}%</Button>
         ) : (
-          <Button onClick={handleSubmit} rightIcon={<ArrowForwardIcon />} color='white' borderRadius='30px' backgroundColor='black' mt="4" >
+          <Button onClick={handleNavigateToInvoiceConfirn} rightIcon={<ArrowForwardIcon />} color='white' borderRadius='30px' backgroundColor='black' mt="4" >
             Vérifier les informations de facturation
           </Button>
         )}
       </form>
+      </>
   );
 };
 

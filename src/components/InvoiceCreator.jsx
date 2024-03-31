@@ -101,15 +101,14 @@ const InvoiceCreator = ({ navigateToPaymentSchedule }) => {
 
 
   //*définir les slugs obligatoires pour la création de facture (car si exemple pas de num de facture pas de facture téléchargeable)
-  return (
-
-    <>
+  return ( <> 
+    <Heading size='md'>Entrez les informations de facturation </Heading>
       <VStack mt='2rem' boxShadow=' 1px solid black' spacing={6} align="start">
-        <Flex w='25vw' justifyContent='space-between' width='-webkit-fill-available'>
+        <Flex w='100%' justifyContent='space-between' >
           <Flex direction='column' justifyContent='space-between' pb="2rem" >
             <Heading mb='1rem' size="sm">Facture n° :</Heading>
             <Input
-            focusBorderColor="green.400"
+             _focus={{ borderColor: "#745FF2", boxShadow: "none" }}
               className={getClassForField(invoiceData.number)} // Assurez-vous que le nom du champ correspond exactement à la clé dans invoiceData
               placeholder="Numéro de facture" name="number" value={invoiceData.number} onChange={handleChange} />
           </Flex>
@@ -130,18 +129,25 @@ const InvoiceCreator = ({ navigateToPaymentSchedule }) => {
             />
           </Box>
         </Flex>
-        <Flex flexDirection={{ base: 'column', lg: 'row' }} justifyContent='space-between' width='-webkit-fill-available' pb="2rem" >
+        <Flex flexDirection={{ base: 'column', lg: 'row' }} justifyContent='space-between'w='100%' pb="2rem" >
           <Flex direction="column" w={{ base: 'unset', lg: '25vw' }} alignItems='start'>
             <Heading mb='1rem' size="sm">Informations sur l'émetteur :</Heading>
-            <Input className={getClassForField(invoiceData.issuer.name)}
+            <Input 
+               _focus={{ borderColor: "#745FF2", boxShadow: "none" }}
+              className={getClassForField(invoiceData.issuer.name)}
               placeholder="Nom et Prénom / Société"
               name="issuer.name"
               value={invoiceData.issuer.name}
               onChange={handleChange} />
-            <Input className={getClassForField(invoiceData.issuer.adresse)}
+            <Input 
+              _focus={{ borderColor: "#745FF2", boxShadow: "none" }}
+              className={getClassForField(invoiceData.issuer.adresse)}
               placeholder="Adresse" name="issuer.adresse" value={invoiceData.issuer.adresse} onChange={handleChange} />
-            <Input className={getClassForField(invoiceData.issuer.siret)} placeholder="N° Siret" name="issuer.siret" value={invoiceData.issuer.siret} onChange={handleChange} />
+            <Input 
+              _focus={{ borderColor: "#745FF2", boxShadow: "none" }}
+            className={getClassForField(invoiceData.issuer.siret)} placeholder="N° Siret" name="issuer.siret" value={invoiceData.issuer.siret} onChange={handleChange} />
             <Input
+                _focus={{ borderColor: "#745FF2", boxShadow: "none" }}
               className={getClassForField(invoiceData.issuer.email)}
               placeholder="Email de l'émetteur"
               name="issuer.email"
@@ -160,13 +166,14 @@ const InvoiceCreator = ({ navigateToPaymentSchedule }) => {
 
           <Flex w={{ base: 'unset', lg: '25vw' }} mt={{ base: '3rem', lg: '5rem' }} direction="column" alignItems='start'>
             <Heading mb='1rem' size="sm">Informations sur le client :</Heading>
-            <Input className={getClassForField(invoiceData.client.name)}
+            <Input _focus={{ borderColor: "#745FF2", boxShadow: "none" }} className={getClassForField(invoiceData.client.name)}
               placeholder="Nom et Prénom / Société" name="client.name" value={invoiceData.client.name} onChange={handleChange} />
-            <Input className={getClassForField(invoiceData.client.adresse)}
+            <Input   _focus={{ borderColor: "#745FF2", boxShadow: "none" }} className={getClassForField(invoiceData.client.adresse)}
               placeholder="Adresse" name="client.adresse" value={invoiceData.client.adresse} onChange={handleChange} />
-            <Input className={getClassForField(invoiceData.client.siret)} placeholder="N° Siret" name="client.siret" value={invoiceData.client.siret} onChange={handleChange} />
+            <Input   _focus={{ borderColor: "#745FF2", boxShadow: "none" }} className={getClassForField(invoiceData.client.siret)} placeholder="N° Siret" name="client.siret" value={invoiceData.client.siret} onChange={handleChange} />
         
             <Input
+              _focus={{ borderColor: "#745FF2", boxShadow: "none" }}
               className={getClassForField(invoiceData.client.email)}
               placeholder="Email du client"
               name="client.email"
@@ -198,6 +205,7 @@ const InvoiceCreator = ({ navigateToPaymentSchedule }) => {
                 <Tr key={index}>
                   <Td pl='0'>
                     <Input
+                       _focus={{ borderColor: "#745FF2", boxShadow: "none" }}
                       className={getClassForField(item.description)}
                       placeholder="Description"
                       name={`items.${index}.description`}
@@ -208,6 +216,7 @@ const InvoiceCreator = ({ navigateToPaymentSchedule }) => {
                   <Td >
                     <InputGroup>
                       <Input
+                        _focus={{ borderColor: "#745FF2", boxShadow: "none" }}
                         className='classicinput'
                         boxShadow='rgba(174, 174, 192, 0.4) -1.5px -1.5px 3px 0px, rgb(255, 255, 255) 1.5px 1.5px 3px 0px;'
                         placeholder="Quantité"
@@ -229,6 +238,7 @@ const InvoiceCreator = ({ navigateToPaymentSchedule }) => {
                   </Td>
                   <Td>
                     <Input
+                      _focus={{ borderColor: "#745FF2", boxShadow: "none" }}
                       className={getClassForField(item.description)}
                       alignItems='end'
                       placeholder="Prix unitaire*"
@@ -262,6 +272,7 @@ const InvoiceCreator = ({ navigateToPaymentSchedule }) => {
                 <Td colSpan={3} style={{ paddingLeft: '0', textAlign: 'end' }}><Heading size='sm'>TVA (%):</Heading></Td>
                 <Td style={{ textAlign: 'end' }}>
                   <Input
+                     _focus={{ borderColor: "#745FF2", boxShadow: "none" }}
                     w='10vh'
                     textAlign='end'
                     className='neue-down'
@@ -285,6 +296,7 @@ const InvoiceCreator = ({ navigateToPaymentSchedule }) => {
         <Flex direction="column" alignItems='start' mt="4">
           <Heading mb='1rem' size="sm">Saisissez un IBAN pour recevoir le paiement</Heading>
           <Input
+            _focus={{ borderColor: "#745FF2", boxShadow: "none" }}
             className={getClassForField(invoiceData.issuer.iban)}
             placeholder="Votre IBAN"
             name="issuer.iban"

@@ -9,14 +9,6 @@ const theme = extendTheme({
         xl: '1280px',
     },
 
-
-    components: {
-        Input: {
-            baseStyle: {
-                focusBorderColor: "green.400", // Couleur de la bordure lorsqu'en focus
-            },
-        },
-    },
 });
 
 export default theme;

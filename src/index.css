@@ -126,6 +126,7 @@ input {
 }
 
 input:focus {
+  border: 1px solid #745FF2;
   border-color: #745FF2 !important;
 }
 
@@ -168,7 +169,7 @@ input:focus {
 
 .tab-list {
   display: flex;
-  align-items: baseline;
+  align-items: end;
   flex-direction: row;
   margin-bottom: 2rem;
   margin-top: 2rem;

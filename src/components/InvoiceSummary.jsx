@@ -198,7 +198,8 @@ const InvoiceSummary = () => {
     }
   };
 
-    return (
+    return (<> 
+        <Heading size='md'>Votre facture</Heading>
         <Box {...styleProps.container}>
             <VStack spacing={6} align="start">
                 <Flex justifyContent='end' width='100%' alignItems='end'>
@@ -284,6 +285,7 @@ const InvoiceSummary = () => {
             </VStack>
 
         </Box>
+        </>
     );
 };
 

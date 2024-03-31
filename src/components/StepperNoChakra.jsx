@@ -53,6 +53,17 @@ const Stepper = () => {
         }
     };
 
+    const handleNavigateToInvoiceConfirn = () => {
+        // Vérifie si les conditions pour passer à l'onglet final sont remplies
+        if (isStepNextAvailable) {
+            setTabIndex(2); // Naviguez directement vers l'onglet final
+        } else {
+            console.warn("Les champs requis pour passer à l'étape finale ne sont pas tous remplis.");
+            setAttemptedNavigation(true);
+        }
+    };
+    
+
     return (
         <div className="stepper-container">
             <div className="tabs-container">
@@ -71,7 +82,7 @@ const Stepper = () => {
 
                 <div className="tab-panel">
                     {tabIndex === 0 && <InvoiceCreator navigateToPaymentSchedule={handleNavigateToPaymentSchedule} />}
-                    {tabIndex === 1 && <PaymentScheduleForm />}
+                    {tabIndex === 1 && <PaymentScheduleForm handleNavigateToInvoiceConfirn={handleNavigateToInvoiceConfirn} />}
                     {tabIndex === 2 && <InvoiceSummary />}
                 </div>
             </div>
