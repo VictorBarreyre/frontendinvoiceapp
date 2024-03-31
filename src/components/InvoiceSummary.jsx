@@ -14,9 +14,11 @@ import {
     Button,
 } from '@chakra-ui/react';
 import { useInvoiceData } from '../context/InvoiceDataContext';
+import InvoicePDF from './InvoicePDF';
+import { pdf, PDFViewer } from '@react-pdf/renderer';
 
 const InvoiceSummary = () => {
-    const { invoiceData, payments } = useInvoiceData();
+    const { invoiceData, payments,isValidEmail } = useInvoiceData();
 
     const [subject, setSubject] = useState("Votre Facture");
     const [message, setMessage] = useState("Voici votre facture");

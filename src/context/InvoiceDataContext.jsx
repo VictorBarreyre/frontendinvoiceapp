@@ -27,7 +27,7 @@ export const InvoiceDataProvider = ({ children }) => {
             email: '',
             iban: '',
         },
-        items: [{ description: '', quantity: 0, unitPrice: 0 }],
+        items: [{ description: '', quantity: 1, unitPrice: 0 }],
         subtotal: 0,
         vatRate: 20,
         total: 0,
@@ -51,7 +51,6 @@ export const InvoiceDataProvider = ({ children }) => {
     const handleInvoiceDataChange = (newData) => {
         setInvoiceData(newData);
     };
-
 
     const handleChange = (e) => {
         const { name, value } = e.target;

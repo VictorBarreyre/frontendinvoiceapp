@@ -17,8 +17,17 @@ const Stepper = () => {
             const isNumberFilled = invoiceData.number.trim() !== '';
             const isIssuerNameFilled = invoiceData.issuer.name.trim() !== '';
             const isClientNameFilled = invoiceData.client.name.trim() !== '';
+            const isIssuerAdresseFilled = invoiceData.issuer.adresse.trim() !== '';
+            const isIssuerSiretFilled = invoiceData.issuer.siret.trim() !== '';
+            const isIssuerEmailFilled = invoiceData.issuer.email.trim() !== '';
+            const isIssuerIbanFilled = invoiceData.issuer.iban.trim() !== '';
+            const isClientAdresseFilled = invoiceData.client.adresse.trim() !== '';
+            const isClientSiretFilled = invoiceData.client.siret.trim() !== '';
+            const isClientEmailFilled = invoiceData.client.email.trim() !== '';
             // Ajoutez d'autres vérifications si nécessaire
-            return isNumberFilled && isIssuerNameFilled && isClientNameFilled;
+            return isNumberFilled && isIssuerNameFilled && isClientNameFilled &&
+            isIssuerAdresseFilled && isIssuerSiretFilled && isIssuerEmailFilled && isIssuerIbanFilled &&
+            isClientAdresseFilled && isClientSiretFilled && isClientEmailFilled ;
         };
 
         setIsStepNextAvailable(checkStepNextAvailability());
@@ -57,7 +66,7 @@ const Stepper = () => {
                 </div>
 
 
-                {showError && <Text color="red.500">Veuillez remplir tous les champs requis avant de continuer.</Text>}
+                {showError && <Text color="#FB7575">Veuillez remplir tous les champs requis avant de continuer.</Text>}
 
 
                 <div className="tab-panel">

@@ -9,21 +9,10 @@ import { ChakraProvider } from '@chakra-ui/react';
 
 import { InvoiceDataProvider } from './context/InvoiceDataContext';
 import ConfirmationPage from '../roots/ConfirmationPage';
-import { extendTheme } from '@chakra-ui/react';
+import theme from './theme';
 
-
-const theme = extendTheme({
-  breakpoints: {
-    sm: '320px',
-    md: '768px',
-    lg: '1024px',
-    xl: '1280px',
-  },
-});
 
 function App() {
-
-
   return (
     <>
       <ChakraProvider theme={theme}>

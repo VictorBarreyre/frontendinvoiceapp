@@ -27,11 +27,11 @@
 
 .emptyinput {
   margin-bottom: 0.5rem;
-  border: 1px dashed red !important;
+  border: 1px dashed #FB7575 !important;
 }
 
 .emptyinput::placeholder {
-  color: red;
+  color:#FB7575;
   /* Nouvelle couleur du texte du placeholder */
 }
 
