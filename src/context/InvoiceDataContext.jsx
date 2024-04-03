@@ -39,14 +39,16 @@ export const InvoiceDataProvider = ({ children }) => {
     const [startDate, setStartDate] = useState(new Date());
     const [itemsnames, setItemsNames] = useState('');
     const [payments, setPayments] = useState([
-        { percentage: 25, dueDate: new Date() },
-        { percentage: 75, dueDate: new Date() }
+        { percentage: 100, dueDate: new Date() },
+    
     ]);
 
     const [isTotalPercentage100, setIsTotalPercentage100] = useState(false);
     const [remainingPercentage, setRemainingPercentage] = useState(100);
 
     const [attemptedNavigation, setAttemptedNavigation] = useState(false);
+
+    
 
     const handleInvoiceDataChange = (newData) => {
         setInvoiceData(newData);

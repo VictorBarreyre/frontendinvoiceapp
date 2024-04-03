@@ -60,6 +60,15 @@ table{
   -moz-osx-font-smoothing: grayscale;
 }
 
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active  {
+   transition: background-color 5000s ease-in-out 0s, color 5000s ease-in-out 0s;
+   -webkit-text-fill-color: #000 !important;
+}
+
+
 a {
   border-radius: 30px;
   font-weight: 500;
@@ -143,25 +152,6 @@ input:focus {
   background-color: transparent !important; /* Si vous souhaitez un fond transparent au survol */
 }
 
-.stepper-container {
-  margin-top: 2rem;
-  margin-bottom: 2rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.tabs-container {
-  width: 65vw;
-  padding-top: 2rem;
-  padding-left: 3rem;
-  padding-right: 3rem;
-  padding-bottom: 2rem;
-  background: white;
-  border-radius: 1vw;
-  border-width: 1px;
-  box-shadow: rgba(174, 174, 192, 0.4) 1.5px 1.5px 3px 0px, rgb(255, 255, 255) -1px -1px 3px 0px;
-}
 
 .tab-heading h2 {
   font-size: 26px;
@@ -169,7 +159,7 @@ input:focus {
 
 .tab-list {
   display: flex;
-  align-items: end;
+  align-items: start;
   flex-direction: row;
   margin-bottom: 2rem;
   margin-top: 2rem;

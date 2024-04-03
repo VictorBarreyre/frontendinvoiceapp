@@ -1,4 +1,4 @@
-import React, {  useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Button, InputGroup, InputRightElement, Input, Text, IconButton, Heading, Link, Table, Thead, Tbody, Tfoot, Tr, Th, Td, } from '@chakra-ui/react';
 import { AddIcon, DeleteIcon, ArrowForwardIcon} from '@chakra-ui/icons';
 import DatePicker from 'react-datepicker';
@@ -17,7 +17,7 @@ const PaymentScheduleForm = ({ onSubmit, handleNavigateToInvoiceConfirn }) => {
           setRemainingPercentage
         } = useInvoiceData();
 
-
+  const [showText, setShowText] = useState('');
 
   useEffect(() => {
     // Assurez-vous que le total de invoiceData est défini avant de procéder
@@ -59,18 +59,18 @@ const PaymentScheduleForm = ({ onSubmit, handleNavigateToInvoiceConfirn }) => {
     const totalPercentageBeforeUpdate = payments.reduce((acc, curr, i) => {
       return acc + (i === index ? 0 : parseFloat(curr.percentage));
     }, 0);
-
+  
     // Calculer le nouveau total en prenant en compte la valeur mise à jour
     const newTotalPercentage = totalPercentageBeforeUpdate + parseFloat(value);
-
+  
     // Vérifier si le nouveau total ne dépasse pas 100% avant de procéder à la mise à jour
     if (key === 'percentage' && newTotalPercentage <= 100) {
       setPayments(currentPayments => {
         return currentPayments.map((payment, i) => {
           if (i === index) {
-            const updatedPayment = { ...payment, [key]: value };
+            const updatedPayment = { ...payment, [key]: Math.round(value) }; // Arrondir à l'entier le plus proche
             if (key === 'percentage') {
-              const newAmount = (invoiceData.total * parseFloat(value)) / 100;
+              const newAmount = (invoiceData.total * parseFloat(Math.round(value))) / 100; // Utiliser la valeur arrondie pour le calcul du montant
               updatedPayment.amount = newAmount.toFixed(2);
             }
             return updatedPayment;
@@ -88,36 +88,61 @@ const PaymentScheduleForm = ({ onSubmit, handleNavigateToInvoiceConfirn }) => {
       console.log("La mise à jour du pourcentage dépasse 100%.");
     }
   };
+  
 
+  const addMonths = (date, months) => {
+    const newDate = new Date(date);
+    newDate.setMonth(newDate.getMonth() + months);
+    return newDate;
+  };
+  
 
   const addPaymentWithCalculatedPercentage = () => {
     const totalPercentageUsed = payments.reduce((acc, curr) => acc + Number(curr.percentage), 0);
     let newPercentage = 100 - totalPercentageUsed;
-
-    if (payments.length > 0) {
-      const lastPaymentPercentage = Number(payments[payments.length - 1].percentage);
-      if (lastPaymentPercentage > 25) {
-        newPercentage *= 0.75; // Ajustez cette partie selon votre logique spécifique
+  
+    // Si le total des pourcentages est déjà égal à 100%, ajustez la répartition des nouveaux pourcentages
+    if (totalPercentageUsed === 100) {
+      // Répartissez les nouveaux pourcentages de manière égale entre les paiements existants
+      const newPercentagePerPayment = Math.round(100 / (payments.length + 1)); // Arrondir à l'entier le plus proche
+  
+      // Mettez à jour tous les paiements existants avec le nouveau pourcentage équitable
+      const updatedPayments = payments.map(payment => ({
+        ...payment,
+        percentage: newPercentagePerPayment
+      }));
+  
+      // Ajoutez un nouveau paiement avec le pourcentage restant
+      const newPayment = {
+        percentage: newPercentagePerPayment,
+        amount: ((invoiceData.total * newPercentagePerPayment) / 100).toFixed(2),
+        dueDate: addMonths(startDate, payments.length)
+      };
+  
+      setPayments([...updatedPayments, newPayment]);
+    } else {
+      // Si le total des pourcentages est inférieur à 100%, procédez normalement
+      if (payments.length > 0) {
+        const lastPaymentPercentage = Number(payments[payments.length - 1].percentage);
+        if (lastPaymentPercentage > 25) {
+          newPercentage *= 0.75; // Ajustez cette partie selon votre logique spécifique
+        }
       }
+  
+      newPercentage = Math.max(0, newPercentage); // Assurez-vous que le nouveau pourcentage n'est pas négatif
+      newPercentage = Math.round(newPercentage); // Arrondit à l'entier le plus proche
+  
+      const newPayment = {
+        percentage: newPercentage,
+        amount: ((invoiceData.total * newPercentage) / 100).toFixed(2),
+        dueDate: new Date()
+      };
+      
+      setPayments([...payments, newPayment]);
     }
-
-    newPercentage = Math.max(0, newPercentage); // Assurez-vous que le nouveau pourcentage n'est pas négatif
-    newPercentage = Math.round(newPercentage); // Arrondit à l'entier le plus proche
-
-    // Vérifier si le total des pourcentages dépasse déjà 100%
-    if (totalPercentageUsed >= 100) {
-      alert("Le total des pourcentages est déjà de 100%, vous ne pouvez plus ajouter d'échéances.");
-      return; // Arrête l'exécution de la fonction si le total est déjà à 100%
-    }
-
-    const newPayment = {
-      percentage: newPercentage, // Utilisez le pourcentage arrondi sans .toFixed(2) pour garder un entier
-      amount: ((invoiceData.total * newPercentage) / 100).toFixed(2),
-      dueDate: new Date()
-    };
-
-    setPayments([...payments, newPayment]);
   };
+  
+  
 
   useEffect(() => {
     const totalPercentageUsed = payments.reduce((acc, curr) => acc + Number(curr.percentage), 0);
@@ -130,20 +155,74 @@ const PaymentScheduleForm = ({ onSubmit, handleNavigateToInvoiceConfirn }) => {
     setRemainingPercentage(remaining);
   }, [payments]);
 
-
   const removePayment = (index) => {
     let newPayments = [...payments];
     newPayments.splice(index, 1);
+  
+    const totalPercentage = newPayments.reduce((acc, curr) => acc + Number(curr.percentage), 0);
+  
+    // Si la somme des pourcentages est inférieure à 100%, ajustez le dernier paiement pour compenser
+    if (totalPercentage < 100) {
+      const lastIndex = newPayments.length - 1;
+      newPayments[lastIndex].percentage += 100 - totalPercentage;
+    }
+  
+    // Si la somme des pourcentages est supérieure à 100%, répartissez proportionnellement
+    if (totalPercentage > 100) {
+      const excess = totalPercentage - 100;
+      newPayments = newPayments.map(payment => ({
+        ...payment,
+        percentage: Math.floor((payment.percentage / totalPercentage) * (100 - excess))
+      }));
+    }
+  
+    // Arrondir tous les pourcentages à des nombres entiers
+    newPayments = newPayments.map(payment => ({
+      ...payment,
+      percentage: Math.round(payment.percentage)
+    }));
+  
     setPayments(newPayments);
   };
 
+
+const showTextDate = () => {
+    if (showText) {
+      return (
+        <Text mt={2} fontSize="sm" color="gray.500">
+          L'échéance ajoutée est configurée un paiement 1 mois après la précédente. Vous pouvez bien sûr modifier cette date en cliquant sur le calendrier.
+        </Text>
+      );
+    }
+  };
+
+  useEffect(() => {
+    // Vérifiez si le tableau des paiements contient plus d'un paiement
+    if (payments.length > 1) {
+      setShowText(true);
+    } else {
+      // Optionnel : Réinitialiser `showText` à `false` s'il y a zéro ou une seule échéance
+      setShowText(false);
+    }
+  }, [payments]); // Ce useEffect s'exécutera chaque fois que le tableau `payments` change
+  
+  
+
+  
   const handleSubmit = (e) => {
     e.preventDefault();
     onSubmit(payments);
   };
 
+  const paymentScheduleText = payments.length > 1 ? (
+    <Text mt={1} color="black">
+      L'échéance ajoutée est configurée un paiement 1 mois après la précédente.<br/> Vous pouvez bien sûr modifier cette date en cliquant sur le calendrier.
+    </Text>
+  ) : null;
+
   return ( <> 
-    <Heading size='md'>Définissez les dates auxquelles vous voulez être payé</Heading>
+
+{paymentScheduleText}
       <form onSubmit={handleSubmit}>
         <Table variant="simple" className='neue-up' mt='2rem' mb='1rem' borderWidth='1px' pt='1rem' pl='2rem' pr='2rem' pb='1rem' w='100%' borderRadius='10px' >
           <Thead>
@@ -175,8 +254,8 @@ const PaymentScheduleForm = ({ onSubmit, handleNavigateToInvoiceConfirn }) => {
                     customInput={<CustomInput />}
                   />
                 </Td>
-                <Td>
-                  <Heading size='sm'>
+                <Td  pr='0'>
+                  <Heading w='max-content' size='sm'>
                     {payment.amount} {invoiceData.devise}
                   </Heading>
                 </Td>
@@ -194,15 +273,9 @@ const PaymentScheduleForm = ({ onSubmit, handleNavigateToInvoiceConfirn }) => {
           <Tfoot>
             <Tr>
               <Td pl='0' colSpan={4}>
-                {
-                  isTotalPercentage100 ? (
-                    <p color="red">Somme totale des échéances égale à 100% </p>
-                  ) : (
                     <Link onClick={addPaymentWithCalculatedPercentage} display='flex' alignItems='center' color="#745FF2">
                       Ajouter une échéance <AddIcon w='2.5' ml="2" />
                     </Link>
-                  )
-                }
               </Td>
             </Tr>
           </Tfoot>

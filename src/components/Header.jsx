@@ -8,8 +8,8 @@ const Header = () => {
 
   return (
     <Flex
-    className='neue-up'
-      position='static'
+      className='neue-up'
+      position='fixed'
       as="nav"
       align="center"
       justify="space-between"
@@ -17,6 +17,8 @@ const Header = () => {
       padding="1rem"
       color="white"
       backgroundColor="white"
+      width='100%'
+      zIndex='1000'
     >
       <Flex align="center" mr={5}>
         <Heading as="h1" fontWeight='600' size="md">
@@ -37,7 +39,7 @@ const Header = () => {
           color='white'
           borderRadius='30px'
         >
-          Connexion
+          Comment ça marche ?
         </Button>
       </Box>
       

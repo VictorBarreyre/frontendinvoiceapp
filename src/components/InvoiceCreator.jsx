@@ -11,7 +11,7 @@ import CustomInput from './CustomIpunt';
 import InvoicePDF from './InvoicePDF';
 import { useInvoiceData } from '../context/InvoiceDataContext';
 
-const InvoiceCreator = ({ navigateToPaymentSchedule }) => {
+const InvoiceCreator = ({ totalError, errorMsg ,navigateToPaymentSchedule }) => {
 
   const {
     invoiceData,
@@ -102,13 +102,14 @@ const InvoiceCreator = ({ navigateToPaymentSchedule }) => {
 
   //*définir les slugs obligatoires pour la création de facture (car si exemple pas de num de facture pas de facture téléchargeable)
   return ( <> 
-    <Heading size='md'>Entrez les informations de facturation </Heading>
+    {errorMsg()}
       <VStack mt='2rem' boxShadow=' 1px solid black' spacing={6} align="start">
         <Flex w='100%' justifyContent='space-between' >
           <Flex direction='column' justifyContent='space-between' pb="2rem" >
             <Heading mb='1rem' size="sm">Facture n° :</Heading>
             <Input
              _focus={{ borderColor: "#745FF2", boxShadow: "none" }}
+             _active={{ bg: "white", color: "black" }}
               className={getClassForField(invoiceData.number)} // Assurez-vous que le nom du champ correspond exactement à la clé dans invoiceData
               placeholder="Numéro de facture" name="number" value={invoiceData.number} onChange={handleChange} />
           </Flex>
@@ -284,10 +285,14 @@ const InvoiceCreator = ({ navigateToPaymentSchedule }) => {
                   />
                 </Td>
               </Tr>
-
+            
               <Tr alignContent='center' alignItems='center'>
                 <Td colSpan={3} style={{ paddingLeft: '0', textAlign: 'end' }}><Heading size='md'>Total TTC :</Heading></Td>
                 <Td style={{ textAlign: 'end' }}><Heading size='md'>{invoiceData.total}{invoiceData.devise}</Heading></Td>
+              </Tr>
+
+              <Tr alignContent='end' alignItems='end'>
+                <Td colSpan={4} style={{ paddingLeft: '0', textAlign: 'end' }}>{totalError()}</Td>
               </Tr>
             </Tfoot>
           </Table>

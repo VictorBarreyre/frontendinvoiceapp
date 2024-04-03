@@ -275,9 +275,9 @@ const InvoiceSummary = () => {
                 </Flex>
 
                 <Flex width='100%' alignItems='end' direction='column'  {...styleProps.totalSection}>
-                    <Text {...styleProps.subHeading}>Sous-total HT: {invoiceData.subtotal} {invoiceData.devise}</Text>
-                    <Text {...styleProps.subHeading}>TVA: {invoiceData.vatRate}% ({invoiceData.vatAmount} {invoiceData.devise})</Text>
-                    <Text {...styleProps.heading}>Total TTC: {invoiceData.total} {invoiceData.devise}</Text>
+                    <Text {...styleProps.subHeading}>Sous-total HT : {invoiceData.subtotal} {invoiceData.devise}</Text>
+                    <Text {...styleProps.subHeading}>TVA : {invoiceData.vatRate}% ({invoiceData.vatAmount} {invoiceData.devise})</Text>
+                    <Text {...styleProps.heading}>Total TTC : {invoiceData.total} {invoiceData.devise}</Text>
                 </Flex>
                 <Button onClick={() => handleInvoiceAction(invoiceData)} color='white' borderRadius='30px' backgroundColor='black' mt="4" colorScheme="gray">
                     Envoyer ma facture et recevoir le paiement

@@ -114,6 +114,46 @@
 }
 
 
+.stepper-container {
+  margin-top: 7rem;
+  margin-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.tabs-container {
+  width: 65vw;
+  padding-top: 2rem;
+  padding-left: 3rem;
+  padding-right: 3rem;
+  padding-bottom: 2rem;
+  background: white;
+  border-radius: 1vw;
+  border-width: 1px;
+  box-shadow: rgba(174, 174, 192, 0.4) 1.5px 1.5px 3px 0px, rgb(255, 255, 255) -1px -1px 3px 0px;
+}
+
+/* Smartphones en portrait */
+@media only screen and (max-width: 600px) {
+  .tabs-container {
+    width: 100vw;
+    padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  }
+
+  .tab-list{
+    justify-content: space-between;
+  }
+
+  .tab.active{
+    margin-right: 1rem;
+  }
+
+  .disabled{
+    margin-right: 1rem !important;
+  }
+}
 
 
 @keyframes logo-spin {

@@ -9,7 +9,7 @@ const Stepper = () => {
     const [tabIndex, setTabIndex] = useState(0);
     const { invoiceData, attemptedNavigation, setAttemptedNavigation } = useInvoiceData(); // Accéder aux données de la facture depuis le contexte
     const [isStepNextAvailable, setIsStepNextAvailable] = useState(false);
-    const [showError, setShowError] = useState(false); 
+    const [showError, setShowError] = useState(false);
 
     useEffect(() => {
         // Cette fonction vérifie si les champs requis pour activer l'étape suivante sont remplis.
@@ -24,34 +24,39 @@ const Stepper = () => {
             const isClientAdresseFilled = invoiceData.client.adresse.trim() !== '';
             const isClientSiretFilled = invoiceData.client.siret.trim() !== '';
             const isClientEmailFilled = invoiceData.client.email.trim() !== '';
+            const isTotalValid = invoiceData.total > 0;
             // Ajoutez d'autres vérifications si nécessaire
             return isNumberFilled && isIssuerNameFilled && isClientNameFilled &&
-            isIssuerAdresseFilled && isIssuerSiretFilled && isIssuerEmailFilled && isIssuerIbanFilled &&
-            isClientAdresseFilled && isClientSiretFilled && isClientEmailFilled ;
+                isIssuerAdresseFilled && isIssuerSiretFilled && isIssuerEmailFilled && isIssuerIbanFilled &&
+                isClientAdresseFilled && isClientSiretFilled && isClientEmailFilled && isTotalValid;
         };
-
+        setShowError(false)
         setIsStepNextAvailable(checkStepNextAvailability());
     }, [invoiceData]); // Se déclenche à chaque fois que invoiceData change
 
     const handleTabClick = (index) => {
         if (index > 0 && !isStepNextAvailable) {
             setAttemptedNavigation(true);
-            setShowError(true); 
+            setShowError(true);
         } else {
             setTabIndex(index);
             setShowError(false) // Réinitialiser le message d'erreur
         }
     };
 
+
     const handleNavigateToPaymentSchedule = () => {
-        // Vérifie si l'onglet actuel est le dernier ou si les conditions pour passer à l'onglet suivant sont remplies
-        if (isStepNextAvailable && tabIndex < 3 - 1) {
-            setTabIndex(prevTabIndex => prevTabIndex + 1); // Naviguez vers l'onglet suivant
+        const isTotalValid = invoiceData.total > 0;
+        if (isStepNextAvailable && tabIndex < 3 - 1 && isTotalValid) {
+            setTabIndex(prevTabIndex => prevTabIndex + 1); // Naviguer vers l'onglet suivant
+            setShowError(false);
         } else {
-            console.warn("Les champs requis pour passer à l'étape suivante ne sont pas tous remplis.");
+            console.warn("Les champs requis pour passer à l'étape suivante ne sont pas tous remplis ou le total est à 0.");
             setAttemptedNavigation(true);
+            setShowError(true); // Montrer l'erreur si le total est à 0 ou d'autres champs ne sont pas remplis
         }
     };
+    
 
     const handleNavigateToInvoiceConfirn = () => {
         // Vérifie si les conditions pour passer à l'onglet final sont remplies
@@ -62,13 +67,42 @@ const Stepper = () => {
             setAttemptedNavigation(true);
         }
     };
-    
 
+    const errorMsg = () => {
+        if (showError) {
+            return (
+                <Text color="#FB7575">Veuillez remplir tous les champs requis avant de continuer.</Text>
+            )
+        };
+    };
+
+  const totalError = () => {
+  if (attemptedNavigation && invoiceData.total <= 0) {
+    return (
+      <Text color="#FB7575">La somme de la facture ne peut pas être égale à 0.</Text>
+    );
+  }
+};
+
+const getHeadingText = (index) => {
+    switch(index) {
+      case 0:
+        return "Créez votre facture avec paiement automatique";
+      case 1:
+        return "Définissez vos échéances de paiement";
+      case 2:
+        return "Finalisez et envoyez votre facture";
+      default:
+        return "Créez votre facture avec paiement automatique"; // Valeur par défaut
+    }
+  };
+
+      
     return (
         <div className="stepper-container">
             <div className="tabs-container">
                 <div className="tab-heading">
-                    <Heading fontSize='26px'> Créez votre facture avec paiement automatique </Heading>
+                <Heading fontSize='26px'>{getHeadingText(tabIndex)}</Heading>
                 </div>
                 <div className="tab-list">
                     <button className={`tab ${tabIndex === 0 ? 'active' : ''}`} onClick={() => handleTabClick(0)}>Facture</button>
@@ -76,13 +110,9 @@ const Stepper = () => {
                     <button className={`tab ${tabIndex === 2 ? 'active' : ''} ${!isStepNextAvailable ? 'disabled' : ''}`} onClick={() => handleTabClick(2)} >Envoi</button>
                 </div>
 
-
-                {showError && <Text color="#FB7575">Veuillez remplir tous les champs requis avant de continuer.</Text>}
-
-
                 <div className="tab-panel">
-                    {tabIndex === 0 && <InvoiceCreator navigateToPaymentSchedule={handleNavigateToPaymentSchedule} />}
-                    {tabIndex === 1 && <PaymentScheduleForm handleNavigateToInvoiceConfirn={handleNavigateToInvoiceConfirn} />}
+                    {tabIndex === 0 && <InvoiceCreator totalError={totalError} errorMsg={errorMsg} navigateToPaymentSchedule={handleNavigateToPaymentSchedule} />}
+                    {tabIndex === 1 && <PaymentScheduleForm  handleNavigateToInvoiceConfirn={handleNavigateToInvoiceConfirn} />}
                     {tabIndex === 2 && <InvoiceSummary />}
                 </div>
             </div>
