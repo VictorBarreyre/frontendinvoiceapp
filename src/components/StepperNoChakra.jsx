@@ -24,11 +24,12 @@ const Stepper = () => {
             const isClientAdresseFilled = invoiceData.client.adresse.trim() !== '';
             const isClientSiretFilled = invoiceData.client.siret.trim() !== '';
             const isClientEmailFilled = invoiceData.client.email.trim() !== '';
+            const areQuantitiesValid = invoiceData.items.every(item => item.quantity > 0);
             const isTotalValid = invoiceData.total > 0;
             // Ajoutez d'autres vérifications si nécessaire
             return isNumberFilled && isIssuerNameFilled && isClientNameFilled &&
                 isIssuerAdresseFilled && isIssuerSiretFilled && isIssuerEmailFilled && isIssuerIbanFilled &&
-                isClientAdresseFilled && isClientSiretFilled && isClientEmailFilled && isTotalValid;
+                isClientAdresseFilled && isClientSiretFilled && isClientEmailFilled && areQuantitiesValid && isTotalValid;
         };
         setShowError(false)
         setIsStepNextAvailable(checkStepNextAvailability());
@@ -71,7 +72,7 @@ const Stepper = () => {
     const errorMsg = () => {
         if (showError) {
             return (
-                <Text color="#FB7575">Veuillez remplir tous les champs requis avant de continuer.</Text>
+                <Text color="#FB7575" fontSize={{ base: '13px', lg: '16px' }}>Veuillez remplir tous les champs requis avant de continuer</Text>
             )
         };
     };
@@ -79,7 +80,7 @@ const Stepper = () => {
   const totalError = () => {
   if (attemptedNavigation && invoiceData.total <= 0) {
     return (
-      <Text color="#FB7575">La somme de la facture ne peut pas être égale à 0.</Text>
+      'La somme de la facture ne peut pas être égale à 0.'
     );
   }
 };

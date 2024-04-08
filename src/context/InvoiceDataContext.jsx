@@ -91,12 +91,17 @@ export const InvoiceDataProvider = ({ children }) => {
     };
 
  
-    const getClassForField = (fieldValue) => {
-        // S'assure que la valeur existe avant de tenter d'appeler .trim() sur elle
-        // Utilise l'opérateur optionnel ?. pour éviter les erreurs si la valeur est undefined
-        return fieldValue?.trim() === '' && attemptedNavigation ? 'emptyinput' : 'classicinput';
-      };
-      
+    const getClassForField = (fieldValue, isQuantity = false) => {
+        if (isQuantity) {
+            // Pour les quantités, vérifiez directement la valeur numérique
+            return fieldValue >= 1 ? 'classicinput' : 'emptyinput';
+        } else {
+            // Pour les chaînes, continuez avec la logique existante
+            const valueAsString = typeof fieldValue === 'string' ? fieldValue : '';
+            return valueAsString.trim() === '' && attemptedNavigation ? 'emptyinput' : 'classicinput';
+        }
+    };
+    
       
 
     const handleNavigateToPaymentSchedule = () => {

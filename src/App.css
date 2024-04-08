@@ -48,6 +48,11 @@
 
 .head-tab {
   font-family: 'SF Pro Display';
+  text-transform: uppercase;
+  color: #4a5568;
+  font-size: 13px;
+  font-weight:900;
+  letter-spacing: 0.1em;
 }
 
 .invoice {
@@ -144,6 +149,7 @@
 
   .tab-list{
     justify-content: space-between;
+    margin-bottom: 1.2rem !important;
   }
 
   .tab.active{
@@ -153,6 +159,11 @@
   .disabled{
     margin-right: 1rem !important;
   }
+
+    .stepper-container {
+      margin-top: 4rem;
+      margin-bottom: 0;
+    }
 }
 
 
