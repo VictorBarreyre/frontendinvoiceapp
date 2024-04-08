@@ -300,7 +300,7 @@ const InvoiceCreator = ({ totalError, errorMsg, navigateToPaymentSchedule }) => 
                     </Flex>
                   </Flex>
                   <Flex justifyContent='end'>
-                    <Text alignItems='end' mt='0.5rem'><strong>Total (HT):</strong> {item.quantity * item.unitPrice}€</Text>
+                    <Text alignItems='end' mt='0.5rem'><strong>Total (HT):</strong> {item.quantity * item.unitPrice} {invoiceData.devise}</Text>
                   </Flex>
                 </Box>
               ))}

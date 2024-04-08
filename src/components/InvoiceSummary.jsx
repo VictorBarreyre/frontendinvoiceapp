@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState,useEffect} from 'react';
 import {
     Box,
     Flex,
@@ -16,12 +16,31 @@ import {
 import { useInvoiceData } from '../context/InvoiceDataContext';
 import InvoicePDF from './InvoicePDF';
 import { pdf, PDFViewer } from '@react-pdf/renderer';
+import { useTheme } from '@chakra-ui/react';
 
 const InvoiceSummary = () => {
     const { invoiceData, payments,isValidEmail } = useInvoiceData();
 
     const [subject, setSubject] = useState("Votre Facture");
     const [message, setMessage] = useState("Voici votre facture");
+
+    const theme = useTheme();
+    // Accéder au point de rupture 'md' à partir du thème
+    const breakpointMd = parseInt(theme.breakpoints.md, 10);
+  
+    const [isMobile, setIsMobile] = useState(window.innerWidth < breakpointMd);
+
+    useEffect(() => {
+        const handleResize = () => {
+          setIsMobile(window.innerWidth < breakpointMd);
+        };
+    
+        // Ajoute l'écouteur d'événement
+        window.addEventListener('resize', handleResize);
+    
+        // Nettoie l'écouteur d'événement lors du démontage du composant
+        return () => window.removeEventListener('resize', handleResize);
+      }, [breakpointMd]); // S'exécute à nouveau seulement si breakpointMd change
   
     // Styles directement inspirés du composant InvoicePDF adaptés pour Chakra UI
     const styleProps = {
@@ -91,6 +110,7 @@ const InvoiceSummary = () => {
             textAlign: 'end'
         },
         issuerAndClient: {
+            flexDirection: isMobile ? 'column' : 'row',
             paddingTop:'0px',
             backgroundColor: '#fdfdfd',
             borderWidth: '1px',
@@ -202,9 +222,9 @@ const InvoiceSummary = () => {
         <Heading size='md'>Votre facture</Heading>
         <Box {...styleProps.container}>
             <VStack spacing={6} align="start">
-                <Flex justifyContent='end' width='100%' alignItems='end'>
+                <Flex justifyContent={isMobile ? "start" : "end" } width='100%' alignItems={isMobile ? "start" : "end" }>
 
-                    <Flex alignItems='end' alignContent='end' direction='column'>
+                    <Flex pl={isMobile? '20px': '0px'} pt={isMobile? '20px': '0px'} alignItems={isMobile ? "start" : "end" } alignContent='end' direction='column'>
                         <Text {...styleProps.textFact}><strong>n°</strong> {invoiceData.number}</Text>
                         <Text {...styleProps.text}><strong>Date d'émission:</strong> {invoiceData.date}</Text>
                     </Flex>
@@ -218,7 +238,7 @@ const InvoiceSummary = () => {
                         <Text {...styleProps.text}> {invoiceData.issuer.siret}</Text>
                         <Text {...styleProps.text}> {invoiceData.issuer.email}</Text>
                     </Flex>
-                    <Flex flexDirection='column' align="end">
+                    <Flex flexDirection='column' alignItems={isMobile ? "start" : "end" }>
                         <Text {...styleProps.subHeadingem}>À destination de</Text>
                         <Text {...styleProps.text}>{invoiceData.client.name}</Text>
                         <Text {...styleProps.text}> {invoiceData.client.adresse}</Text>
@@ -234,7 +254,7 @@ const InvoiceSummary = () => {
                             <Tr>
                                 <Th {...styleProps.th}>Description</Th>
                                 <Th {...styleProps.th}>Quantité</Th>
-                                <Th {...styleProps.th}>Prix Unit.</Th>
+                                <Th {...styleProps.th}>Prix/U</Th>
                                 <Th {...styleProps.thend}>Total HT</Th>
                             </Tr>
                         </Thead>
@@ -279,7 +299,7 @@ const InvoiceSummary = () => {
                     <Text {...styleProps.subHeading}>TVA : {invoiceData.vatRate}% ({invoiceData.vatAmount} {invoiceData.devise})</Text>
                     <Text {...styleProps.heading}>Total TTC : {invoiceData.total} {invoiceData.devise}</Text>
                 </Flex>
-                <Button onClick={() => handleInvoiceAction(invoiceData)} color='white' borderRadius='30px' backgroundColor='black' mt="4" colorScheme="gray">
+                <Button w={isMobile ? '100%' : 'unset'} onClick={() => handleInvoiceAction(invoiceData)} color='white' borderRadius='30px' backgroundColor='black' mt="4" colorScheme="gray">
                     Envoyer ma facture et recevoir le paiement
                 </Button>
             </VStack>
