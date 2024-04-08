@@ -143,8 +143,8 @@
 @media only screen and (max-width: 600px) {
   .tabs-container {
     width: 100vw;
-    padding-left: 1.5rem;
-  padding-right: 1.5rem;
+    padding-left: 1rem;
+  padding-right: 1rem;
   }
 
   .tab-list{
