@@ -129,10 +129,7 @@
 
 .tabs-container {
   width: 65vw;
-  padding-top: 2rem;
-  padding-left: 3rem;
-  padding-right: 3rem;
-  padding-bottom: 2rem;
+  padding: 3rem;
   background: white;
   border-radius: 1vw;
   border-width: 1px;

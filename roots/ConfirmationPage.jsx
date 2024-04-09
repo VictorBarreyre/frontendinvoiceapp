@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { Flex, Heading, Text, Input, Button, FormControl } from '@chakra-ui/react';
+import { Flex, Heading, Text, Link, Button, FormControl } from '@chakra-ui/react';
 import { useInvoiceData } from '../src/context/InvoiceDataContext';
 import { Elements, PaymentElement, IbanElement, useStripe, useElements } from '@stripe/react-stripe-js'
 import { loadStripe } from '@stripe/stripe-js';
@@ -101,6 +101,7 @@ function ConfirmationPage() {
   let query = useQuery();
   let factureId = query.get("facture");
   let montant = query.get("montant"); // Assurez-vous d'ajouter cette ligne si vous passez le montant comme paramètre
+  let emetteur = query.get("emetteur");
 
   const {
     invoiceData,
@@ -120,6 +121,7 @@ function ConfirmationPage() {
       });
       const data = await response.json();
       setClientSecret(data.clientSecret);
+      console.log(emetteur)
     };
 
     createPaymentIntent();
@@ -134,24 +136,32 @@ function ConfirmationPage() {
     <Elements stripe={stripePromise} options={{ clientSecret }}>
       <Flex direction='column' h='100vh' >
         <Flex alignContent='center' alignItems="center" direction='column' mt="7rem" >
-          <Flex borderWidth='1px' className='neue-up' direction='column' alignContent='start' alignItems='start' gap='4px' borderRadius='1vw' backgroundColor='white' pt='2rem' pb='2rem' pl='1rem' pr='1rem' w={{ base: '100vw', lg: '65vw' }} >
-            <Flex justifyContent='space-between' width='100%' pr='2rem'  pl='2rem'> 
+          <Flex borderWidth='1px' className='neue-up' direction='column' alignContent='start' alignItems='start' gap='4px' borderRadius='1vw' backgroundColor='white' p='3rem' w={{ base: '100vw', lg: '65vw' }} >
+            <Flex justifyContent='space-between' direction={{ base:'column', lg :'row'}} width='100%'>
 
-            <Flex direction='column' w='30vw'> 
-            <Heading fontSize='26px' textAlign='start' mb="3">Signature et Paiement</Heading>
-            <Text w={{ base: '90vw', lg: 'auto' }} textAlign='start' pt='2' mb="1.5rem">Afin de finaliser la signature de la facture n°{invoiceData.number} émise par {invoiceData.issuer.name},
-            nous avons besoin de votre IBAN. <br /> Votre paiement sera traité avec soin et en respectant les échéances convenues dans nos termes contractuels. <br /> Merci !
-            </Text>
-            <Heading textAlign='start' mb='2rem' size='md'> Total à payer : {montant} {invoiceData.devise}</Heading>
-            <PaymentForm clientSecret={clientSecret} />
-            </Flex> 
+              <Flex direction='column' h='100%' justifyContent='space-between' w='30vw' pr='2rem' borderRight='2px solid #efefef' >
+                <Flex direction='column'>
+                  <Heading fontSize='26px' textAlign='start' mb="1rem">Signature et Paiement</Heading>
+                  <Text w={{ base: '90vw', lg: 'auto' }} textAlign='start' pt='2' mb="1.5rem">Afin de finaliser la signature de la facture n°{invoiceData.number} émise par {emetteur},
+                    nous avons besoin de votre IBAN. <br /> Votre paiement sera traité avec soin et en respectant les échéances convenues dans nos termes contractuels. <br /> Merci !
+                  </Text>
+                  <Text w={{ base: '90vw', lg: 'auto' }} textAlign='start' pt='2' mb="1.5rem" color='#718096'>
+                    Veillez à bien déténir la totalité des fonds sur le compte bancaire correspondant.
+                    Toutes défaillances pourraient vous être facturée. <br/> <Link color='#745FF2' fontSize='13px' textDecor='underline'> En savoir plus sur notre politique de transactions défaillantes</Link>
+                  </Text>
+                  </Flex>
+
+                <Flex direction='column'> 
+                  <Heading  textAlign='start' mb='2rem' size='md'> Total à payer : {montant} {invoiceData.devise}</Heading>
+                  <PaymentForm clientSecret={clientSecret} />
+                </Flex>
           
-            <Flex className='neue-up' backgroundColor='#fdfdfd' opacity='40%' width='25vw' height='30rem' borderWidth='1px' borderRadius='1rem'> 
+              </Flex>
 
+              <Flex className='neue-up' backgroundColor='#fdfdfd' opacity='40%' width='25vw' height='30rem' borderWidth='1px' borderRadius='1rem'>
+              </Flex>
 
             </Flex>
- 
-          </Flex>
           </Flex>
         </Flex>
         <Flex alignItems='center' alignContent='center' justifyContent='center' direction='column'>
