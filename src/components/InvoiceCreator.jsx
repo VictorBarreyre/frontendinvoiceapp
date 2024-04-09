@@ -471,7 +471,7 @@ const InvoiceCreator = ({ totalError, errorMsg, navigateToPaymentSchedule }) => 
           }}
         />
       </Flex>
-      <Button onClick={navigateToPaymentSchedule} rightIcon={<ArrowForwardIcon />} w={{ base: '100%', lg: 'auto' }} color='white' borderRadius='30px' backgroundColor='black' mt="4" colorScheme="gray" >
+      <Button onClick={navigateToPaymentSchedule} rightIcon={<ArrowForwardIcon />} w={{ base: '100%', lg: 'auto' }} color='white' borderRadius='30px' pt='12px' pb='12px' pl='24px' pr='24px' backgroundColor='black' mt="4" colorScheme="gray" >
         Définir les échéances de paiement
       </Button>
     </VStack>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Flex, Heading, Text, Input, Button, FormControl } from '@chakra-ui/react';
-import { useInvoiceData } from '../src/context/InvoiceDataContext';
+import { useInvoiceData } from '../context/InvoiceDataContext';
 import { Elements, PaymentElement, IbanElement, useStripe, useElements } from '@stripe/react-stripe-js'
 import { loadStripe } from '@stripe/stripe-js';
 
@@ -64,7 +64,7 @@ function PaymentForm({ clientSecret }) {
     <form className='form-iban' onSubmit={handleSubmit}>
       <div className='chakra-inpu' style={{
         padding: '1rem',
-        minWidth: '23rem',
+        width: '25vw',
         border: '1px solid rgba(191, 191, 197, 0.4) ',
         borderRadius: '5px',
         backgroundColor: '#fdfdfd',
@@ -96,11 +96,13 @@ function PaymentForm({ clientSecret }) {
   );
 }
 
-function ConfirmationPage() {
+function SepaPaymentForm() {
   const [clientSecret, setClientSecret] = useState('');
   let query = useQuery();
   let factureId = query.get("facture");
   let montant = query.get("montant"); // Assurez-vous d'ajouter cette ligne si vous passez le montant comme paramètre
+  let emetteur = query.get("emetteur")
+
 
   const {
     invoiceData,
@@ -123,7 +125,7 @@ function ConfirmationPage() {
     };
 
     createPaymentIntent();
-  }, [montant]); // Ajoutez montant comme dépendance pour useEffect
+  }, [montant, invoiceData]); // Ajoutez montant comme dépendance pour useEffect
 
 
   if (!clientSecret) {
@@ -133,29 +135,18 @@ function ConfirmationPage() {
   return (
     <Elements stripe={stripePromise} options={{ clientSecret }}>
       <Flex direction='column' h='100vh' >
-        <Flex alignContent='center' alignItems="center" direction='column' mt="7rem" >
-          <Flex borderWidth='1px' className='neue-up' direction='column' alignContent='start' alignItems='start' gap='4px' borderRadius='1vw' backgroundColor='white' pt='2rem' pb='2rem' pl='1rem' pr='1rem' w={{ base: '100vw', lg: '65vw' }} >
-            <Flex justifyContent='space-between' width='100%' pr='2rem'  pl='2rem'> 
-
-            <Flex direction='column' w='30vw'> 
-            <Heading fontSize='26px' textAlign='start' mb="3">Signature et Paiement</Heading>
-            <Text w={{ base: '90vw', lg: 'auto' }} textAlign='start' pt='2' mb="1.5rem">Afin de finaliser la signature de la facture n°{invoiceData.number} émise par {invoiceData.issuer.name},
-            nous avons besoin de votre IBAN. <br /> Votre paiement sera traité avec soin et en respectant les échéances convenues dans nos termes contractuels. <br /> Merci !
+        <Flex alignContent='center' alignItems="center" direction='column' mt="5rem" >
+          <Flex borderWidth='1px' className='neue-up' direction='column' alignContent='center' alignItems='center' gap='4px' borderRadius='1vw' backgroundColor='white' p={{ base: '1rem', lg: '3rem' }} w={{ base: '100vw', lg: '36vw' }} >
+            <Heading size={{ base: '26px', lg: 'lg' }} textAlign='center' mb="3">Signature et Paiement</Heading>
+            <Text w={{ base: '90vw', lg: '30vw' }} textAlign='center' p='2' mb="4">Afin de finaliser la signature de la facture n°{invoiceData.number} émise par {emetteur}, nous avons besoin de votre IBAN. <br /> Votre paiement sera traité avec soin et en respectant les échéances convenues dans nos termes contractuels. <br /> Merci
+              !
             </Text>
-            <Heading textAlign='start' mb='2rem' size='md'> Total à payer : {montant} {invoiceData.devise}</Heading>
+            <Heading textAlign='end' mb='2rem' size='md'> Total à payer : {montant} {invoiceData.devise}</Heading>
             <PaymentForm clientSecret={clientSecret} />
-            </Flex> 
-          
-            <Flex className='neue-up' backgroundColor='#fdfdfd' opacity='40%' width='25vw' height='30rem' borderWidth='1px' borderRadius='1rem'> 
-
-
-            </Flex>
- 
-          </Flex>
           </Flex>
         </Flex>
         <Flex alignItems='center' alignContent='center' justifyContent='center' direction='column'>
-          <Text color='#718096' fontSize={{ base: '13px', lg: 'unset' }} lineHeight={{ base: '16px', lg: 'unset' }} w={{ base: '95vw', lg: '65vw' }} p={{ base: '1rem', lg: '3rem' }} textAlign='center'> Veuillez noter que le paiement de cette facture constitue une acceptation des termes et conditions du contrat établi
+          <Text fontSize={{ base: '13px', lg: 'unset' }} lineHeight={{ base: '16px', lg: 'unset' }} w={{ base: '95vw', lg: '50vw' }} p={{ base: '1rem', lg: '3rem' }} mt='1rem' textAlign='center'> Veuillez noter que le paiement de cette facture constitue une acceptation des termes et conditions du contrat établi
             entre Jean Dupont et Victor Barreyre. Vous trouverez les détails concernant la procédure d'acceptation et de signature
             du contrat dans l'email accompagnant cette facture.</Text>
         </Flex>
@@ -164,4 +155,4 @@ function ConfirmationPage() {
   );
 }
 
-export default ConfirmationPage; 
+export default SepaPaymentForm;

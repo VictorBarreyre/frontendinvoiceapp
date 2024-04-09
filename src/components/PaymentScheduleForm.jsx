@@ -393,9 +393,9 @@ const PaymentScheduleForm = ({ onSubmit, handleNavigateToInvoiceConfirn }) => {
             </Tfoot>
           </Table>
           {remainingPercentage > 0 ? (
-            <Button borderRadius='30px' mt="4" color="#FB7575" isDisabled={remainingPercentage <= 0}>Pourcentage restant à attribuer : {remainingPercentage}%</Button>
+            <Button pt='12px' pb='12px' pl='24px' pr='24px' borderRadius='30px' mt="4" color="#FB7575" isDisabled={remainingPercentage <= 0}>Pourcentage restant à attribuer : {remainingPercentage}%</Button>
           ) : (
-            <Button onClick={handleNavigateToInvoiceConfirn} rightIcon={<ArrowForwardIcon />} color='white' borderRadius='30px' backgroundColor='black' mt="4">
+            <Button pt='12px' pb='12px' pl='24px' pr='24px' onClick={handleNavigateToInvoiceConfirn} rightIcon={<ArrowForwardIcon />} color='white' borderRadius='30px' backgroundColor='black' mt="4">
               Vérifier les informations de facturation
             </Button>
           )}
