@@ -222,7 +222,7 @@ const PaymentScheduleForm = ({ onSubmit, handleNavigateToInvoiceConfirn }) => {
   };
 
   const paymentScheduleText = payments.length > 1 ? (
-    <Text mt={1} color="black">
+    <Text mt={1} color="#4A5568">
       L'échéance ajoutée est configurée un paiement 1 mois après la précédente.<br /> Vous pouvez bien sûr modifier cette date en cliquant sur le calendrier.
     </Text>
   ) : null;

@@ -15,6 +15,7 @@ function PaymentForm({ clientSecret }) {
   const stripe = useStripe();
   const elements = useElements();
 
+
   const ibanStyle = {
     base: {
       color: "#32325d",
@@ -98,34 +99,66 @@ function PaymentForm({ clientSecret }) {
 
 function ConfirmationPage() {
   const [clientSecret, setClientSecret] = useState('');
+  const [emetteur, setEmetteur] = useState('');
+  const [destinataire, setDestinataire] = useState('');
   let query = useQuery();
   let factureId = query.get("facture");
   let montant = query.get("montant"); // Assurez-vous d'ajouter cette ligne si vous passez le montant comme paramètre
-  let emetteur = query.get("emetteur");
 
+  const baseUrl = "http://localhost:8000";
+  
   const {
     invoiceData,
   } = useInvoiceData();
 
+  
+  useEffect(() => {
+    const fetchEmailDetails = async () => {
+      const factureId = query.get("facture"); // Assurez-vous que cet ID est passé correctement dans l'URL
+      if (!factureId) {
+        console.error("ID de facture manquant");
+        return;
+      }
+  
+      try {
+        const response = await fetch(`http://localhost:8000/email/details/${factureId}`);
+        const data = await response.json();
+        if (response.ok) {
+          setEmetteur(data.emetteur.name); // Ajustez selon la structure de votre objet
+          setDestinataire(data.destinataire.name); // Ajustez selon la structure de votre objet
+          console.log(data)
+          
+        } else {
+          throw new Error(data.message || "Erreur lors de la récupération des détails");
+        }
+      } catch (error) {
+        console.error("Erreur lors de la récupération des détails de l'email:", error);
+      }
+    };
+    
+    fetchEmailDetails();
+  }, []); // Vous pouvez ajouter `query` aux dépendances si nécessaire
+  
 
   useEffect(() => {
-    // Votre code existant pour créer l'intention de paiement
-    // Assurez-vous d'utiliser le montant correct ici
     const createPaymentIntent = async () => {
+
       const response = await fetch('http://localhost:8000/paiement/create-payment-intent', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ amount: montant * 100 }), // Assurez-vous que votre backend attend un montant en centimes
+        body: JSON.stringify({ 
+          amount: montant * 100,
+        }),
       });
       const data = await response.json();
       setClientSecret(data.clientSecret);
-      console.log(emetteur)
     };
-
+  
     createPaymentIntent();
-  }, [montant]); // Ajoutez montant comme dépendance pour useEffect
+  }, [montant]); // Ajoutez 'emetteur' et 'destinataire' comme dépendances si ces valeurs peuvent changer
+  
 
 
   if (!clientSecret) {

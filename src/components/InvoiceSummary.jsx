@@ -78,7 +78,7 @@ const InvoiceSummary = () => {
 
         text: {
             fontSize: "16px",
-            color: "grey",
+            color: "#4A5568",
         },
         table: {
             variant: "simple",
@@ -453,6 +453,8 @@ ${issuer.name}`;
         ))}
       </Tbody>
     </Table>
+
+    <Text color='#4A5568' w='97%' mt='3rem' ml='1rem'> Si toutes les informations sont correctes vous pouvez envoyer la facture, {invoiceData.client.name} recevra un email avec celle-ci en pièce jointe et sera redirigé sur une page de paiement afin de sécuriser vos fonds. </Text>
   </Flex>
 )}
                 <Button w={isMobile ? '100%' : 'unset'} onClick={() => handleInvoiceAction(invoiceData)} color='white' borderRadius='30px' backgroundColor='black' mt="4" colorScheme="gray">
