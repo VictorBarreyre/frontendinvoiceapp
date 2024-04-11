@@ -4,6 +4,7 @@ import { Flex, Heading, Text, Link, Button, FormControl } from '@chakra-ui/react
 import { useInvoiceData } from '../src/context/InvoiceDataContext';
 import { Elements, PaymentElement, IbanElement, useStripe, useElements } from '@stripe/react-stripe-js'
 import { loadStripe } from '@stripe/stripe-js';
+import { pdfjs, Document, Page } from 'react-pdf';
 
 const stripePromise = loadStripe('pk_test_51OwLFM00KPylCGutjKAkwhqleWEzuvici1dQUPCIvZHofEzLtGyM9Gdz5zEfvwSZKekKRgA1el5Ypnw7HLfYWOuB00ZdrKdygg');
 
@@ -101,17 +102,21 @@ function ConfirmationPage() {
   const [clientSecret, setClientSecret] = useState('');
   const [emetteur, setEmetteur] = useState('');
   const [destinataire, setDestinataire] = useState('');
+  const [urlDeLaFacture, setUrlDeLaFacture] = useState('');
+
+
+
   let query = useQuery();
   let factureId = query.get("facture");
   let montant = query.get("montant"); // Assurez-vous d'ajouter cette ligne si vous passez le montant comme paramètre
 
   const baseUrl = "http://localhost:8000";
-  
+
   const {
     invoiceData,
   } = useInvoiceData();
 
-  
+
   useEffect(() => {
     const fetchEmailDetails = async () => {
       const factureId = query.get("facture"); // Assurez-vous que cet ID est passé correctement dans l'URL
@@ -119,15 +124,16 @@ function ConfirmationPage() {
         console.error("ID de facture manquant");
         return;
       }
-  
+
       try {
         const response = await fetch(`http://localhost:8000/email/details/${factureId}`);
         const data = await response.json();
         if (response.ok) {
           setEmetteur(data.emetteur.name); // Ajustez selon la structure de votre objet
           setDestinataire(data.destinataire.name); // Ajustez selon la structure de votre objet
+          setUrlDeLaFacture(data.urlImage);
           console.log(data)
-          
+
         } else {
           throw new Error(data.message || "Erreur lors de la récupération des détails");
         }
@@ -135,10 +141,10 @@ function ConfirmationPage() {
         console.error("Erreur lors de la récupération des détails de l'email:", error);
       }
     };
-    
+
     fetchEmailDetails();
   }, []); // Vous pouvez ajouter `query` aux dépendances si nécessaire
-  
+
 
   useEffect(() => {
     const createPaymentIntent = async () => {
@@ -148,17 +154,17 @@ function ConfirmationPage() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           amount: montant * 100,
         }),
       });
       const data = await response.json();
       setClientSecret(data.clientSecret);
     };
-  
+
     createPaymentIntent();
   }, [montant]); // Ajoutez 'emetteur' et 'destinataire' comme dépendances si ces valeurs peuvent changer
-  
+
 
 
   if (!clientSecret) {
@@ -170,28 +176,35 @@ function ConfirmationPage() {
       <Flex direction='column' h='100vh' >
         <Flex alignContent='center' alignItems="center" direction='column' mt="7rem" >
           <Flex borderWidth='1px' className='neue-up' direction='column' alignContent='start' alignItems='start' gap='4px' borderRadius='1vw' backgroundColor='white' p='3rem' w={{ base: '100vw', lg: '65vw' }} >
-            <Flex justifyContent='space-between' direction={{ base:'column', lg :'row'}} width='100%'>
+            <Flex justifyContent='space-between' direction={{ base: 'column', lg: 'row' }} width='100%'>
 
               <Flex direction='column' h='100%' justifyContent='space-between' w='30vw' pr='2rem' borderRight='2px solid #efefef' >
                 <Flex direction='column'>
                   <Heading fontSize='26px' textAlign='start' mb="1rem">Signature et Paiement</Heading>
-                  <Text w={{ base: '90vw', lg: 'auto' }} textAlign='start' pt='2' mb="1.5rem">Afin de finaliser la signature de la facture n°{invoiceData.number} émise par {emetteur},
+                  <Text w={{ base: '90vw', lg: 'auto' }} textAlign='start' pt='2' mb="1.5rem">Afin de finaliser la signature de la facture émise par {emetteur},
                     nous avons besoin de votre IBAN. <br /> Votre paiement sera traité avec soin et en respectant les échéances convenues dans nos termes contractuels. <br /> Merci !
                   </Text>
                   <Text w={{ base: '90vw', lg: 'auto' }} textAlign='start' pt='2' mb="1.5rem" color='#718096'>
                     Veillez à bien déténir la totalité des fonds sur le compte bancaire correspondant.
-                    Toutes défaillances pourraient vous être facturée. <br/> <Link color='#745FF2' fontSize='13px' textDecor='underline'> En savoir plus sur notre politique de transactions défaillantes</Link>
+                    Toutes défaillances pourraient vous être facturée. <br /> <Link color='#745FF2' fontSize='13px' textDecor='underline'> En savoir plus sur notre politique de transactions défaillantes</Link>
                   </Text>
-                  </Flex>
+                </Flex>
 
-                <Flex direction='column'> 
-                  <Heading  textAlign='start' mb='2rem' size='md'> Total à payer : {montant} {invoiceData.devise}</Heading>
+                <Flex direction='column'>
+                  <Heading textAlign='start' mb='2rem' size='md'> Total à payer : {montant} {invoiceData.devise}</Heading>
                   <PaymentForm clientSecret={clientSecret} />
                 </Flex>
-          
+
               </Flex>
 
               <Flex className='neue-up' backgroundColor='#fdfdfd' opacity='40%' width='25vw' height='30rem' borderWidth='1px' borderRadius='1rem'>
+                {urlDeLaFacture.endsWith('.pdf') ? (
+                  <Document file={urlDeLaFacture}>
+                    <Page pageNumber={1} />
+                  </Document>
+                ) : (
+                  <img src={urlDeLaFacture} alt="Aperçu de la Facture" style={{ width: '100%', height: '100%' }} />
+                )}
               </Flex>
 
             </Flex>
