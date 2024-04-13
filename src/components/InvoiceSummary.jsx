@@ -186,6 +186,29 @@ ${issuer.name}`;
 
             if (createAndSendEmailResponse.ok) {
                 console.log("Facture créée et email envoyé avec succès !");
+                // Appel à la création de PaymentIntent
+                const paymentIntentData = {
+                    amount: total * 100,  // Convertissez le total en centimes pour Stripe
+                    currency: "eur",      // ou la devise appropriée
+                    emetteur: JSON.stringify(issuer),  // Convertir l'objet en chaîne JSON
+                    destinataire: JSON.stringify(client)  // Convertir l'objet en chaîne JSON
+                };
+
+                const response = await fetch(`${baseUrl}/paiement/create-payment-intent`, {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(paymentIntentData)
+                });
+
+                if (response.ok) {
+                    const paymentIntentResult = await response.json();
+                    console.log("PaymentIntent créé avec succès !", paymentIntentResult);
+                } else {
+                    const errorText = await response.text();
+                    console.error('Erreur lors de la création du PaymentIntent', errorText);
+                }
             } else {
                 console.log('Erreur lors de la création de la facture et de l’envoi de l’email', await createAndSendEmailResponse.text());
             }
@@ -198,8 +221,6 @@ ${issuer.name}`;
     }
 };
 
-    
-  
 
     return (<>
         <Heading size='md'>Votre facture</Heading>
