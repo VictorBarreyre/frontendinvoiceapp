@@ -413,7 +413,7 @@ const InvoiceCreator = ({ totalError, errorMsg, navigateToPaymentSchedule }) => 
                 <Tfoot>
                   <Tr>
                     <Td pl='0' colSpan="4" borderBottom="none">
-                      <Link onClick={handleAddItem} display='flex' alignItems='center' color="#745FF2" >
+                      <Link onClick={handleAddItem} display='flex' w='fit-content' alignItems='center' color="#745FF2" >
                         Ajouter un article
                         <AddIcon w='2.5' ml="2" />
                       </Link>
