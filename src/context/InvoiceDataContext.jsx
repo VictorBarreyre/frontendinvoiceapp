@@ -11,23 +11,23 @@ export const InvoiceDataProvider = ({ children }) => {
     const [message, setMessage] = useState("Voici votre facture");
 
     const [invoiceData, setInvoiceData] = useState({
-        number: '',
+        number: '02',
         date: new Date().toISOString().split('T')[0],
         issuer: {
-            name: '',
-            adresse: '',
-            siret: '',
-            email: '',
-            iban: ''
+            name: 'Antoine Barreyre',
+            adresse: '43 Grande rue',
+            siret: 'azeeazeaz',
+            email: 'vctr.bar95@gmail.com',
+            iban: 'FR7628233000012978164545902'
         },
         client: {
-            name: '',
-            adresse: '',
-            siret: '',
-            email: '',
-            iban: '',
+            name: 'Victor Barreyre',
+            adresse: '43 Grande rue',
+            siret: 'zrzaeazeaz',
+            email: 'barreyrevictor.contact@gmail.com',
+            iban: 'FR7610207000052119375800824',
         },
-        items: [{ description: '', quantity: 1, unitPrice: 0 }],
+        items: [{ description: 'TEST', quantity: 1, unitPrice: 1 }],
         subtotal: 0,
         vatRate: 20,
         total: 0,

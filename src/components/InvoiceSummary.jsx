@@ -186,7 +186,9 @@ ${issuer.name}`;
 
             if (createAndSendEmailResponse.ok) {
                 console.log("Facture créée et email envoyé avec succès !");
-                // Appel à la création de PaymentIntent
+
+
+                // Appel à la création de PaymentIntent // à déplacer dans la confirmation page (à voir)
                 const paymentIntentData = {
                     amount: total * 100,  // Convertissez le total en centimes pour Stripe
                     currency: "eur",      // ou la devise appropriée

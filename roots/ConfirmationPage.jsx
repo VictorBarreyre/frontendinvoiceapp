@@ -172,8 +172,11 @@ function ConfirmationPage() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          amount: montant * 100,
-        }),
+          amount: montant * 100, // Montant en centimes
+          currency: 'eur', // ou toute autre devise appropriée
+          emetteur: JSON.stringify(invoiceData.issuer),
+          destinataire: JSON.stringify(invoiceData.client)
+        })
       });
       const data = await response.json();
       setClientSecret(data.clientSecret);
