@@ -127,35 +127,62 @@ const InvoiceSummary = () => {
     };
 
 
- //fonction à deplacer dans le component Invoice Summary
- const handleInvoiceAction = async () => {
-    const { number, issuer, client, total } = invoiceData;
-    const areAllRequiredFieldsValid = number !== '' && issuer.name !== '' && client.name !== '';
+    //fonction à deplacer dans le component Invoice Summary
+    const handleInvoiceAction = async () => {
+        const { number, issuer, client, total } = invoiceData;
+        const areAllRequiredFieldsValid = number !== '' && issuer.name !== '' && client.name !== '';
 
-    const baseUrl = "http://localhost:8000";
+        const baseUrl = "http://localhost:8000";
 
-    if (!areAllRequiredFieldsValid) {
-        console.log('Champs requis manquants ou invalides');
-        return;
-    }
+        if (!areAllRequiredFieldsValid) {
+            console.log('Champs requis manquants ou invalides');
+            return;
+        }
 
-    try {
-        const file = <InvoicePDF invoiceData={invoiceData} />;
-        const asPDF = pdf([]);
-        asPDF.updateContainer(file);
-        const pdfBlob = await asPDF.toBlob();
+        try {
+            const file = <InvoicePDF invoiceData={invoiceData} />;
+            const asPDF = pdf([]);
+            asPDF.updateContainer(file);
+            const pdfBlob = await asPDF.toBlob();
 
-        if (client.email && isValidEmail(client.email)) {
-            // Première requête pour générer factureId
-            const factureIdResponse = await fetch(`${baseUrl}/email/generateFactureId`, {
-                method: "GET",
-            });
-            if (!factureIdResponse.ok) throw new Error("Erreur lors de la génération du factureId.");
-            const factureIdData = await factureIdResponse.json();
-            const factureId = factureIdData.factureId;
+            if (client.email && isValidEmail(client.email)) {
+                // Première requête pour générer factureId
+                const factureIdResponse = await fetch(`${baseUrl}/email/generateFactureId`, {
+                    method: "GET",
+                });
+                if (!factureIdResponse.ok) throw new Error("Erreur lors de la génération du factureId.");
 
-            const confirmationLink = `http://localhost:5173/confirmation?facture=${factureId}&montant=${total}`;
-            const messageEmail = `Cher ${client.name},
+
+                // Envoi de la requête pour créer l'utilisateur
+                const userData = {
+                    email: issuer.email,  // Utilisez les champs appropriés selon le contexte
+                    password: "passwordTemporaire",  // Générez un mot de passe ou demandez-le explicitement
+                    firstName: issuer.name,
+                    lastName: "",
+                    adresse: issuer.adresse,
+                    siret: issuer.siret,
+                    iban: issuer.iban
+                };
+
+                const userResponse = await fetch(`${baseUrl}/api/users/createUser`, {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(userData)
+                });
+
+                if (!userResponse.ok) {
+                    const errorText = await userResponse.text();
+                    throw new Error('Erreur lors de la création de l’utilisateur: ' + errorText);
+                }
+
+
+                const factureIdData = await factureIdResponse.json();
+                const factureId = factureIdData.factureId;
+
+                const confirmationLink = `http://localhost:5173/confirmation?facture=${factureId}&montant=${total}`;
+                const messageEmail = `Cher ${client.name},
 
 Veuillez trouver ci-joint votre facture n° ${number}.
 
@@ -168,60 +195,60 @@ Nous vous remercions pour votre confiance et restons à votre disposition pour t
 Cordialement,
 ${issuer.name}`;
 
-            const formData = new FormData();
-            formData.append('file', pdfBlob, `Facture-${number}.pdf`);
-            formData.append('email', client.email);
-            formData.append('subject', 'Votre Facture');
-            formData.append('message', messageEmail);
-            formData.append('montant', total);
-            formData.append('emetteur', JSON.stringify(issuer));
-            formData.append('destinataire', JSON.stringify(client));
-            formData.append('factureId', factureId); // Assurez-vous d'inclure le factureId généré
+                const formData = new FormData();
+                formData.append('file', pdfBlob, `Facture-${number}.pdf`);
+                formData.append('email', client.email);
+                formData.append('subject', 'Votre Facture');
+                formData.append('message', messageEmail);
+                formData.append('montant', total);
+                formData.append('emetteur', JSON.stringify(issuer));
+                formData.append('destinataire', JSON.stringify(client));
+                formData.append('factureId', factureId); // Assurez-vous d'inclure le factureId généré
 
-            // Deuxième requête pour créer la facture et envoyer l'email
-            const createAndSendEmailResponse = await fetch(`${baseUrl}/email/sendEmail`, {
-                method: "POST",
-                body: formData,
-            });
-
-            if (createAndSendEmailResponse.ok) {
-                console.log("Facture créée et email envoyé avec succès !");
-
-
-                // Appel à la création de PaymentIntent // à déplacer dans la confirmation page (à voir)
-                const paymentIntentData = {
-                    amount: total * 100,  // Convertissez le total en centimes pour Stripe
-                    currency: "eur",      // ou la devise appropriée
-                    emetteur: JSON.stringify(issuer),  // Convertir l'objet en chaîne JSON
-                    destinataire: JSON.stringify(client)  // Convertir l'objet en chaîne JSON
-                };
-
-                const response = await fetch(`${baseUrl}/paiement/create-payment-intent`, {
+                // Deuxième requête pour créer la facture et envoyer l'email
+                const createAndSendEmailResponse = await fetch(`${baseUrl}/email/sendEmail`, {
                     method: "POST",
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(paymentIntentData)
+                    body: formData,
                 });
 
-                if (response.ok) {
-                    const paymentIntentResult = await response.json();
-                    console.log("PaymentIntent créé avec succès !", paymentIntentResult);
+                if (createAndSendEmailResponse.ok) {
+                    console.log("Facture créée et email envoyé avec succès !");
+
+
+                    // Appel à la création de PaymentIntent // à déplacer dans la confirmation page (à voir)
+                    const paymentIntentData = {
+                        amount: total * 100,  // Convertissez le total en centimes pour Stripe
+                        currency: "eur",      // ou la devise appropriée
+                        emetteur: JSON.stringify(issuer),  // Convertir l'objet en chaîne JSON
+                        destinataire: JSON.stringify(client)  // Convertir l'objet en chaîne JSON
+                    };
+
+                    const response = await fetch(`${baseUrl}/paiement/create-payment-intent`, {
+                        method: "POST",
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(paymentIntentData)
+                    });
+
+                    if (response.ok) {
+                        const paymentIntentResult = await response.json();
+                        console.log("PaymentIntent créé avec succès !", paymentIntentResult);
+                    } else {
+                        const errorText = await response.text();
+                        console.error('Erreur lors de la création du PaymentIntent', errorText);
+                    }
                 } else {
-                    const errorText = await response.text();
-                    console.error('Erreur lors de la création du PaymentIntent', errorText);
+                    console.log('Erreur lors de la création de la facture et de l’envoi de l’email', await createAndSendEmailResponse.text());
                 }
             } else {
-                console.log('Erreur lors de la création de la facture et de l’envoi de l’email', await createAndSendEmailResponse.text());
+                console.log('Email invalide ou absent, téléchargement de la facture...');
+                // Logique de téléchargement de la facture
             }
-        } else {
-            console.log('Email invalide ou absent, téléchargement de la facture...');
-            // Logique de téléchargement de la facture
+        } catch (error) {
+            console.error('Erreur lors de la génération ou de l’envoi du PDF', error);
         }
-    } catch (error) {
-        console.error('Erreur lors de la génération ou de l’envoi du PDF', error);
-    }
-};
+    };
 
 
     return (<>
@@ -257,8 +284,8 @@ ${issuer.name}`;
                     {isMobile ? (
                         <>
                             {invoiceData.items.map((item, index) => (
-                                <Box key={index} borderBottom="1px solid #f2f2f2"  pb="1rem" mb="1rem">
-                                    <Heading {...styleProps.subHeading} ml='2.5vh'  mb='2vh' size="md">Articles / Services</Heading>
+                                <Box key={index} borderBottom="1px solid #f2f2f2" pb="1rem" mb="1rem">
+                                    <Heading {...styleProps.subHeading} ml='2.5vh' mb='2vh' size="md">Articles / Services</Heading>
                                     <Flex  >
                                         <Flex direction="column" >
                                             <Text
@@ -381,105 +408,105 @@ ${issuer.name}`;
 
 
                 {isMobile ? (
-  <>
-    {payments.map((payment, index) => (
-      <Box key={index} borderBottom="1px solid #f2f2f2" pb="1rem" mb="1rem">
-        <Heading {...styleProps.subHeading} ml='2.5vh' mb='2vh' size="md">Échéances de paiement</Heading>
-        <Flex >
-          <Flex direction="column" justifyContent="space-between">
-            <Text
-              fontFamily="heading"
-              fontWeight="bold"
-              textTransform="uppercase"
-              letterSpacing="wider"
-              textAlign="center"
-              mb="1rem"
-              p={3}
-              lineHeight="4"
-              fontSize="xs"
-              backgroundColor='#f7f7f7'
-              color="gray.600"
-              borderBottom="1px"
-              borderColor="gray.100"
-              w='max-content'
-            >
-              Pourcentage %
-            </Text>
-            <Text ml='1.5vh'>{payment.percentage}%</Text>
-          </Flex>
+                    <>
+                        {payments.map((payment, index) => (
+                            <Box key={index} borderBottom="1px solid #f2f2f2" pb="1rem" mb="1rem">
+                                <Heading {...styleProps.subHeading} ml='2.5vh' mb='2vh' size="md">Échéances de paiement</Heading>
+                                <Flex >
+                                    <Flex direction="column" justifyContent="space-between">
+                                        <Text
+                                            fontFamily="heading"
+                                            fontWeight="bold"
+                                            textTransform="uppercase"
+                                            letterSpacing="wider"
+                                            textAlign="center"
+                                            mb="1rem"
+                                            p={3}
+                                            lineHeight="4"
+                                            fontSize="xs"
+                                            backgroundColor='#f7f7f7'
+                                            color="gray.600"
+                                            borderBottom="1px"
+                                            borderColor="gray.100"
+                                            w='max-content'
+                                        >
+                                            Pourcentage %
+                                        </Text>
+                                        <Text ml='1.5vh'>{payment.percentage}%</Text>
+                                    </Flex>
 
-          <Flex direction="column" justifyContent="space-between">
-            <Text
-               fontFamily="heading"
-               fontWeight="bold"
-               textTransform="uppercase"
-               letterSpacing="wider"
-               textAlign="center"
-               mb="1rem"
-               p={3}
-               lineHeight="4"
-               fontSize="xs"
-               backgroundColor='#f7f7f7'
-               color="gray.600"
-               borderBottom="1px"
-               borderColor="gray.100"
-               w='max-content'
-            >
-              Date d'échéance
-            </Text>
-            <Text ml='1.5vh'>{payment.dueDate.toLocaleDateString()}</Text>
-          </Flex>
+                                    <Flex direction="column" justifyContent="space-between">
+                                        <Text
+                                            fontFamily="heading"
+                                            fontWeight="bold"
+                                            textTransform="uppercase"
+                                            letterSpacing="wider"
+                                            textAlign="center"
+                                            mb="1rem"
+                                            p={3}
+                                            lineHeight="4"
+                                            fontSize="xs"
+                                            backgroundColor='#f7f7f7'
+                                            color="gray.600"
+                                            borderBottom="1px"
+                                            borderColor="gray.100"
+                                            w='max-content'
+                                        >
+                                            Date d'échéance
+                                        </Text>
+                                        <Text ml='1.5vh'>{payment.dueDate.toLocaleDateString()}</Text>
+                                    </Flex>
 
-          <Flex direction="column" justifyContent="space-between">
-            <Text
-                fontFamily="heading"
-                fontWeight="bold"
-                textTransform="uppercase"
-                letterSpacing="wider"
-                textAlign="center"
-                mb="1rem"
-                p={3}
-                lineHeight="4"
-                fontSize="xs"
-                backgroundColor='#f7f7f7'
-                color="gray.600"
-                borderBottom="1px"
-                borderColor="gray.100"
-                w='max-content'
-            >
-              Montant
-            </Text>
-            <Text ml='1.5vh'>{payment.amount} {invoiceData.devise}</Text>
-          </Flex>
-        </Flex>
-      </Box>
-    ))}
-  </>
-) : (
-  <Flex direction='column' width='100%'>
-    <Heading {...styleProps.subHeading} ml='2.5vh' mb='2vh' size="md">Échéances de paiement</Heading>
-    <Table {...styleProps.table}>
-      <Thead {...styleProps.thead}>
-        <Tr>
-          <Th {...styleProps.th}>Pourcentage %</Th>
-          <Th {...styleProps.th}>Date d'échéance</Th>
-          <Th {...styleProps.thend}>Montant</Th>
-        </Tr>
-      </Thead>
-      <Tbody>
-        {payments.map((payment, index) => (
-          <Tr key={index}>
-            <Td {...styleProps.td}>{payment.percentage}%</Td>
-            <Td {...styleProps.td}>{payment.dueDate.toLocaleDateString()}</Td>
-            <Td {...styleProps.tdend}>{payment.amount} {invoiceData.devise}</Td>
-          </Tr>
-        ))}
-      </Tbody>
-    </Table>
+                                    <Flex direction="column" justifyContent="space-between">
+                                        <Text
+                                            fontFamily="heading"
+                                            fontWeight="bold"
+                                            textTransform="uppercase"
+                                            letterSpacing="wider"
+                                            textAlign="center"
+                                            mb="1rem"
+                                            p={3}
+                                            lineHeight="4"
+                                            fontSize="xs"
+                                            backgroundColor='#f7f7f7'
+                                            color="gray.600"
+                                            borderBottom="1px"
+                                            borderColor="gray.100"
+                                            w='max-content'
+                                        >
+                                            Montant
+                                        </Text>
+                                        <Text ml='1.5vh'>{payment.amount} {invoiceData.devise}</Text>
+                                    </Flex>
+                                </Flex>
+                            </Box>
+                        ))}
+                    </>
+                ) : (
+                    <Flex direction='column' width='100%'>
+                        <Heading {...styleProps.subHeading} ml='2.5vh' mb='2vh' size="md">Échéances de paiement</Heading>
+                        <Table {...styleProps.table}>
+                            <Thead {...styleProps.thead}>
+                                <Tr>
+                                    <Th {...styleProps.th}>Pourcentage %</Th>
+                                    <Th {...styleProps.th}>Date d'échéance</Th>
+                                    <Th {...styleProps.thend}>Montant</Th>
+                                </Tr>
+                            </Thead>
+                            <Tbody>
+                                {payments.map((payment, index) => (
+                                    <Tr key={index}>
+                                        <Td {...styleProps.td}>{payment.percentage}%</Td>
+                                        <Td {...styleProps.td}>{payment.dueDate.toLocaleDateString()}</Td>
+                                        <Td {...styleProps.tdend}>{payment.amount} {invoiceData.devise}</Td>
+                                    </Tr>
+                                ))}
+                            </Tbody>
+                        </Table>
 
-    <Text color='#4A5568' w='97%' mt='3rem' ml='1rem'> Si toutes les informations sont correctes vous pouvez envoyer la facture, {invoiceData.client.name} recevra un email avec celle-ci en pièce jointe et sera redirigé sur une page de paiement afin de sécuriser vos fonds. </Text>
-  </Flex>
-)}
+                        <Text color='#4A5568' w='97%' mt='3rem' ml='1rem'> Si toutes les informations sont correctes vous pouvez envoyer la facture, {invoiceData.client.name} recevra un email avec celle-ci en pièce jointe et sera redirigé sur une page de paiement afin de sécuriser vos fonds. </Text>
+                    </Flex>
+                )}
                 <Button w={isMobile ? '100%' : 'unset'} onClick={() => handleInvoiceAction(invoiceData)} color='white' borderRadius='30px' backgroundColor='black' mt="4" colorScheme="gray">
                     Envoyer ma facture et recevoir le paiement
                 </Button>

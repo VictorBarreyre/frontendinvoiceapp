@@ -32,15 +32,26 @@ const Header = () => {
         <Link as={RouterLink} color='black' to="/about" px="4" _hover={{ textDecoration: 'underline' }}>
           À propos
         </Link>
-        <Button
-          to="/login"
-          size={buttonSize}
-          backgroundColor='black'
-          color='white'
-          borderRadius='30px'
-        >
+        <Link as={RouterLink} color='black' to="/about" px="4" _hover={{ textDecoration: 'underline' }}>
           Comment ça marche ?
-        </Button>
+        </Link>
+        <Button
+      as={RouterLink}
+      to="/login"
+      size={buttonSize}
+      backgroundColor='black'
+      color='white'
+      borderRadius='30px'
+      sx={{
+        '&:hover': {
+          boxShadow: 'rgba(174, 174, 192, 0.4) -1.5px -1.5px 3px 0px, rgba(255, 255, 255) 1.5px 1.5px 3px 0px',
+          color: '#745FF2',
+          backgroundColor: 'white !important'
+        }
+      }}
+    >
+      Créez votre compte 
+    </Button>
       </Box>
       
     </Flex>

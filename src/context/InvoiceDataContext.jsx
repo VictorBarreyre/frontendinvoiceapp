@@ -25,7 +25,7 @@ export const InvoiceDataProvider = ({ children }) => {
             adresse: '43 Grande rue',
             siret: 'zrzaeazeaz',
             email: 'barreyrevictor.contact@gmail.com',
-            iban: 'FR7610207000052119375800824',
+            iban: '',
         },
         items: [{ description: 'TEST', quantity: 1, unitPrice: 1 }],
         subtotal: 0,
