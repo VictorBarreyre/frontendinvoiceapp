@@ -48,7 +48,7 @@ export const InvoiceDataProvider = ({ children }) => {
 
     const [attemptedNavigation, setAttemptedNavigation] = useState(false);
 
-    
+    const baseUrl = "http://localhost:8000";
 
     const handleInvoiceDataChange = (newData) => {
         setInvoiceData(newData);
@@ -136,7 +136,8 @@ export const InvoiceDataProvider = ({ children }) => {
             attemptedNavigation,
             setAttemptedNavigation,
             handleNavigateToPaymentSchedule,
-            getClassForField
+            getClassForField,
+            baseUrl
         }}>
             {children}
         </InvoiceDataContext.Provider>

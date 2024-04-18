@@ -103,7 +103,7 @@ const getHeadingText = (index) => {
         <div className="stepper-container">
             <div className="tabs-container">
                 <div className="tab-heading">
-                <Heading mb='3rem' fontSize='26px'>{getHeadingText(tabIndex)}</Heading>
+                <Heading fontSize='26px'>{getHeadingText(tabIndex)}</Heading>
                 </div>
                 <div className="tab-list">
                     <button className={`tab ${tabIndex === 0 ? 'active' : ''}`} onClick={() => handleTabClick(0)}>Facture</button>

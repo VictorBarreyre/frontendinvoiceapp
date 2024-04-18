@@ -1,14 +1,19 @@
 import React, { useState } from 'react';
-import { Flex, Box, Heading, Link, Button, useBreakpointValue, IconButton, Drawer, DrawerBody, DrawerHeader, DrawerOverlay, DrawerContent, DrawerCloseButton } from '@chakra-ui/react';
+import { Flex, Box, Heading, Link, IconButton, Drawer, DrawerBody, DrawerHeader, DrawerOverlay, DrawerContent, DrawerCloseButton } from '@chakra-ui/react';
 import { Link as RouterLink } from 'react-router-dom';
 import { HamburgerIcon } from '@chakra-ui/icons';
 import AccountButton from '../componentslittle/AccountButton';
+import { useAuth } from '../context/AuthContext';
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const buttonSize = useBreakpointValue({ base: 'sm', md: 'md' });
+  const { user } = useAuth(); // Utilisation de useAuth pour accéder à l'utilisateur connecté
+  const [activeTab, setActiveTab] = useState('tab1');
 
   const toggleDrawer = () => setIsOpen(!isOpen);
+  const handleTabClick = (tabId) => {
+    setActiveTab(tabId);
+  };
 
   return (
     <Flex
@@ -26,7 +31,7 @@ const Header = () => {
     >
       <Flex align="center" mr={5}>
         <Heading as="h1" fontWeight='600' size="md">
-          <Link as={RouterLink} pl='4' fontWeight='600' color='black' to="/" _hover={{ textDecoration: 'none' }}>
+          <Link as={RouterLink} to="/" _hover={{ textDecoration: 'none' }}>
             db
           </Link>
         </Heading>
@@ -34,22 +39,10 @@ const Header = () => {
 
       <IconButton
         aria-label="Open Menu"
-        size="md"
-        mr={2}
         icon={<HamburgerIcon />}
-        display={{ sm: 'flex', md: 'none' }}
         onClick={toggleDrawer}
+        display={{ sm: 'flex', md: 'none' }}
       />
-
-      <Box display={{ base: 'none', md: 'flex' }} alignItems="center">
-        <Link as={RouterLink} color='black' to="/about" px="4" _hover={{ textDecoration: 'underline' }}>
-          À propos
-        </Link>
-        <Link as={RouterLink} color='black' to="/about" px="4" _hover={{ textDecoration: 'underline' }}>
-          Comment ça marche ?
-        </Link>
-        <AccountButton/>
-      </Box>
 
       <Drawer isOpen={isOpen} placement="right" onClose={toggleDrawer}>
         <DrawerOverlay />
@@ -57,12 +50,8 @@ const Header = () => {
           <DrawerCloseButton />
           <DrawerHeader>Menu</DrawerHeader>
           <DrawerBody>
-            <Link as={RouterLink} to="/about" p="4" display="block" onClick={toggleDrawer}>
-              À propos
-            </Link>
-            <Link as={RouterLink} to="/about" p="4" display="block" onClick={toggleDrawer}>
-              Comment ça marche ?
-            </Link>
+            <Link as={RouterLink} to="/about" onClick={toggleDrawer}>À propos</Link>
+            <Link as={RouterLink} to="/about" onClick={toggleDrawer}>Comment ça marche ?</Link>
             <AccountButton onClick={toggleDrawer} />
           </DrawerBody>
         </DrawerContent>

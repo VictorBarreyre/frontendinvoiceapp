@@ -19,6 +19,12 @@ function PaymentForm({ clientSecret, paymentType }) {
   const elements = useElements();
 
 
+
+  const {
+    invoiceData,
+    baseUrl
+  } = useInvoiceData();
+
   const ibanStyle = {
     base: {
       color: "#32325d",
@@ -127,10 +133,10 @@ function ConfirmationPage() {
   let factureId = query.get("facture");
   let montant = query.get("montant"); // Assurez-vous d'ajouter cette ligne si vous passez le montant comme paramètre
 
-  const baseUrl = "http://localhost:8000";
 
   const {
     invoiceData,
+    baseUrl
   } = useInvoiceData();
 
 
@@ -143,7 +149,8 @@ function ConfirmationPage() {
       }
 
       try {
-        const response = await fetch(`http://localhost:8000/email/details/${factureId}`);
+        const response = await fetch(`${baseUrl}/email/details/${factureId}`);
+
         const data = await response.json();
         if (response.ok) {
           setEmetteur(data.emetteur.name); // Ajustez selon la structure de votre objet
@@ -165,8 +172,8 @@ function ConfirmationPage() {
 
   useEffect(() => {
     const createPaymentIntent = async () => {
-
-      const response = await fetch('http://localhost:8000/paiement/create-payment-intent', {
+      
+      const response = await fetch(`${baseUrl}/paiement/create-payment-intent`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

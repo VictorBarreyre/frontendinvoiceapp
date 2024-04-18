@@ -19,7 +19,7 @@ import { pdf, PDFViewer } from '@react-pdf/renderer';
 import { useTheme } from '@chakra-ui/react';
 
 const InvoiceSummary = () => {
-    const { invoiceData, payments, isValidEmail } = useInvoiceData();
+    const { invoiceData, payments, isValidEmail, baseUrl } = useInvoiceData();
 
     const [subject, setSubject] = useState("Votre Facture");
     const [message, setMessage] = useState("Voici votre facture");
@@ -132,8 +132,6 @@ const InvoiceSummary = () => {
         const { number, issuer, client, total } = invoiceData;
         const areAllRequiredFieldsValid = number !== '' && issuer.name !== '' && client.name !== '';
 
-        const baseUrl = "http://localhost:8000";
-
         if (!areAllRequiredFieldsValid) {
             console.log('Champs requis manquants ou invalides');
             return;
@@ -184,16 +182,16 @@ const InvoiceSummary = () => {
                 const confirmationLink = `http://localhost:5173/confirmation?facture=${factureId}&montant=${total}`;
                 const messageEmail = `Cher ${client.name},
 
-Veuillez trouver ci-joint votre facture n° ${number}.
+                Veuillez trouver ci-joint votre facture n° ${number}.
 
-Pour confirmer votre accord et signer électroniquement le contrat, veuillez cliquer sur le lien ci-dessous :
+                Pour confirmer votre accord et signer électroniquement le contrat, veuillez cliquer sur le lien ci-dessous :
 
-${confirmationLink}
+                ${confirmationLink}
 
-Nous vous remercions pour votre confiance et restons à votre disposition pour toute information complémentaire.
+                Nous vous remercions pour votre confiance et restons à votre disposition pour toute information complémentaire.
 
-Cordialement,
-${issuer.name}`;
+                Cordialement,
+                ${issuer.name}`;
 
                 const formData = new FormData();
                 formData.append('file', pdfBlob, `Facture-${number}.pdf`);

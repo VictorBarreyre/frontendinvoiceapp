@@ -1,34 +1,27 @@
-import React from 'react';
-import { Box, VStack, Link, useColorModeValue, Text } from '@chakra-ui/react';
-import { Link as RouterLink } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useAuth } from '../context/AuthContext';
 
 const Sidebar = () => {
-  // Utilisez useColorModeValue pour gérer les couleurs dans différents modes (clair/sombre)
-  const bgColor = useColorModeValue('gray.100', 'gray.900');
-  const textColor = useColorModeValue('gray.600', 'gray.200');
+  const [activeTab, setActiveTab] = useState('tab1');
+  const { user, logout } = useAuth();
+
+  const handleTabClick = (tabId) => {
+    setActiveTab(tabId);
+  };
+
+  if (!user) {
+    return null; // Ne rien afficher si l'utilisateur n'est pas connecté
+  }
 
   return (
-    <Box
-    className='neue-up'
-      position="fixed"
-      left={0}
-      top='8vh'
-      h="100vh"
-      w={{ base: '100%', md: '250px' }} // Responsive: pleine largeur sur mobile, 250px sur tablette et au-dessus
-      bg='white'
-      p={5}
-    >
-      <VStack align="start" spacing={4}>
-        <Text fontSize="lg" fontWeight="bold" color={textColor}>
-          Guide Stripe
-        </Text>
-        {/* Liste des liens */}
-        <Link as={RouterLink} to="/overview" color={textColor}>Vue d'ensemble</Link>
-        <Link as={RouterLink} to="/setup" color={textColor}>Configuration</Link>
-        <Link as={RouterLink} to="/charges" color={textColor}>Gestion des charges</Link>
-        {/* Ajoutez plus de liens selon vos besoins */}
-      </VStack>
-    </Box>
+    <div className="sidebar" style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+      <ul className="tab-list-dashboard" style={{ flex: 1 }}>
+        <li className={`tab ${activeTab === 'tab1' ? 'active-dashboard' : ''}`} onClick={() => handleTabClick('tab1')}>Profil</li>
+        <li className={`tab ${activeTab === 'tab2' ? 'active-dashboard' : ''}`} onClick={() => handleTabClick('tab2')}>Factures</li>
+        <li className={`tab ${activeTab === 'tab3' ? 'active-dashboard' : ''}`} onClick={() => handleTabClick('tab3')}>Paramètres</li>
+      </ul>
+      <button onClick={logout} style={{ margin: '20px', alignSelf: 'center' }}>Déconnexion</button>
+    </div>
   );
 };
 
