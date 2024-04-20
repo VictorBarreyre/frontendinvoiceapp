@@ -10,10 +10,23 @@ function AccountButton() {
 
     return user ? (
 
-        <Link 
+        <Button
         as={RouterLink}
-        to="/dashboard"
-        h='1.5rem'> <Icon h='1.5rem' w='1.5rem' color='black' as={FaUserCircle} /> </Link>
+        to="/"
+        size={buttonSize}
+        backgroundColor='black'
+        color='white'
+        borderRadius='30px'
+        sx={{
+            '&:hover': {
+                boxShadow: 'rgba(174, 174, 192, 0.4) -1.5px -1.5px 3px 0px, rgba(255, 255, 255) 1.5px 1.5px 3px 0px',
+                color: '#745FF2',
+                backgroundColor: 'white !important'
+            }
+        }}
+    >
+        Créez votre facture
+    </Button>
 
     ) : (
         <Button

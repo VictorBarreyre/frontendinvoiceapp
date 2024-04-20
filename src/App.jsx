@@ -6,14 +6,18 @@ import About from '../roots/About';
 import Signin from '../roots/Signin';
 import Signup from '../roots/Signup';
 import Header from './components/Header';
-import StepperNoChakra from './components/StepperNoChakra';
+import Home from './components/StepperNoChakra';
+import CustomSection from '../roots/Home';
 import { ChakraProvider } from '@chakra-ui/react';
 import { InvoiceDataProvider } from './context/InvoiceDataContext';
 import theme from './theme';
-import Dashboard from '../roots/Dashboard';
 import ConfirmationPage from '../roots/ConfirmationPage';
-import { useAuth } from './context/AuthContext';
+import { useAuth } from '../src/context/AuthContext';
 import Sidebar from './components/Sidebar';
+import Profil from '../roots/Profil';
+import Factures from '../roots/Factures';
+import Paiements from '../roots/Paiements';
+import Paramètres from '../roots/Paramètres';
 
 function App() {
   const { user, setUser, logout } = useAuth();
@@ -29,18 +33,20 @@ function App() {
     <ChakraProvider theme={theme}>
       <InvoiceDataProvider>
         <Router>
-          <Flex direction="column" height="100vh"> {/* Assurez-vous que l'app prend toute la hauteur */}
+          <Flex direction="column" height="100vh">
             <Header />
-            <Flex flex="1" overflow="hidden"> {/* Flex container pour Sidebar et content */}
+            <Flex flex="1" overflow="hidden">
               {user && <Sidebar />}
-              <Box flex="1" overflowY="auto"> {/* Container pour les routes */}
+              <Box flex="1" overflowY="auto">
                 <Routes>
-                  <Route path="/" element={<StepperNoChakra />} />
+                  <Route path="/" element={!user ? <CustomSection /> : <Home />} />
                   <Route path="/about" element={<About />} />
                   <Route path="/signin" element={<Signin />} />
                   <Route path="/signup" element={<Signup />} />
-                  <Route path="/confirmation" element={<ConfirmationPage />} />
-                  <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+                  <Route path="/profil" element={<Profil />} />
+                  <Route path="/factures" element={<Factures />} />
+                  <Route path="/paiements" element={<Paiements />} />
+                  <Route path="/parametres" element={<Paramètres />} />
                   <Route path="*" element={<Navigate to="/" />} />
                 </Routes>
               </Box>
@@ -50,17 +56,6 @@ function App() {
       </InvoiceDataProvider>
     </ChakraProvider>
   );
-}
-
-function ProtectedRoute({ children }) {
-  const { user } = useAuth();
-
-  if (!user) {
-    // Si l'utilisateur n'est pas connecté, redirigez vers la page de connexion
-    return <Navigate to="/signin" />;
-  }
-
-  return children;
 }
 
 export default App;

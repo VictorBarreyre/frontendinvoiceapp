@@ -196,6 +196,12 @@ input:focus {
   color: #745FF2;
 }
 
+.tab.active-dashboard {
+  margin-right: 0;
+  border-right: 3px solid #745FF2;
+  color: #745FF2;
+}
+
 .disabled{
   color:#718096;
 }

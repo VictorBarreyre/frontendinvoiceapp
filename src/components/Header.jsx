@@ -17,7 +17,7 @@ const Header = () => {
       align="center"
       justify="space-between"
       wrap="wrap"
-      padding="1rem"
+      padding="1rem 3rem"
       color="white"
       backgroundColor="white"
       height='4rem'
@@ -27,7 +27,7 @@ const Header = () => {
       <Flex align="center" mr={5}>
         <Heading as="h1" fontWeight='600' size="md">
           <Link as={RouterLink} pl='4' fontWeight='600' color='black' to="/" _hover={{ textDecoration: 'none' }}>
-            db
+            dbill.io
           </Link>
         </Heading>
       </Flex>
@@ -41,11 +41,11 @@ const Header = () => {
         onClick={toggleDrawer}
       />
 
-      <Box display={{ base: 'none', md: 'flex' }} alignItems="center">
+      <Box display={{ base: 'none', md: 'flex' }} mr='2.5rem' alignItems="center">
         <Link as={RouterLink} color='black' to="/about" px="4" _hover={{ textDecoration: 'underline' }}>
           À propos
         </Link>
-        <Link as={RouterLink} color='black' to="/about" px="4" _hover={{ textDecoration: 'underline' }}>
+        <Link as={RouterLink} color='black' to="/about" px="4" mr='1rem' _hover={{ textDecoration: 'underline' }}>
           Comment ça marche ?
         </Link>
         <AccountButton/>

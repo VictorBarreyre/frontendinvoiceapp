@@ -22,8 +22,28 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('user');
   };
 
+  const deleteAccount = async () => {
+    try {
+      const response = await fetch(`/api/users/${user._id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${user.token}` // Assurez-vous que l'authentification est correctement gérée
+        }
+      });
+  
+      if (!response.ok) {
+        throw new Error('Could not delete the account.');
+      }
+  
+      // Log out user after account deletion
+      logout();
+    } catch (error) {
+      console.error('Failed to delete account:', error);
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, setUser, login, logout }}>
+    <AuthContext.Provider value={{ user, setUser, login, logout, deleteAccount }}>
       {children}
     </AuthContext.Provider>
   );

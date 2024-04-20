@@ -71,7 +71,7 @@ function SignupForm() {
   };
 
   return (
-    <Box className='tabs-container' p='3rem' mt='7rem' borderWidth="1px" w="65vw" mx="auto">
+    <Box className='tabs-container' p='3rem' mt='7rem' borderWidth="1px" w="35vw" mx="auto">
       <Heading textAlign='center' mb='2rem' fontSize='26px'>Créez votre compte</Heading>
       <form onSubmit={handleSubmit}>
         <VStack spacing={4}>
@@ -119,7 +119,7 @@ function SignupForm() {
                 />
               </InputRightElement>
               </InputGroup>
-            {errorMessage && <ChakraText mt='1rem' color="red.500">{errorMessage}</ChakraText>}
+            {errorMessage && <ChakraText mt='1rem' color="#FB7575">{errorMessage}</ChakraText>}
           </FormControl>
           <Button onClick={handleSubmit} color='white' borderRadius='30px' backgroundColor='black' mt="4" colorScheme="gray">
             Créer mon compte

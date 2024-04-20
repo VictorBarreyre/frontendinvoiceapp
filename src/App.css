@@ -70,7 +70,7 @@
 
 .neue-up {
   background-color: #fdfdfd;
-  box-shadow: rgba(174, 174, 192, 0.4) 1.5px 1.5px 3px 0px, rgb(255, 255, 255) -1px -1px 3px 0px;
+  box-shadow: rgba(174, 174, 192, 0.4) 1.5px 1.5px 3px 0px, rgb(247 249 252) -1px -1px 3px 0px
   ;
 }
 
@@ -120,40 +120,44 @@
 
 
 .stepper-container {
-  margin-top: 7rem;
-  margin-bottom: 2rem;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  width: 100%;
+  margin-top: 7rem;
+  margin-bottom: 2rem;
+  margin-left: 3rem;
 }
 
 .tabs-container {
-  width: 65vw;
+  width: 90%;
   padding: 3rem;
   background: white;
   border-radius: 1vw;
-  border-width: 1px;
-  box-shadow: rgba(174, 174, 192, 0.4) 1.5px 1.5px 3px 0px, rgb(255, 255, 255) -1px -1px 3px 0px;
+  box-shadow: rgba(174, 174, 192, 0.4) 1.5px 1.5px 3px 0px, rgb(247 249 252) -1px -1px 3px 0px
 }
 
 .dashboard{
- 
   display: flex;
 }
 
 .sidebar{
-
+  border-radius: 1vw;
+  align-items: flex-start;
   background-color: white;
   padding-left: 2rem;
   height: 89vh;
-  margin-top: 4rem;
-  padding-right: 3rem;
-  width: 20vw;
+  margin-left: 2rem;
+  margin-top: 7rem;
+  width: 15vw; 
+  justify-content: space-between;
 }
 
 .tab-list-dashboard{
+  width: 100%;
+  align-items: left;
   padding-top: 2rem;
   list-style: none;
+
 }
 
 .content-dashboard{

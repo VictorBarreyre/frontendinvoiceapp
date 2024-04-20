@@ -66,7 +66,7 @@ function SignInForm() {
   };
 
   return (
-    <Box className='tabs-container' p='3rem' mt='7rem' borderWidth="1px" w="65vw" mx="auto">
+    <Box className='tabs-container' p='3rem' mt='7rem' borderWidth="1px" w="35vw" mx="auto">
       <Heading textAlign='center' mb='2rem' fontSize='26px'>Connectez-vous à votre compte</Heading>
       <form onSubmit={handleSubmit}>
         <VStack spacing={4}>
@@ -96,7 +96,7 @@ function SignInForm() {
               </InputRightElement>
             </InputGroup>
           </FormControl>
-          {errorMessage && <ChakraText mt='1rem' color="red.500">{errorMessage}</ChakraText>}
+          {errorMessage && <ChakraText mt='1rem' color="#FB7575">{errorMessage}</ChakraText>}
           <Button type="submit" color='white' borderRadius='30px' backgroundColor='black' mt="4" colorScheme="gray">
             Se connecter
           </Button>
