@@ -11,7 +11,7 @@ const Paramètres = () => {
   const { deleteAccount } = useAuth(); // Assurez-vous que deleteAccount est bien fourni par le contexte
 
   return (
-    <Box className='neue-up'  backgroundColor='white' w='90%' h='80%' mt='7rem' ml='3rem'>
+    <Box className='neue-up' borderRadius='1vw'  backgroundColor='white' w='90%' h='80%' mt='7rem' ml='3rem'>
       <Flex p='3rem' direction='column' alignItems='center' justifyContent='center'>
         <Button colorScheme='red' onClick={deleteAccount}>
           Supprimer mon compte
