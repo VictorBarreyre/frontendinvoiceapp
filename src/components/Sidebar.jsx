@@ -13,14 +13,23 @@ import {
 const Sidebar = () => {
   const [activeTab, setActiveTab] = useState('tab1');
   const { user, logout } = useAuth();
+  const [redirectOnLogout, setRedirectOnLogout] = useState(false);
 
   const handleTabClick = (tabId) => {
     setActiveTab(tabId);
-    navigate('/');
   };
 
   if (!user) {
     return null; // Ne rien afficher si l'utilisateur n'est pas connecté
+  }
+
+  const handleLogout = () => {
+    logout();
+    setRedirectOnLogout(true);
+  };
+
+  if (redirectOnLogout) {
+    return <Navigate to="/" />;
   }
 
   return (
@@ -39,7 +48,7 @@ const Sidebar = () => {
           <Link to="/parametres" onClick={() => handleTabClick('tab4')}>Paramètres</Link>
         </li>
       </ul>
-      <Chakralink onClick={logout} type="submit" color='red' borderRadius='30px' mb='1.5rem' mt="4" w='100%' colorScheme="gray">
+      <Chakralink onClick={handleLogout} type="submit" color='red' borderRadius='30px' mb='1.5rem' mt="4" w='100%' colorScheme="gray">
         Déconnexion
       </Chakralink>
     </div>
