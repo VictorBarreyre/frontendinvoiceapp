@@ -59,7 +59,8 @@ function SignupForm() {
 
       if (response.ok) {
         localStorage.setItem('token', data.token);
-        login({ email, name, id: data._id }); // Assurez-vous que la méthode login est récupérée avec useAuth()
+        login({ email, name, id: data._id });
+        navigate('/profil'); // Assurez-vous que la méthode login est récupérée avec useAuth()
         console.log('Inscription réussie et utilisateur connecté');
       } else {
         throw new Error(data.message || 'Impossible de créer le compte');

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import {
   Button,
@@ -16,6 +16,7 @@ const Sidebar = () => {
 
   const handleTabClick = (tabId) => {
     setActiveTab(tabId);
+    navigate('/');
   };
 
   if (!user) {
