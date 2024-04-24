@@ -12,6 +12,7 @@ const Header = () => {
 
   return (
     <Flex
+    className='neue-up'
       position='fixed'
       as="nav"
       align="center"
