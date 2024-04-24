@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, Navigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import {
   Button,
@@ -14,6 +14,7 @@ const Sidebar = () => {
   const [activeTab, setActiveTab] = useState('tab1');
   const { user, logout } = useAuth();
   const [redirectOnLogout, setRedirectOnLogout] = useState(false);
+  const navigate = useNavigate();
 
   const handleTabClick = (tabId) => {
     setActiveTab(tabId);
@@ -25,7 +26,7 @@ const Sidebar = () => {
 
   const handleLogout = () => {
     logout();
-    setRedirectOnLogout(true);
+    navigate('/');
   };
 
   if (redirectOnLogout) {

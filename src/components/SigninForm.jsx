@@ -20,6 +20,7 @@ import { useInvoiceData } from '../context/InvoiceDataContext';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext'
 
+
 function SignInForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -48,7 +49,7 @@ function SignInForm() {
       if (response.ok) {
         const userData = { email, name, token: data.token }; // Assurez-vous que ces données sont correctes
         login(userData); // Met à jour l'état global de l'utilisateur dans votre contexte
-        navigate('/dashboard');
+        navigate('/profil');
       } else {
         throw new Error(data.message || 'Impossible de se connecter');
       }

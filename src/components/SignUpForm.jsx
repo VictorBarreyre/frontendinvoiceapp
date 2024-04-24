@@ -21,7 +21,6 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext'
 
 
-
 function SignupForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -36,7 +35,7 @@ function SignupForm() {
   const navigate = useNavigate();
 
   const handlePasswordVisibility = () => setShowPassword(!showPassword);
-  const handleConfirmPassworddVisibility = () => setShowConfirmPassword(!showConfirmPassword);
+  const handleConfirmPassworddVisibility = () => setShowConfirmPassword(current => !current);;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -98,10 +97,15 @@ function SignupForm() {
               <InputRightElement width="4.5rem">
               <IconButton
                   background='none'
-                  h="3rem"
+                  h="2rem"
                   size="lg"
                   onClick={handlePasswordVisibility}
                   icon={showPassword ? <ViewOffIcon /> : <ViewIcon />}
+                  sx={{
+                    _hover: { background: 'none', boxShadow: 'none', transform: 'none' },
+                    _active: { background: 'none', boxShadow: 'none', transform: 'none' },
+                    _focus: { boxShadow: 'none' } // Annule l'effet de focus aussi
+                  }}
                 />
               </InputRightElement>
             </InputGroup>
@@ -109,14 +113,25 @@ function SignupForm() {
           <FormControl isRequired>
             <FormLabel htmlFor="confirmPassword">Confirmez le mot de passe</FormLabel>
             <InputGroup>
-            <Input _focus={{ borderColor: "#745FF2", boxShadow: "none" }} className='neue-down' id="confirmPassword" type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
+            <Input 
+            _focus={{ borderColor: "#745FF2", boxShadow: "none" }} 
+            className='neue-down' 
+            id="confirmPassword" 
+            type={showConfirmPassword ? "text" : "password"}
+            value={confirmPassword} 
+            onChange={(e) => setConfirmPassword(e.target.value)} />
             <InputRightElement width="4.5rem">
               <IconButton
                   background='none'
-                  h="3rem"
+                  h="2rem"
                   size="lg"
                   onClick={handleConfirmPassworddVisibility}
-                  icon={showPassword ? <ViewOffIcon /> : <ViewIcon />}
+                  icon={showConfirmPassword ? <ViewOffIcon /> : <ViewIcon />}
+                  sx={{
+                    _hover: { background: 'none', boxShadow: 'none', transform: 'none' },
+                    _active: { background: 'none', boxShadow: 'none', transform: 'none' },
+                    _focus: { boxShadow: 'none' } // Annule l'effet de focus aussi
+                  }}
                 />
               </InputRightElement>
               </InputGroup>
