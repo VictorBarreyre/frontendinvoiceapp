@@ -122,14 +122,13 @@
 .stepper-container {
   display: flex;
   flex-direction: column;
-  width: 100%;
+  width: 90%;
   margin-top: 7rem;
   margin-bottom: 2rem;
   margin-left: 3rem;
 }
 
 .tabs-container {
-  width: 90%;
   padding: 3rem;
   background: white;
   border-radius: 1vw;
