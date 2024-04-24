@@ -12,8 +12,11 @@ import {
 const Paiements = () => {
   return (
     <Box className='neue-up'  borderRadius='1vw' backgroundColor='white' w='90%' h='80%' mt='7rem' ml='3rem'>
-    <Flex p='3rem' direction='column'> </Flex>
-    </Box>
+    <Flex p='3rem' direction='column'> 
+    <Heading fontSize='26px'>Paiements</Heading>
+  
+    </Flex>
+  </Box>
   )
 }
 

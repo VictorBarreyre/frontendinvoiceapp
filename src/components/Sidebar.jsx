@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import {
   Button,
@@ -15,6 +15,7 @@ const Sidebar = () => {
   const { user, logout } = useAuth();
   const [redirectOnLogout, setRedirectOnLogout] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation(); 
 
   const handleTabClick = (tabId) => {
     setActiveTab(tabId);
@@ -29,6 +30,10 @@ const Sidebar = () => {
     navigate('/');
   };
 
+  const getActiveClass = (path) => {
+    return location.pathname === path ? 'active-dashboard' : '';
+  };
+
   if (redirectOnLogout) {
     return <Navigate to="/" />;
   }
@@ -36,16 +41,16 @@ const Sidebar = () => {
   return (
     <div className="sidebar neue-up" style={{ display: 'flex', flexDirection: 'column', height: '80%' }}>
       <ul className="tab-list-dashboard">
-        <li className={`tab ${activeTab === 'tab1' ? 'active-dashboard' : ''}`}>
+        <li className={`tab ${getActiveClass('/profil')}`}>
           <Link to="/profil" onClick={() => handleTabClick('tab1')}>Profil</Link>
         </li>
-        <li className={`tab ${activeTab === 'tab2' ? 'active-dashboard' : ''}`}>
+        <li className={`tab ${getActiveClass('/factures')}`}>
           <Link to="/factures" onClick={() => handleTabClick('tab2')}>Factures</Link>
         </li>
-        <li className={`tab ${activeTab === 'tab3' ? 'active-dashboard' : ''}`}>
+        <li className={`tab ${getActiveClass('/paiements')}`}>
           <Link to="/paiements" onClick={() => handleTabClick('tab3')}>Paiements</Link>
         </li>
-        <li className={`tab ${activeTab === 'tab4' ? 'active-dashboard' : ''}`}>
+        <li className={`tab ${getActiveClass('/parametres')}`}>
           <Link to="/parametres" onClick={() => handleTabClick('tab4')}>Paramètres</Link>
         </li>
       </ul>

@@ -67,7 +67,7 @@ function SignInForm() {
   };
 
   return (
-    <Box className='tabs-container' p='3rem' mt='7rem' borderWidth="1px" w="35vw" mx="auto">
+    <Box className='tabs-container' p='3rem' mt='7rem' borderWidth="1px" w="35rem" mx="auto">
       <Heading textAlign='center' mb='2rem' fontSize='26px'>Connectez-vous à votre compte</Heading>
       <form onSubmit={handleSubmit}>
         <VStack spacing={4}>

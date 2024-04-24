@@ -26,7 +26,7 @@ const Header = () => {
     >
       <Flex align="center" mr={5}>
         <Heading as="h1" fontWeight='600' size="md">
-          <Link as={RouterLink} pl='4' fontWeight='600' color='black' to="/" _hover={{ textDecoration: 'none' }}>
+          <Link as={RouterLink}  fontWeight='600' color='black' to="/" _hover={{ textDecoration: 'none' }}>
             dbill.io
           </Link>
         </Heading>
@@ -41,7 +41,7 @@ const Header = () => {
         onClick={toggleDrawer}
       />
 
-      <Box display={{ base: 'none', md: 'flex' }} mr='2.5rem' alignItems="center">
+      <Box display={{ base: 'none', md: 'flex' }} alignItems="center">
         <Link as={RouterLink} color='black' to="/about" px="4" _hover={{ textDecoration: 'underline' }}>
           À propos
         </Link>
