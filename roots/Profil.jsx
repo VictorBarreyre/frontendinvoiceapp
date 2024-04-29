@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { useAuth  } from '../src/context/AuthContext';
 import {
   Button,
@@ -15,7 +15,6 @@ const Profil = () => {
   if (!user) {
     return <div>Veuillez vous connecter pour voir le profil.</div>;
   }
-console.log(user)
 
   return (
     <Box className='neue-up'  borderRadius='1vw' backgroundColor='white' w='90%' h='80%' mt='7rem' ml='3rem'>
@@ -23,6 +22,7 @@ console.log(user)
       <Heading fontSize='26px'>Profil de l'utilisateur</Heading>
       <Text>Nom : {user.name}</Text>
       <Text>Email :{user.email}</Text>
+      {user.stripeCustomerId && <Text>ID Stripe : {user.stripeCustomerId}</Text>}
       {user.adresse && <p><strong>Adresse :</strong> {user.adresse}</p>}
       {user.siret && <p><strong>SIRET :</strong> {user.siret}</p>}
       {user.iban && <p><strong>IBAN :</strong> {user.iban}</p>}

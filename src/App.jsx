@@ -18,6 +18,7 @@ import Profil from '../roots/Profil';
 import Factures from '../roots/Factures';
 import Paiements from '../roots/Paiements';
 import Paramètres from '../roots/Paramètres';
+import ForgotPassword from '../roots/ForgotPassword';
 
 function App() {
   const { user, setUser, logout } = useAuth();
@@ -31,29 +32,28 @@ function App() {
 
   return (
     <ChakraProvider theme={theme}>
-      <InvoiceDataProvider>
-        <Router>
-          <Flex direction="column" height="100vh">
-            <Header />
-            <Flex flex="1" overflow="hidden">
-              {user && <Sidebar />}
-              <Box flex="1" overflowY="auto">
-                <Routes>
-                  <Route path="/" element={!user ? <CustomSection /> : <Home />} />
-                  <Route path="/about" element={<About />} />
-                  <Route path="/signin" element={<Signin />} />
-                  <Route path="/signup" element={<Signup />} />
-                  <Route path="/profil" element={<Profil />} />
-                  <Route path="/factures" element={<Factures />} />
-                  <Route path="/paiements" element={<Paiements />} />
-                  <Route path="/parametres" element={<Paramètres />} />
-                  <Route path="*" element={<Navigate to="/" />} />
-                </Routes>
-              </Box>
-            </Flex>
+      <Router>
+        <Flex direction="column" height="100vh">
+          <Header />
+          <Flex flex="1" overflow="hidden">
+            {user && <Sidebar />}
+            <Box flex="1" overflowY="auto">
+              <Routes>
+                <Route path="/" element={!user ? <CustomSection /> : <Home />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/signin" element={<Signin />} />
+                <Route path="/signup" element={<Signup />} />
+                <Route path="/profil" element={<Profil />} />
+                <Route path="/factures" element={<Factures />} />
+                <Route path="/paiements" element={<Paiements />} />
+                <Route path="/parametres" element={<Paramètres />} />
+                <Route path="/forgotpass" element={<ForgotPassword />} />
+                <Route path="*" element={<Navigate to="/" />} />
+              </Routes>
+            </Box>
           </Flex>
-        </Router>
-      </InvoiceDataProvider>
+        </Flex>
+      </Router>
     </ChakraProvider>
   );
 }

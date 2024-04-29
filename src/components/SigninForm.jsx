@@ -28,7 +28,7 @@ function SignInForm() {
   const [errorMessage, setErrorMessage] = useState('');
   const toast = useToast();
   const { baseUrl } = useInvoiceData();
-  const { login } = useAuth();
+  const { login, resetPassword } = useAuth();
   const navigate = useNavigate();
 
   const handlePasswordVisibility = () => setShowPassword(!showPassword);
@@ -47,7 +47,7 @@ function SignInForm() {
       const data = await response.json();
 
       if (response.ok) {
-        const userData = { email, name, token: data.token }; // Assurez-vous que ces données sont correctes
+        const userData = { email, token: data.token }; // Assurez-vous que ces données sont correctes
         login(userData); // Met à jour l'état global de l'utilisateur dans votre contexte
         navigate('/profil');
       } else {
@@ -89,13 +89,22 @@ function SignInForm() {
               <InputRightElement width="4.5rem">
                 <IconButton
                   background='none'
-                  h="3rem"
+                  h="2rem"
                   size="lg"
                   onClick={handlePasswordVisibility}
                   icon={showPassword ? <ViewOffIcon /> : <ViewIcon />}
+                  sx={{
+                    _hover: { background: 'none', boxShadow: 'none', transform: 'none' },
+                    _active: { background: 'none', boxShadow: 'none', transform: 'none' },
+                    _focus: { boxShadow: 'none' } // Annule l'effet de focus aussi
+                  }}
                 />
               </InputRightElement>
             </InputGroup>
+            <ChakraText mt={4} textAlign='center'>
+              <ChakraLink as={RouterLink} to="/forgotpass" style={{ color: "#745FF2" }}>Mot de passe oublié ?</ChakraLink>
+            </ChakraText>
+
           </FormControl>
           {errorMessage && <ChakraText mt='1rem' color="#FB7575">{errorMessage}</ChakraText>}
           <Button type="submit" color='white' borderRadius='30px' backgroundColor='black' mt="4" colorScheme="gray">
