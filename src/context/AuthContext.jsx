@@ -9,19 +9,64 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem('user'));
     if (storedUser) {
-      setUser(storedUser);
+      // Complétez l'utilisateur stocké avec les valeurs par défaut si certaines valeurs sont manquantes
+      const completeUser = {
+        email: storedUser.email || '',
+        name: storedUser.name || '',
+        adresse: storedUser.adresse || '',
+        siret: storedUser.siret || '',
+        iban: storedUser.iban || '',
+        ...storedUser // Cela garantit que les valeurs non spécifiées seront prises depuis le localStorage
+      };
+      setUser(completeUser);
     }
-  }, []);
+  }, []);  
 
-  const login = (userData) => {
-    setUser(userData);
-    localStorage.setItem('user', JSON.stringify(userData));
+const login = (userData) => {
+    // Assurez-vous que toutes les propriétés nécessaires sont incluses lors du login
+    const completeUser = {
+      email: userData.email || '',
+      name: userData.name || '',
+      adresse: userData.adresse || '',
+      siret: userData.siret || '',
+      iban: userData.iban || '',
+      ...userData
+    };
+    setUser(completeUser);
+    localStorage.setItem('user', JSON.stringify(completeUser));
   };
 
   const logout = () => {
     setUser(null);
     localStorage.removeItem('user');
   };
+
+
+  const updateUserProfile = async (updates) => {
+    try {
+      const response = await fetch(`/api/users/${user._id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${user.token}`
+        },
+        body: JSON.stringify(updates)
+      });
+      const updatedUser = await response.json();
+      if (!response.ok) {
+        throw new Error(updatedUser.message || 'Failed to update profile');
+      }
+      setUser(updatedUser);  // Update local user state
+      localStorage.setItem('user', JSON.stringify(updatedUser));  // Update local storage
+      return updatedUser;
+    } catch (error) {
+      console.error('Error updating user profile:', error);
+      throw error;
+    }
+  };
+
+
+
 
   const deleteAccount = async () => {
     try {
@@ -44,7 +89,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, setUser, login, logout, deleteAccount }}>
+    <AuthContext.Provider value={{ user, setUser, login, logout,updateUserProfile, deleteAccount }}>
       {children}
     </AuthContext.Provider>
   );

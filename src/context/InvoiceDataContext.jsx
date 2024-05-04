@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState,useEffect } from 'react';
+import { useAuth } from './AuthContext';
 
 const InvoiceDataContext = createContext();
 
@@ -6,6 +7,7 @@ export const useInvoiceData = () => useContext(InvoiceDataContext);
 
 export const InvoiceDataProvider = ({ children }) => {
 
+    const { user } = useAuth();
 
     const [subject, setSubject] = useState("Votre Facture");
     const [message, setMessage] = useState("Voici votre facture");
@@ -14,11 +16,11 @@ export const InvoiceDataProvider = ({ children }) => {
         number: '02',
         date: new Date().toISOString().split('T')[0],
         issuer: {
-            name: 'Antoine Barreyre',
-            adresse: '43 Grande rue',
-            siret: 'azeeazeaz',
-            email: 'vctr.bar95@gmail.com',
-            iban: 'FR7628233000012978164545902'
+            name: '',
+            adresse: '',
+            siret: '',
+            email: '',
+            iban: ''
         },
         client: {
             name: 'Victor Barreyre',
@@ -34,7 +36,22 @@ export const InvoiceDataProvider = ({ children }) => {
         devise: '€',
     });
 
-
+    useEffect(() => {
+        console.log(user)
+        if (user) {
+            setInvoiceData(prevData => ({
+                ...prevData,
+                issuer: {
+                    name: user.name || '',
+                    adresse: user.adresse || '',
+                    siret: user.siret || '',
+                    email: user.email || '',
+                    iban: user.iban || ''
+                }
+            }));
+        }
+    }, [user]);
+    
     const [pdfInstance, setPdfInstance] = useState(null);
     const [startDate, setStartDate] = useState(new Date());
     const [itemsnames, setItemsNames] = useState('');

@@ -129,7 +129,7 @@ const InvoiceCreator = ({ totalError, errorMsg, navigateToPaymentSchedule }) => 
             className={getClassForField(invoiceData.number)} // Assurez-vous que le nom du champ correspond exactement à la clé dans invoiceData
             placeholder="Numéro de facture" name="number" value={invoiceData.number} onChange={handleChange} />
         </Flex>
-        <Box direction='column' w={{ base: '10rem', lg: '25rem' }} justifyContent='space-between' pb="2rem" >
+        <Box direction='column' w={{ base: '10rem', lg: 'unset' }} justifyContent='space-between' pb="2rem" >
           <Heading mb='1rem' size="sm">Date :</Heading>
           <DatePicker
             className='neue-down'
@@ -146,7 +146,7 @@ const InvoiceCreator = ({ totalError, errorMsg, navigateToPaymentSchedule }) => 
           />
         </Box>
       </Flex>
-      <Flex flexDirection={{ base: 'column', lg: 'row' }} justifyContent='space-between' w='100%' pb="2rem" >
+      <Flex gap='50px' flexDirection={{ base: 'column', lg: 'row' }} justifyContent='space-between' w='100%' pb="2rem" >
         <Flex direction="column" w={{ base: 'unset', lg: '25rem' }} alignItems='start'>
           <Heading mb='1rem' size="sm">Informations sur l'émetteur :</Heading>
           <Input

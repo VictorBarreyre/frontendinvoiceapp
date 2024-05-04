@@ -41,8 +41,8 @@ function App() {
                 <Routes>
                   <Route path="/" element={!user ? <CustomSection /> : <Home />} />
                   <Route path="/about" element={<About />} />
-                  <Route path="/signin" element={<Signin />} />
-                  <Route path="/signup" element={<Signup />} />
+                  <Route path="/signin" element={!user ? <Signin /> : <Navigate to="/" />} />
+                  <Route path="/signup" element={!user ? <Signup /> : <Navigate to="/" />} />
                   <Route path="/profil" element={<Profil />} />
                   <Route path="/factures" element={<Factures />} />
                   <Route path="/paiements" element={<Paiements />} />
