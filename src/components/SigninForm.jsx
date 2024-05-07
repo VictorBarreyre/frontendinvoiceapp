@@ -45,10 +45,10 @@ function SignInForm() {
         body: JSON.stringify({ email, password })
       });
       const data = await response.json();
-      console.log(data)
 
       if (response.ok) {
         const userData = {
+          _id:data._id,
           email,
           token: data.token,
           name: data.name,
