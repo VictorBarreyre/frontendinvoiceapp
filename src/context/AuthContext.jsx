@@ -67,7 +67,7 @@ const login = (userData) => {
   const fetchUserInvoices = async () => {
     if (!user) {
       console.error('Aucun utilisateur connecté pour récupérer les factures.');
-      return;
+      return { invoices: [], message: 'Aucun utilisateur connecté.' }; // Retourne un message spécifique
     }
   
     try {
@@ -84,10 +84,13 @@ const login = (userData) => {
       }
   
       const invoices = await response.json();
-      return invoices; // Vous pouvez décider de stocker les factures dans le state global ou de les retourner simplement ici
+      if (invoices.length === 0) {
+        return { invoices: [], message: 'Aucune facture disponible.' }; // Retourne un message si aucune facture n'est trouvée
+      }
+      return { invoices: invoices, message: '' }; // Retourne les factures si disponibles
     } catch (error) {
       console.error('Failed to fetch invoices:', error);
-      return [];
+      return { invoices: [], message: error.message || 'Erreur lors de la récupération des factures.' }; // Retourne un message d'erreur
     }
   };
   
