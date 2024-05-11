@@ -17,6 +17,7 @@ import {
 import { EditIcon } from '@chakra-ui/icons';
 
 const Profil = () => {
+  
   const { user, updateUserProfile } = useAuth();
   const [error, setError] = useState('');
 

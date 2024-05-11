@@ -9,7 +9,7 @@ import {
 } from '@chakra-ui/react';
 
 const Paramètres = () => {
-  const { deleteAccount } = useAuth(); // Assurez-vous que deleteAccount est bien fourni par le contexte
+
 
   return (
     <Box className='neue-up'  borderRadius='1vw' backgroundColor='white' w='90%' h='80%' mt='7rem' ml='3rem'>
