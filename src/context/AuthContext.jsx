@@ -48,7 +48,6 @@ const login = (userData) => {
   };
 
   
-  
   function cleanObject(obj, cache = new WeakSet()) {
     if (typeof obj !== 'object' || obj === null) {
       return obj;
@@ -65,30 +64,62 @@ const login = (userData) => {
     return newObj;
   }
   
+  const fetchUserInvoices = async () => {
+    if (!user) {
+      console.error('Aucun utilisateur connecté pour récupérer les factures.');
+      return;
+    }
+  
+    try {
+      const response = await fetch(`http://localhost:8000/api/users/${user._id}/invoices`, {
+        headers: {
+          'Authorization': `Bearer ${user.token}`,  // Assurez-vous que l'authentification est correctement gérée
+          'Content-Type': 'application/json'
+        }
+      });
+  
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to fetch invoices');
+      }
+  
+      const invoices = await response.json();
+      return invoices; // Vous pouvez décider de stocker les factures dans le state global ou de les retourner simplement ici
+    } catch (error) {
+      console.error('Failed to fetch invoices:', error);
+      return [];
+    }
+  };
+  
 
-
-const updateUserProfile = async (userData) => {
-  const cleanUpdates = cleanObject(userData);  // Nettoyer les données de l'utilisateur
-
-  const response = await fetch(`http://localhost:8000/api/users/${userData._id}`, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${user.token}`
-    },
-    body: JSON.stringify(cleanUpdates)
-  });
-
-  if (!response.ok) {
-    const errorData = await response.json();
-    throw new Error(errorData.message || 'Failed to update profile');
-  }
-
-  const updatedUser = await response.json();
-  setUser(updatedUser);
-  localStorage.setItem('user', JSON.stringify(updatedUser));
-};
-
+  const updateUserProfile = async (userData) => {
+    const cleanUpdates = cleanObject(userData);  // Nettoyer les données de l'utilisateur
+  
+    const response = await fetch(`http://localhost:8000/api/users/${userData._id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${user.token}`
+      },
+      body: JSON.stringify(cleanUpdates)
+    });
+  
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Failed to update profile');
+    }
+  
+    const updatedUser = await response.json();
+    if (updatedUser.token) {  // Vérifiez si un nouveau token est renvoyé et mettez à jour si nécessaire
+      user.token = updatedUser.token;  // Mettez à jour le token dans l'état utilisateur actuel
+      localStorage.setItem('user', JSON.stringify({...user, token: updatedUser.token}));  // Mettez à jour le localStorage avec le nouveau token
+    } else {
+      localStorage.setItem('user', JSON.stringify(user));  // Pas de nouveau token, juste ré-enregistrer les données actuelles
+    }
+  
+    setUser(user);  // Mettre à jour l'utilisateur dans l'état de l'application
+  };
+  
 
   const deleteAccount = async () => {
     try {
@@ -111,7 +142,7 @@ const updateUserProfile = async (userData) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, setUser, login, logout,updateUserProfile, deleteAccount }}>
+    <AuthContext.Provider value={{ user, setUser, login, logout,updateUserProfile, deleteAccount, fetchUserInvoices }}>
       {children}
     </AuthContext.Provider>
   );

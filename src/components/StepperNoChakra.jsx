@@ -72,7 +72,7 @@ const Stepper = () => {
     const errorMsg = () => {
         if (showError) {
             return (
-                <Text color="#FB7575" fontSize={{ base: '13px', lg: '16px' }}>Veuillez remplir tous les champs requis avant de continuer</Text>
+                <Text color="red" fontSize={{ base: '13px', lg: '16px' }}>Veuillez remplir tous les champs requis avant de continuer</Text>
             )
         };
     };

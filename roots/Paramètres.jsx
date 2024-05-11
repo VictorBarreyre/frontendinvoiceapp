@@ -10,6 +10,7 @@ import {
 
 const Paramètres = () => {
 
+  const { deleteAccount } = useAuth();
 
   return (
     <Box className='neue-up'  borderRadius='1vw' backgroundColor='white' w='90%' h='80%' mt='7rem' ml='3rem'>

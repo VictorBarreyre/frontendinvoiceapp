@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAuth  } from '../src/context/AuthContext';
 import {
   Button,
@@ -10,6 +10,20 @@ import {
 }   from '@chakra-ui/react'
 
 const Factures = () => {
+  const { fetchUserInvoices } = useAuth();
+  const [invoices, setInvoices] = useState([]);
+
+  useEffect(() => {
+    const loadInvoices = async () => {
+      const fetchedInvoices = await fetchUserInvoices();
+      if (fetchedInvoices) {
+        setInvoices(fetchedInvoices);
+      }
+    };
+
+    loadInvoices();
+  }, []);
+
   return (
     <Box className='neue-up'  borderRadius='1vw' backgroundColor='white' w='90%' h='80%' mt='7rem' ml='3rem'>
     <Flex p='3rem' direction='column'> 
