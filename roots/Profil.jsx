@@ -17,7 +17,7 @@ import {
 import { EditIcon } from '@chakra-ui/icons';
 
 const Profil = () => {
-  
+
   const { user, updateUserProfile } = useAuth();
   const [error, setError] = useState('');
 
@@ -29,6 +29,8 @@ const Profil = () => {
     siret: user ? user.siret : '',
     iban: user ? user.iban : ''
   });
+
+  const [focusedField, setFocusedField] = useState(null);
   
   useEffect(() => {
     if (user) {
@@ -48,6 +50,15 @@ const Profil = () => {
     setUserData({ ...userData, [field]: e.target.value });
     setError('');
   };
+
+  const handleFocus = (field) => {
+    setFocusedField(field); // Mise à jour de l'état lors du focus
+  };
+
+  const handleBlur = () => {
+    setFocusedField(null); // Réinitialisation de l'état lors du retrait du focus
+  };
+
   const handleUpdateClick = () => {
     updateUserProfile(userData);
     console.log(userData)
@@ -77,11 +88,13 @@ const Profil = () => {
                     type="text"
                     value={value || ''}
                     onChange={(e) => handleChange(e, field)} 
+                    onFocus={() => handleFocus(field)}
+                    onBlur={handleBlur}
                     placeholder={`Entrez votre ${field}`}
                   />
                   <InputRightElement width="4.5rem">
                     <IconButton
-                      color={'#718096'}
+                      color={focusedField === field ? '#745FF2' : '#718096'}
                       aria-label={`Edit ${field}`}
                       icon={<EditIcon />}
                       background='none'
