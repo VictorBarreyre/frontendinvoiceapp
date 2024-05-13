@@ -17,9 +17,12 @@ import { useInvoiceData } from '../context/InvoiceDataContext';
 import InvoicePDF from './InvoicePDF';
 import { pdf, PDFViewer } from '@react-pdf/renderer';
 import { useTheme } from '@chakra-ui/react';
+import { useAuth } from '../context/AuthContext';
 
 const InvoiceSummary = () => {
     const { invoiceData, payments, isValidEmail, baseUrl } = useInvoiceData();
+
+    const {user} = useAuth();
 
     const [subject, setSubject] = useState("Votre Facture");
     const [message, setMessage] = useState("Voici votre facture");
@@ -127,7 +130,6 @@ const InvoiceSummary = () => {
     };
 
 
-    //fonction à deplacer dans le component Invoice Summary
     const handleInvoiceAction = async () => {
         const { number, issuer, client, total } = invoiceData;
         const areAllRequiredFieldsValid = number !== '' && issuer.name !== '' && client.name !== '';
@@ -151,7 +153,7 @@ const InvoiceSummary = () => {
                 if (!factureIdResponse.ok) throw new Error("Erreur lors de la génération du factureId.");
 
 
-                // Envoi de la requête pour créer l'utilisateur
+              if(!user) { 
                 const userData = {
                     email: issuer.email,  // Utilisez les champs appropriés selon le contexte
                     password: "passwordTemporaire",  // Générez un mot de passe ou demandez-le explicitement
@@ -174,7 +176,7 @@ const InvoiceSummary = () => {
                     const errorText = await userResponse.text();
                     throw new Error('Erreur lors de la création de l’utilisateur: ' + errorText);
                 }
-
+            }
 
                 const factureIdData = await factureIdResponse.json();
                 const factureId = factureIdData.factureId;
@@ -201,7 +203,9 @@ const InvoiceSummary = () => {
                 formData.append('montant', total);
                 formData.append('emetteur', JSON.stringify(issuer));
                 formData.append('destinataire', JSON.stringify(client));
-                formData.append('factureId', factureId); // Assurez-vous d'inclure le factureId généré
+                formData.append('factureId', factureId); 
+                formData.append('userId', user._id);
+                console.log(user._id)
 
                 // Deuxième requête pour créer la facture et envoyer l'email
                 const createAndSendEmailResponse = await fetch(`${baseUrl}/email/sendEmail`, {
@@ -213,22 +217,24 @@ const InvoiceSummary = () => {
                     console.log("Facture créée et email envoyé avec succès !");
 
 
-                    // Appel à la création de PaymentIntent // à déplacer dans la confirmation page (à voir)
-                    const paymentIntentData = {
-                        amount: total * 100,  // Convertissez le total en centimes pour Stripe
-                        currency: "eur",      // ou la devise appropriée
-                        emetteur: JSON.stringify(issuer),  // Convertir l'objet en chaîne JSON
-                        destinataire: JSON.stringify(client)  // Convertir l'objet en chaîne JSON
-                    };
-
-                    const response = await fetch(`${baseUrl}/paiement/create-payment-intent`, {
-                        method: "POST",
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(paymentIntentData)
-                    });
-
+                    if (!user.stripeAccountId) {
+                        // Appel API pour créer le compte Stripe et enregistrer l'ID
+                        const accountResponse = await fetch(`${baseUrl}/paiement/create-account-invoice`, {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({ userId: user._id, email: user.email, total: total }),
+                        });
+                        const accountData = await accountResponse.json();
+                        user.stripeAccountId = accountData.accountId; // Enregistrez l'ID du compte dans l'état de l'utilisateur
+                      }
+                      
+                      // Ensuite, créez le PaymentIntent avec l'ID du compte Stripe
+                      const paymentIntentResponse = await fetch(`${baseUrl}/create-payment-intent`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ amount: total, stripeAccountId: user.stripeAccountId }),
+                      });
+                      
                     if (response.ok) {
                         const paymentIntentResult = await response.json();
                         console.log("PaymentIntent créé avec succès !", paymentIntentResult);
