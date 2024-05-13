@@ -143,7 +143,7 @@ const PaymentScheduleForm = ({ onSubmit }) => {
   };
 
   return (
-    <Box className='neue-up' width='60vw' pt='2rem' pl='3rem'pr='3rem' pb='2rem' backgroundColor='white' borderWidth="1px" borderRadius="1vw" mb='4vh'>  
+    <Box className='neue-up' width='auto' pt='2rem' pl='3rem'pr='3rem' pb='2rem' backgroundColor='white' borderWidth="1px" borderRadius="1vw" mb='4vh'>  
       <Heading mb='2rem' fontSize='24px'>Définissez vos échéances de paiement</Heading>
       <form onSubmit={handleSubmit}>
         <Table variant="simple" borderRadius='10px' pb='1rem'>

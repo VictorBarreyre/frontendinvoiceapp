@@ -26,7 +26,7 @@ const InvoiceSummary = () => {
             borderRadius: "10px",
             backgroundColor: "white",
             borderColor: "#d9d9d9",
-            width: '60vw',
+            width: 'auto',
             className: 'neue-up',
             marginBottom: '3vh',
         },
@@ -104,6 +104,9 @@ const InvoiceSummary = () => {
             marginTop: "20px",
         },
     };
+
+    
+    // déplacer l'aspect back dans le back
 
     const handleInvoiceAction = async () => {
         const { number, issuer, client } = invoiceData;

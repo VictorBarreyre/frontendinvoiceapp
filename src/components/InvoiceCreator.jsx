@@ -120,7 +120,7 @@ const InvoiceCreator = ({ handleNavigateTo }) => {
     const updateButtonLabel = () => {
       const email = invoiceData.client.email;
       if (email && isValidEmail(email)) {
-        setButtonLabel("Voir ma facture et l'envoyer");
+        setButtonLabel("Définir mes échéances de paiement");
       } else {
         setButtonLabel('Télécharger la facture');
       }
