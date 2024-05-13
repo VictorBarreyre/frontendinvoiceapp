@@ -8,14 +8,13 @@ import { AddIcon, DeleteIcon, ArrowForwardIcon } from '@chakra-ui/icons';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import CustomInput from './CustomIpunt';
-import InvoicePDF from './InvoicePDF';
 import { useInvoiceData } from '../context/InvoiceDataContext';
-import PaymentScheduleForm from './PaymentScheduleForm';
-import Stepper from './Stepper';
-import InvoiceSummary from './InvoiceSummary';
+import { useTheme } from '@chakra-ui/react';
+import InvoicePDF from '../components/InvoicePDF'
 
 
-const InvoiceCreator = ({ handleNavigateTo }) => {
+
+const InvoiceCreator = ({ handleNavigateTo, totalError }) => {
 
   const [subject, setSubject] = useState("Votre Facture");
   const [message, setMessage] = useState("Voici votre facture");
@@ -25,6 +24,7 @@ const InvoiceCreator = ({ handleNavigateTo }) => {
     invoiceData,
     handleInvoiceDataChange,
     requiredFieldsValid,
+    getClassForField,
     setRequiredFieldsValid,
     pdfInstance,
     setPdfInstance,
@@ -44,6 +44,11 @@ const InvoiceCreator = ({ handleNavigateTo }) => {
     isValidEmail,
   } = useInvoiceData();
 
+  const theme = useTheme();
+  // Accéder au point de rupture 'md' à partir du thème
+  const breakpointMd = parseInt(theme.breakpoints.md, 10);
+
+  const [isMobile, setIsMobile] = useState(window.innerWidth < breakpointMd);
 
 
   //fonction pour ajouter un item à la facture
@@ -188,33 +193,56 @@ const InvoiceCreator = ({ handleNavigateTo }) => {
           </Flex>
 
 
-          <Flex direction='column' className='neue-up' borderWidth='1px' borderRadius='10px' pt='1rem' pl='2rem' pr='2rem' pb='1rem' w='100%'>
-            <Heading mb='1rem' mt='1rem' size="md">{itemsnames}</Heading>
-            <Table variant="simple" borderRadius='10px'>
-              <Thead>
-                <Tr>
-                  <Th className='head-tab' pl='0'>Description</Th>
-                  <Th className='head-tab'>Quantité</Th>
-                  <Th className='head-tab'>Prix ht</Th>
-                  <Th className='head-tab'>Total/ht</Th>
-                </Tr>
-              </Thead>
-              <Tbody>
-                {invoiceData.items.map((item, index) => (
-                  <Tr key={index}>
-                    <Td pl='0'>
+          <Flex direction='column' className='neue-up' borderWidth='1px' borderRadius='10px' pt='1rem' pl='1.5rem' pr='1.5rem' pb='1rem' w='100%' mb={{ base: '2rem', lg: '1rem' }}>
+        <Heading mb='1rem' mt='1rem' size="md">{itemsnames}</Heading>
+        {
+          isMobile ? (
+            <>
+              {invoiceData.items.map((item, index) => (
+                <Box key={index} borderBottom="1px solid #f2f2f2" pt='1rem' pb='1rem' mb='1rem'>
+                  <Flex gap='10px'>
+
+                    <Flex gap='10px' direction='column'>
+                      <Text fontFamily="heading"
+                        fontWeight="bold"
+                        textTransform="uppercase"
+                        letterSpacing="wider"
+                        textAlign="center"
+                        mb={2}
+                        pb={3} // padding-bottom: var(--chakra-space-3);
+                        lineHeight="4"
+                        fontSize="xs"
+                        color="gray.600"
+                        borderBottom="1px"
+                        borderColor="gray.100">Description</Text>
                       <Input
-                        className={requiredClassnameField(attemptedDownloadWithoutRequiredFields, requiredFieldsValid)}
-                        placeholder="Description*"
-                        name={`items.${index}.description`}
+                        _focus={{ borderColor: "#745FF2", boxShadow: "none" }}
+                        className={getClassForField(item.description)}
+                        placeholder="Description"
                         value={item.description}
                         onChange={handleChange}
+                        name={`items.${index}.description`}
+                        mb={2}
                       />
-                    </Td>
-                    <Td >
+                    </Flex>
+
+                    <Flex gap='10px' direction='column'>
+                      <Text fontFamily="heading"
+                        fontWeight="bold"
+                        textTransform="uppercase"
+                        letterSpacing="wider"
+                        textAlign="center"
+                        mb={2}
+                        pb={3} // padding-bottom: var(--chakra-space-3);
+                        lineHeight="4"
+                        fontSize="xs"
+                        color="gray.600"
+                        borderBottom="1px"
+                        borderColor="gray.100">Quantité</Text>
                       <InputGroup>
                         <Input
-                          className='classicinput'
+                          _focus={{ borderColor: "#745FF2", boxShadow: "none" }}
+                          className={getClassForField(item.quantity, true)}
                           boxShadow='rgba(174, 174, 192, 0.4) -1.5px -1.5px 3px 0px, rgb(255, 255, 255) 1.5px 1.5px 3px 0px;'
                           placeholder="Quantité"
                           name={`items.${index}.quantity`}
@@ -232,60 +260,189 @@ const InvoiceCreator = ({ handleNavigateTo }) => {
                           />
                         } />
                       </InputGroup>
-                    </Td>
-                    <Td>
+                    </Flex>
+
+
+                    <Flex gap='10px' direction='column'>
+                      <Text fontFamily="heading"
+                        fontWeight="bold"
+                        textTransform="uppercase"
+                        letterSpacing="wider"
+                        textAlign="center"
+                        mb={2}
+                        pb={3} // padding-bottom: var(--chakra-space-3);
+                        lineHeight="4"
+                        fontSize="xs"
+                        color="gray.600"
+                        borderBottom="1px"
+                        borderColor="gray.100">Prix ht/U</Text>
                       <Input
-                        className={requiredClassnameField(attemptedDownloadWithoutRequiredFields, requiredFieldsValid)}
-                        alignItems='end'
-                        placeholder="Prix unitaire*"
-                        name={`items.${index}.unitPrice`}
+                        _focus={{ borderColor: "#745FF2", boxShadow: "none" }}
+                        textAlign='end'
+                        className={getClassForField(item.unitPrice)}
+                        placeholder="Prix unitaire (HT)"
                         type="number"
                         value={item.unitPrice}
                         onChange={handleChange}
+                        name={`items.${index}.unitPrice`}
+                        mb={2}
                       />
-                    </Td>
-                    <Td textAlign='end'>
-                      {item.quantity * item.unitPrice} {/* Calcul du total pour chaque article */}
+                    </Flex>
+                  </Flex>
+                  <Flex justifyContent='end'>
+                    <Text alignItems='end' mt='0.5rem'><strong>Total (HT):</strong> {item.quantity * item.unitPrice} {invoiceData.devise}</Text>
+                  </Flex>
+                </Box>
+              ))}
+              <Link onClick={handleAddItem} display='flex' alignItems='center' color="#745FF2" >
+                Ajouter un article
+                <AddIcon w='2.5' ml="2" />
+              </Link>
+              <Flex gap='20px' direction='column' alignItems='end' mt='2rem'>
+
+
+                <Flex width='100%' borderBottom='1px solid #f2f2f2'>
+                  <Heading width='100%' textAlign='end' mb='1rem' size='sm'>Sous-total HT : {invoiceData.subtotal}{invoiceData.devise}</Heading>
+                </Flex>
+
+                <Flex gap='10px' alignItems='center'>
+
+                  <Heading size='sm'>TVA (%): </Heading>
+                  <Input
+                    _focus={{ borderColor: "#745FF2", boxShadow: "none" }}
+                    w='4rem'
+                    textAlign='end'
+                    className='neue-down'
+                    type="number"
+                    value={invoiceData.vatRate}
+                    onChange={handleVatChange} // Assurez-vous d'implémenter cette fonction pour mettre à jour le taux de TVA
+                    placeholder="Taux de TVA"
+                  />
+                </Flex>
+                <Flex width='100%' borderTop='1px solid #f2f2f2'>
+                  <Heading width='100%' textAlign='end' mt='1rem' size='md'>Total TTC : {invoiceData.total}{invoiceData.devise}</Heading>
+                </Flex>
+
+                <Flex border='none !important' alignContent='end' alignItems='end'>
+                  <Text color="#FB7575" fontSize='13px' borderBottom="none" colSpan={4} style={{ paddingLeft: '0', textAlign: 'end' }}>{totalError()}</Text>
+                </Flex>
+
+
+              </Flex>
+            </>
+          )
+
+
+            :
+
+
+            (
+              <Table variant="simple" borderRadius='10px'>
+                <Thead>
+                  <Tr>
+                    <Th className='head-tab' pl='0'>Description</Th>
+                    <Th className='head-tab'>Quantité</Th>
+                    <Th className='head-tab'>Prix ht/U</Th>
+                    <Th className='head-tab'>Total/ht</Th>
+                  </Tr>
+                </Thead>
+                <Tbody>
+                  {invoiceData.items.map((item, index) => (
+                    <Tr key={index}>
+                      <Td pl='0'>
+                        <Input
+                          _focus={{ borderColor: "#745FF2", boxShadow: "none" }}
+                          className={getClassForField(item.description)}
+                          placeholder="Description"
+                          name={`items.${index}.description`}
+                          value={item.description}
+                          onChange={handleChange}
+                        />
+                      </Td>
+                      <Td >
+                        <InputGroup>
+                          <Input
+                            _focus={{ borderColor: "#745FF2", boxShadow: "none" }}
+                            className={getClassForField(item.quantity, true)}
+                            boxShadow='rgba(174, 174, 192, 0.4) -1.5px -1.5px 3px 0px, rgb(255, 255, 255) 1.5px 1.5px 3px 0px;'
+                            placeholder="Quantité"
+                            name={`items.${index}.quantity`}
+                            type="number"
+                            value={item.quantity}
+                            onChange={handleChange}
+                          />
+                          <InputRightElement children={
+                            <IconButton
+                              aria-label="Supprimer l'article"
+                              icon={<DeleteIcon />}
+                              size="sm"
+                              backgroundColor="transparent"
+                              onClick={() => handleRemoveItem(index)}
+                            />
+                          } />
+                        </InputGroup>
+                      </Td>
+                      <Td>
+                        <Input
+                          _focus={{ borderColor: "#745FF2", boxShadow: "none" }}
+                          className={getClassForField(item.unitPrice)}
+                          alignItems='end'
+                          placeholder="Prix unitaire*"
+                          name={`items.${index}.unitPrice`}
+                          type="number"
+                          value={item.unitPrice}
+                          onChange={handleChange}
+                        />
+                      </Td>
+                      <Td textAlign='end'>
+                        {item.quantity * item.unitPrice} {/* Calcul du total pour chaque article */}
+                      </Td>
+                    </Tr>
+                  ))}
+                </Tbody>
+                <Tfoot>
+                  <Tr>
+                    <Td pl='0' colSpan="4" borderBottom="none">
+                      <Link onClick={handleAddItem} display='flex' w='fit-content' alignItems='center' color="#745FF2" >
+                        Ajouter un article
+                        <AddIcon w='2.5' ml="2" />
+                      </Link>
                     </Td>
                   </Tr>
-                ))}
-              </Tbody>
-              <Tfoot>
-                <Tr>
-                  <Td pl='0' colSpan="4" borderBottom="none">
-                    <Link onClick={handleAddItem} display='flex' alignItems='center' color="#745FF2" >
-                      Ajouter un article
-                      <AddIcon w='2.5' ml="2" />
-                    </Link>
-                  </Td>
-                </Tr>
+                  <Tr>
+                    <Td colSpan={3} style={{ paddingLeft: '0', textAlign: 'end' }}><Heading size='sm'>Sous-total HT :</Heading></Td>
+                    <Td style={{ textAlign: 'end' }}><Heading size='sm'>{invoiceData.subtotal}{invoiceData.devise}</Heading></Td>
+                  </Tr>
+                  <Tr>
+                    <Td colSpan={3} style={{ paddingLeft: '0', textAlign: 'end' }}><Heading size='sm'>TVA (%):</Heading></Td>
+                    <Td style={{ textAlign: 'end' }}>
+                      <Input
+                        _focus={{ borderColor: "#745FF2", boxShadow: "none" }}
+                        w='10vh'
+                        textAlign='end'
+                        className='neue-down'
+                        type="number"
+                        value={invoiceData.vatRate}
+                        onChange={handleVatChange} // Assurez-vous d'implémenter cette fonction pour mettre à jour le taux de TVA
+                        placeholder="Taux de TVA"
 
-                <Tr>
-                  <Td colSpan={3} style={{ paddingLeft: '0', textAlign: 'end' }}><Heading size='sm'>Sous-total HT :</Heading></Td>
-                  <Td style={{ textAlign: 'end' }}><Heading size='sm'>{invoiceData.subtotal}{invoiceData.devise}</Heading></Td>
-                </Tr>
-                <Tr>
-                  <Td colSpan={3} style={{ paddingLeft: '0', textAlign: 'end' }}><Heading size='sm'>TVA (%):</Heading></Td>
-                  <Td style={{ textAlign: 'end' }}>
-                    <Input
-                      w='10vh'
-                      textAlign='end'
-                      className='neue-down'
-                      type="number"
-                      value={invoiceData.vatRate}
-                      onChange={handleVatChange} // Assurez-vous d'implémenter cette fonction pour mettre à jour le taux de TVA
-                      placeholder="Taux de TVA"
+                      />
+                    </Td>
+                  </Tr>
 
-                    />
-                  </Td>
-                </Tr>
+                  <Tr alignContent='center' alignItems='center'>
+                    <Td colSpan={3} style={{ paddingLeft: '0', textAlign: 'end' }}><Heading size='md'>Total TTC :</Heading></Td>
+                    <Td style={{ textAlign: 'end' }}><Heading size='md'>{invoiceData.total}{invoiceData.devise}</Heading></Td>
+                  </Tr>
 
-                <Tr alignContent='center' alignItems='center'>
-                  <Td colSpan={3} style={{ paddingLeft: '0', textAlign: 'end' }}><Heading size='md'>Total TTC :</Heading></Td>
-                  <Td style={{ textAlign: 'end' }}><Heading size='md'>{invoiceData.total}{invoiceData.devise}</Heading></Td>
-                </Tr>
-              </Tfoot>
-            </Table>
+                  <Tr border='none !important' alignContent='end' alignItems='end'>
+                    <Td color="#FB7575" borderBottom="none" colSpan={4} style={{ paddingLeft: '0', textAlign: 'end' }}> <Text> {totalError()}</Text> </Td>
+                  </Tr>
+                </Tfoot>
+              </Table>
+
+            )
+        }
 
           </Flex>
         

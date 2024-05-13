@@ -181,6 +181,13 @@
 
 /* Smartphones en portrait */
 @media only screen and (max-width: 600px) {
+
+  .stepper-container{
+    margin-top: 0rem;
+    width: 100%;
+  }
+
+
   .tabs-container {
     width: 100vw;
     padding-left: 1rem;
@@ -199,11 +206,6 @@
   .disabled{
     margin-right: 1rem !important;
   }
-
-    .stepper-container {
-      margin-top: 4rem;
-      margin-bottom: 0;
-    }
 }
 
 

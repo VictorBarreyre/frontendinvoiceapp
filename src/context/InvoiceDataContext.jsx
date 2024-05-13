@@ -62,7 +62,18 @@ export const InvoiceDataProvider = ({ children }) => {
     const handleInvoiceDataChange = (newData) => {
         setInvoiceData(newData);
     };
-
+    
+    const getClassForField = (fieldValue, isQuantity = false) => {
+        if (isQuantity) {
+            // Pour les quantités, vérifiez directement la valeur numérique
+            return fieldValue >= 1 ? 'classicinput' : 'emptyinput';
+        } else {
+            // Pour les chaînes, continuez avec la logique existante
+            const valueAsString = typeof fieldValue === 'string' ? fieldValue : '';
+            return valueAsString.trim() === '' && attemptedNavigation ? 'emptyinput' : 'classicinput';
+        }
+    };
+    
 
     //fonction pour remplir les inputs
     const handleChange = (e) => {
@@ -225,7 +236,8 @@ export const InvoiceDataProvider = ({ children }) => {
             setIsTotalPercentage100,
             remainingPercentage, 
             setRemainingPercentage,
-            handleInvoiceActionSendMail
+            handleInvoiceActionSendMail,
+            getClassForField
         }}>
             {children}
         </InvoiceDataContext.Provider>
