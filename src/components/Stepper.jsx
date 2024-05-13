@@ -79,9 +79,9 @@ const getHeadingText = (index) => {
       case 0:
         return "Créez votre facture avec paiement automatique";
       case 1:
-        return "Finalisez et envoyez votre facture";
+        return "Définir les échéances de paiement";
       default:
-        return "Créez votre facture avec paiement automatique"; // Valeur par défaut
+        return "Finalisez et envoyez votre facture"; // Valeur par défaut
     }
   };
 

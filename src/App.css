@@ -128,10 +128,9 @@
 .stepper-container {
   display: flex;
   flex-direction: column;
-  width: 70%;
+  width: 85%;
   margin-top: 3rem;
   margin-bottom: 2rem;
-  margin-left: 3rem;
 }
 
 .tabs-container {
