@@ -1,31 +1,4 @@
 
-
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
-}
-
-h2{
-  color:black ;
-  margin-bottom: 0.5rem;
-  line-height: 2.4rem;
-}
-
-h3{
-  color: black;
-}
-
-p{
-  line-height: 1.4rem;
-}
 /* CSS pour cacher l'icône de calendrier par défaut et styliser l'input */
 .custom-date-input::-webkit-calendar-picker-indicator {
   display: none;
@@ -46,73 +19,86 @@ p{
 }
 
 
-.classicinput{
+.classicinput {
   background-color: white !important;
   margin-bottom: 0.5rem;
-  box-shadow: rgba(174, 174, 192, 0.4) -1.5px -1.5px 3px 0px, rgb(255, 255, 255) 1.5px 1.5px 3px 0px ;
+  box-shadow: rgba(174, 174, 192, 0.4) -1.5px -1.5px 3px 0px, rgb(255, 255, 255) 1.5px 1.5px 3px 0px;
 }
 
-.emptyinput{
+.classicinput:focus {
+  border: 1px solid #745FF2;
+  outline: none !important;
+  border-color:#745FF2 !important; /* Ajoute une bordure rouge lors du focus */
+}
+
+.emptyinput {
   margin-bottom: 0.5rem;
   border: 1px dashed red !important;
 }
 
 .emptyinput::placeholder {
-  color: red; /* Nouvelle couleur du texte du placeholder */
+  color:red;
+  /* Nouvelle couleur du texte du placeholder */
 }
 
 
-.final-btn{
+.final-btn {
   margin-top: 0.2rem;
 }
 
-.head-tab{
+.head-tab {
   font-family: 'SF Pro Display';
+  text-transform: uppercase;
+  color: #4a5568;
+  font-size: 13px;
+  font-weight:900;
+  letter-spacing: 0.1em;
 }
 
-.invoice{
+.invoice {
   display: flex;
   flex-direction: column;
   width: 30vw;
 }
 
-.facto-compo{
+.facto-compo {
   font-family: 'SF Pro Display';
   font-weight: 300;
   margin-bottom: 0.5rem;
   width: -webkit-fill-available-;
 }
 
-.neue-up{
+.neue-up {
   background-color: #fdfdfd;
-  box-shadow: rgba(174, 174, 192, 0.4) 1.5px 1.5px 3px 0px, rgb(255, 255, 255) -1px -1px 3px 0px; ;
+  box-shadow: rgba(174, 174, 192, 0.4) 1.5px 1.5px 3px 0px, rgb(247 249 252) -1px -1px 3px 0px
+  ;
 }
 
-.neue-down {
-  height: 2.5rem;
-    padding: 1rem;
-    border-radius: 5px;
-  background-color: #fdfdfd;
-  box-shadow: rgba(174, 174, 192, 0.4) -1.5px -1.5px 3px 0px, rgb(255, 255, 255) 1.5px 1.5px 3px 0px  ;
+.neue-down.neue-down, .neue-down.neue-down[readonly] {
+  height: 2.5rem !important;
+  padding: 1rem !important;
+  border-radius: 5px !important;
+  background-color: #fdfdfd !important;
+  box-shadow: rgba(174, 174, 192, 0.4) -1.5px -1.5px 3px 0px, rgb(255, 255, 255) 1.5px 1.5px 3px 0px !important;
 }
 
-.neue-down-group{
+
+.neue-down-group {
   border-radius: 5px;
-  box-shadow: rgba(174, 174, 192, 0.4) -1.5px -1.5px 3px 0px, rgb(255, 255, 255) 1.5px 1.5px 3px 0px  ;
+  box-shadow: rgba(174, 174, 192, 0.4) -1.5px -1.5px 3px 0px, rgb(255, 255, 255) 1.5px 1.5px 3px 0px;
 }
 
-.chakrabtn{
+.chakrabtn {
   border-radius: 30px;
   color: white;
   background-color: black;
 }
 
 
-
-.form-iban{
+.form-iban {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: start;
   gap: 10px;
 }
 
@@ -124,19 +110,109 @@ p{
   background-color: black;
   border: none;
   border-radius: 30px;
-  padding: 12px 24px;
+  padding: 10px 24px;
   margin-top: 16px;
   cursor: pointer;
 }
 
-.stepper{
-  margin-bottom: 5vh;
+.inputError {
+  border: 1px solid red;
 }
+
+.flex-stepper{
+  display: flex;
+  width: 100%;
+  justify-content: center;
+}
+
+.stepper-container {
+  display: flex;
+  flex-direction: column;
+  width: 70%;
+  margin-top: 3rem;
+  margin-bottom: 2rem;
+  margin-left: 3rem;
+}
+
+.tabs-container {
+  padding: 3rem;
+  background: white;
+  border-radius: 1vw;
+  box-shadow: rgba(174, 174, 192, 0.4) 1.5px 1.5px 3px 0px, rgb(247 249 252) -1px -1px 3px 0px
+}
+
+.dashboard{
+  display: flex;
+}
+
+.sidebar{
+  border-radius: 1vw;
+  align-items: flex-start;
+  background-color: white;
+  padding-left: 2rem;
+  height: 89vh;
+  margin-left: 2rem;
+  margin-top: 7rem;
+  width: 15vw; 
+  justify-content: space-between;
+}
+
+.tab-list-dashboard{
+  width: 100%;
+  align-items: left;
+  padding-top: 2rem;
+  list-style: none;
+
+}
+
+.content-dashboard{
+  margin-top: 7rem;
+  margin-left: 3rem;
+}
+
+.tab .icon {
+  width: 20px; /* Ajustez la taille selon vos besoins */
+  height: 20px; /* Ajustez la taille selon vos besoins */
+  margin-right: 10px; /* Espace entre l'icône et le texte */
+  vertical-align: middle; /* Pour aligner verticalement l'icône avec le texte */
+}
+
+
+
+
+/* Smartphones en portrait */
+@media only screen and (max-width: 600px) {
+  .tabs-container {
+    width: 100vw;
+    padding-left: 1rem;
+  padding-right: 1rem;
+  }
+
+  .tab-list{
+    justify-content: space-between;
+    margin-bottom: 1.2rem !important;
+  }
+
+  .tab.active{
+    margin-right: 1rem;
+  }
+
+  .disabled{
+    margin-right: 1rem !important;
+  }
+
+    .stepper-container {
+      margin-top: 4rem;
+      margin-bottom: 0;
+    }
+}
+
 
 @keyframes logo-spin {
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }

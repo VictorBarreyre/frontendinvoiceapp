@@ -46,6 +46,7 @@ export const InvoiceDataProvider = ({ children }) => {
     const [startDate, setStartDate] = useState(new Date());
     const [buttonLabel, setButtonLabel] = useState(null);
     const [attemptedDownloadWithoutRequiredFields, setAttemptedDownloadWithoutRequiredFields] = useState(false);
+    const [attemptedNavigation, setAttemptedNavigation] = useState(false);
     const [showErrorMessage, setShowErrorMessage] = useState('');
     const [itemsnames, setItemsNames] = useState('');
     const [payments, setPayments] = useState([
@@ -115,6 +116,8 @@ export const InvoiceDataProvider = ({ children }) => {
             setStartDate,
             buttonLabel,
             setButtonLabel,
+            attemptedNavigation,
+            setAttemptedNavigation,
             attemptedDownloadWithoutRequiredFields,
             setAttemptedDownloadWithoutRequiredFields,
             showErrorMessage,
