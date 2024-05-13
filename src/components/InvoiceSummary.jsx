@@ -106,97 +106,6 @@ const InvoiceSummary = () => {
     };
 
     
-    // déplacer l'aspect back dans le back
-
-    const handleInvoiceAction = async () => {
-        const { number, issuer, client } = invoiceData;
-        const areAllRequiredFieldsValid = number !== '' && issuer.name !== '' && client.name !== '';
-    
-        const baseUrl = "http://localhost:8000";
-    
-        if (!areAllRequiredFieldsValid) {
-          setRequiredFieldsValid({
-            number: number !== '',
-            'issuer.name': issuer.name !== '',
-            'client.name': client.name !== '',
-          });
-          console.log('Champs requis manquants ou invalides');
-          return;
-        }
-    
-        try {
-          const file = <InvoicePDF invoiceData={invoiceData} />;
-          const asPDF = pdf([]);
-          asPDF.updateContainer(file);
-          const pdfBlob = await asPDF.toBlob();
-    
-          if (client.email && isValidEmail(client.email)) {
-            const formData = new FormData();
-            formData.append('file', pdfBlob, `Facture-${number}.pdf`);
-            formData.append('email', client.email);
-            formData.append('montant', invoiceData.total);
-            formData.append('emetteur', JSON.stringify(invoiceData.issuer));
-            formData.append('destinataire', JSON.stringify(invoiceData.client));
-    
-            // Première requête pour créer la facture et récupérer le factureId
-            const createResponse = await fetch(`${baseUrl}/email/sendEmail`, {
-              method: "POST",
-              body: formData,
-            });
-    
-            if (createResponse.status >= 200 && createResponse.status < 300) {
-              const createData = await createResponse.json();
-              const factureId = createData.factureId;
-              const confirmationLink = `http://localhost:5173/confirmation?facture=${factureId}&montant=${invoiceData.total}`;
-    
-              // Construction du messageEmail avec le factureId
-              const messageEmail = `Cher ${client.name},
-      
-      Veuillez trouver ci-joint votre facture n° ${number}.
-      
-      ...
-      
-      Pour confirmer votre accord et signer électroniquement le contrat, veuillez cliquer sur le lien ci-dessous :
-      
-      ${confirmationLink}
-      
-      Nous vous remercions pour votre confiance et restons à votre disposition pour toute information complémentaire.
-      
-      Cordialement,
-      ${issuer.name}`;
-    
-              // Ajout de subject et messageEmail pour l'envoi de l'email
-              formData.append('subject', 'Votre Facture'); // Assurez-vous d'avoir défini un sujet approprié
-              formData.append('message', messageEmail); // Ajoutez le messageEmail
-    
-              // Deuxième requête pour envoyer l'email avec le messageEmail inclus
-              const emailResponse = await fetch(`${baseUrl}/email/sendEmail`, {
-                method: "POST",
-                body: formData, // Réutilisation de formData avec les données ajoutées
-              });
-    
-              if (emailResponse.status >= 200 && emailResponse.status < 300) {
-                alert("Facture envoyée avec succès !");
-              } else {
-                console.log('Erreur lors de l\'envoi de la facture', emailResponse.statusText);
-              }
-            } else {
-              console.log('Erreur lors de la création de la facture', createResponse.statusText);
-            }
-          } else {
-            console.log('Email invalide ou absent, téléchargement de la facture...');
-            const url = URL.createObjectURL(pdfBlob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = `Facture-${number}.pdf`;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-          }
-        } catch (error) {
-          console.error('Erreur lors de la génération ou de l’envoi du PDF', error);
-        }
-      };
 
     return (
         <Box {...styleProps.container}>
@@ -279,9 +188,7 @@ const InvoiceSummary = () => {
                     <Text {...styleProps.subHeading}>TVA: {invoiceData.vatRate}% ({invoiceData.vatAmount} {invoiceData.devise})</Text>
                     <Text {...styleProps.heading}>Total TTC: {invoiceData.total} {invoiceData.devise}</Text>
                 </Flex>
-                <Button onClick={() => handleInvoiceAction(invoiceData)} color='white' borderRadius='30px' backgroundColor='black' mt="4" colorScheme="gray">
-                    Envoyer ma facture et recevoir le paiement
-                </Button>
+    
             </VStack>
 
         </Box>

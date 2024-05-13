@@ -290,9 +290,6 @@ const InvoiceCreator = ({ handleNavigateTo }) => {
           </Flex>
         
           <Text color='red' >{showErrorMessage}</Text>
-          <Button onClick={handleNavigateTo} rightIcon={<ArrowForwardIcon />} color='white' borderRadius='30px' backgroundColor='black' mt="4" colorScheme="gray" >
-            {buttonLabel}
-          </Button>
         </VStack>
     </>
   );
