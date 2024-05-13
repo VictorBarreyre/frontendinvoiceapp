@@ -5,6 +5,7 @@ import { Heading, Text, Button } from '@chakra-ui/react';
 import { ArrowForwardIcon } from '@chakra-ui/icons';
 import PaymentScheduleForm from './PaymentScheduleForm';
 import InvoiceSummary from './InvoiceSummary';
+import { useTheme } from '@chakra-ui/react';
 
 const Stepper = () => {
   const [tabIndex, setTabIndex] = useState(0);
@@ -21,6 +22,28 @@ const Stepper = () => {
     = useInvoiceData(); // Accéder aux données de la facture depuis le contexte
   const [isStepNextAvailable, setIsStepNextAvailable] = useState(false);
   const [showError, setShowError] = useState(false);
+
+  const theme = useTheme();
+  // Accéder au point de rupture 'md' à partir du thème
+  const breakpointMd = parseInt(theme.breakpoints.md, 10);
+
+  const [isMobile, setIsMobile] = useState(false);
+
+
+
+    // Détecter si l'appareil est mobile
+    useEffect(() => {
+      const handleResize = () => {
+          setIsMobile(window.innerWidth < 768); // Supposons que mobile est < 768px
+      };
+
+      // Écouter les changements de taille de fenêtre
+      window.addEventListener('resize', handleResize);
+      handleResize(); // Appeler immédiatement pour définir l'état initial
+
+      return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
 
   useEffect(() => {
     // Cette fonction vérifie si les champs requis pour activer l'étape suivante sont remplis.
@@ -80,7 +103,7 @@ const Stepper = () => {
         setButtonLabel("Définir mes échéances de paiement");
         break;
       case 1:
-        setButtonLabel("Vérifier les informations de facturation et envoyer la facture");
+        setButtonLabel("Finalisez et envoyez votre facture");
         break;
       case 2:
         setButtonLabel("Envoyer ma facture");
@@ -106,27 +129,27 @@ const Stepper = () => {
     }
   };
 
-  
+
   const renderButton = () => {
     if (tabIndex === 1) {
         return remainingPercentage > 0 ? (
-            <Button borderRadius='30px' mt="4" colorScheme="red" isDisabled={true}>Pourcentage restant à attribuer : {remainingPercentage}%</Button>
-        ) : (
-            <Button onClick={handleSubmit} rightIcon={<ArrowForwardIcon />} color='white' borderRadius='30px' backgroundColor='black' mt="4">
+            <Button borderRadius='30px' mt="4" colorScheme="red"  w={{ base: '100%', lg: 'unset' }} isDisabled={true}>Pourcentage restant à attribuer : {remainingPercentage}%</Button>
+        ) : ( 
+            <Button onClick={handleSubmit} rightIcon={<ArrowForwardIcon />} w={{ base: '100%', lg: 'unset' }}  color='white' borderRadius='30px' backgroundColor='black'>
                 Vérifier les informations de facturation et envoyer la facture
             </Button>
         );
     } else if (tabIndex === 2) {
         // Step 2 spécifique: Envoi de l'email
         return (
-            <Button onClick={handleInvoiceActionSendMail} rightIcon={<ArrowForwardIcon />} color='white' borderRadius='30px' backgroundColor='black' mt="4">
+            <Button onClick={handleInvoiceActionSendMail} rightIcon={<ArrowForwardIcon />} w={{ base: '100%', lg: 'unset' }}  color='white' borderRadius='30px' backgroundColor='black' >
                 {buttonLabel}
             </Button>
         );
     } else {
         // Pour les autres étapes, navigation normale
         return (
-            <Button onClick={handleNavigateTo} rightIcon={<ArrowForwardIcon />} color='white' borderRadius='30px' backgroundColor='black' mt="4" colorScheme="gray">
+            <Button onClick={handleNavigateTo} rightIcon={<ArrowForwardIcon />} w={{ base: '100%', lg: 'unset' }}  color='white' borderRadius='30px' backgroundColor='black' colorScheme="gray">
                 {buttonLabel}
             </Button>
         );
@@ -146,13 +169,31 @@ const handleSubmit = () => {
   const getHeadingText = (index) => {
     switch (index) {
       case 0:
-        return "Créez votre facture avec paiement automatique";
+        return "Créez votre facture en ligne";
       case 1:
         return "Définir les échéances de paiement";
       default:
         return "Finalisez et envoyez votre facture"; // Valeur par défaut
     }
   };
+  const tabText = (index, isMobile) => {
+    // Définir les textes par défaut pour le bureau
+    const texts = [
+        "Votre Facture",
+        "Vos échéances de paiements",
+        "Résumé & Envoi"
+    ];
+
+    // Définir les textes pour mobile
+    const mobileTexts = [
+        "Votre facture",
+        "Vos échéances",
+        "Envoi"
+    ];
+
+    // Retourner le texte correspondant en fonction de l'index et de si le mode mobile est activé
+    return isMobile ? mobileTexts[index] : texts[index];
+};
 
 
   return (
@@ -163,9 +204,9 @@ const handleSubmit = () => {
             <Heading fontSize='26px'>{getHeadingText(tabIndex)}</Heading>
           </div>
           <div className="tab-list">
-            <button className={`tab ${tabIndex === 0 ? 'active' : ''}`} onClick={() => handleTabClick(0)}>Votre Facture</button>
-            <button className={`tab ${tabIndex === 1 ? 'active' : ''} ${!isStepNextAvailable ? 'disabled' : ''}`} onClick={() => handleTabClick(1)}>Vos échéances de paiements</button>
-            <button className={`tab ${tabIndex === 2 ? 'active' : ''} ${!isStepNextAvailable ? 'disabled' : ''}`} onClick={() => handleTabClick(2)} >Résumé & Envoi </button>
+            <button className={`tab ${tabIndex === 0 ? 'active' : ''}`} onClick={() => handleTabClick(0)}>{tabText(0, isMobile)}</button>
+            <button className={`tab ${tabIndex === 1 ? 'active' : ''} ${!isStepNextAvailable ? 'disabled' : ''}`} onClick={() => handleTabClick(1)}>{tabText(1, isMobile)}</button>
+            <button className={`tab ${tabIndex === 2 ? 'active' : ''} ${!isStepNextAvailable ? 'disabled' : ''}`} onClick={() => handleTabClick(2)} >{tabText(2, isMobile)}</button>
           </div>
 
           <div className="tab-panel">

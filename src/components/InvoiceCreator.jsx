@@ -140,32 +140,33 @@ const InvoiceCreator = ({ handleNavigateTo, totalError }) => {
   return (
 
     <>
-     
-        <VStack mt='2rem' boxShadow=' 1px solid black' spacing={6} align="start">
-          <Flex w='25vw' justifyContent='space-between' width='-webkit-fill-available'>
-            <Flex w={{ base: 'unset', lg: '25vw' }} direction='column' justifyContent='space-between' pb="2rem" >
-              <Heading mb='1rem' size="sm">Facture n° :</Heading>
-              <Input
-                className={requiredClassnameField(attemptedDownloadWithoutRequiredFields, requiredFieldsValid)}
-                placeholder="Numéro de facture*" name="number" value={invoiceData.number} onChange={handleChange} />
-            </Flex>
-            <Flex direction='column' w='25vw' >
-              <Heading mb='1rem' size="sm">Date :</Heading>
-              <DatePicker
-                className='neue-down'
-                boxShadow='rgba(174, 174, 192, 0.4) -1.5px -1.5px 3px 0px, rgb(255, 255, 255) 1.5px 1.5px 3px 0px !important'
-                position='static !important'
-                backgroundColor='white'
-                color="#0B3860"
-                selected={startDate}
-                onChange={(date) => setStartDate(date)}
-                minDate={new Date()}
-                maxDate={new Date().setFullYear(new Date().getFullYear() + 1)}
-                dateFormat="dd/MM/yyyy"
-                customInput={<CustomInput />}
-              />
-            </Flex>
-          </Flex>
+        <VStack mt='2rem' boxShadow=' 1px solid black'  align="start">
+        <Flex w='100%' justifyContent='space-between' >
+        <Flex w={{ base: '10.5rem', lg: 'auto' }} direction='column' justifyContent='space-between' pb="2rem" >
+          <Heading mb='1rem' size="sm">Facture n° :</Heading>
+          <Input
+            _focus={{ borderColor: "#745FF2", boxShadow: "none" }}
+            _active={{ bg: "white", color: "black" }}
+            className={getClassForField(invoiceData.number)} // Assurez-vous que le nom du champ correspond exactement à la clé dans invoiceData
+            placeholder="Numéro de facture" name="number" value={invoiceData.number} onChange={handleChange} />
+        </Flex>
+        <Box direction='column' w={{ base: '10rem', lg: 'unset' }} justifyContent='space-between' pb="2rem" >
+          <Heading mb='1rem' size="sm">Date :</Heading>
+          <DatePicker
+            className='neue-down'
+            boxShadow='rgba(174, 174, 192, 0.4) -1.5px -1.5px 3px 0px, rgb(255, 255, 255) 1.5px 1.5px 3px 0px !important'
+            position='static !important'
+            backgroundColor='white'
+            color="#0B3860"
+            selected={startDate}
+            onChange={(date) => setStartDate(date)}
+            minDate={new Date()}
+            maxDate={new Date().setFullYear(new Date().getFullYear() + 1)}
+            dateFormat="dd/MM/yyyy"
+            customInput={<CustomInput />}
+          />
+        </Box>
+      </Flex>
           <Flex flexDirection={{ base: 'column', lg: 'row' }} w='25vw' justifyContent='space-between' width='-webkit-fill-available' pb="2rem" >
             <Flex direction="column" w={{ base: 'unset', lg: '25vw' }} alignItems='start'>
               <Heading mb='1rem' size="sm">Informations sur l'émetteur :</Heading>
