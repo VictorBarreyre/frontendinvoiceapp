@@ -152,92 +152,44 @@ const InvoiceSummary = () => {
                     </Flex>
                 </Flex>
 
-                <Flex direction='column' width='100%'>
-    <Heading {...styleProps.subHeading} ml='2.5vh' mb='2vh' size="md">Articles / Services</Heading>
-    {isMobile ? (
-        <>
-            {/* En-têtes des colonnes */}
-            <Flex justify="space-between" mb="1rem">
-                <Text
-                    fontFamily="heading"
-                    fontWeight="bold"
-                    textTransform="uppercase"
-                    letterSpacing="wider"
-                    textAlign="center"
-                    p={3}
-                    lineHeight="4"
-                    fontSize="xs"
-                    backgroundColor='#f7f7f7'
-                    color="gray.600"
-                    borderBottom="1px"
-                    borderColor="gray.100"
-                    w='max-content'
-                >
-                    Description
-                </Text>
-                <Text
-                    fontFamily="heading"
-                    fontWeight="bold"
-                    textTransform="uppercase"
-                    letterSpacing="wider"
-                    textAlign="center"
-                    p={3}
-                    lineHeight="4"
-                    fontSize="xs"
-                    backgroundColor='#f7f7f7'
-                    color="gray.600"
-                    borderBottom="1px"
-                    borderColor="gray.100"
-                    w='max-content'
-                >
-                    Quantité
-                </Text>
-                <Text
-                    fontFamily="heading"
-                    fontWeight="bold"
-                    textTransform="uppercase"
-                    letterSpacing="wider"
-                    textAlign="center"
-                    p={3}
-                    lineHeight="4"
-                    fontSize="xs"
-                    backgroundColor='#f7f7f7'
-                    color="gray.600"
-                    borderBottom="1px"
-                    borderColor="gray.100"
-                    w='max-content'
-                >
-                    Prix/U
-                </Text>
-                <Text
-                    fontFamily="heading"
-                    fontWeight="bold"
-                    textTransform="uppercase"
-                    backgroundColor='#f7f7f7'
-                    letterSpacing="wider"
-                    textAlign="center"
-                    p={3}
-                    lineHeight="4"
-                    fontSize="xs"
-                    color="gray.600"
-                    borderBottom="1px"
-                    borderColor="gray.100"
-                    w='max-content'
-                >
-                    Total HT
-                </Text>
-            </Flex>
+                <Flex direction='column' width='100%' mb="2rem">
+                    <Heading {...styleProps.subHeading} ml='2.5vh' mb='2vh' size="md">Articles / Services</Heading>
+                    {isMobile ? (
+                        <>
+                            {/* En-têtes des colonnes */}
+                            <Flex justify="space-between">
+                                {["Description", "Quantité", "Prix/U", "Total HT"].map(header => (
+                                    <Text
+                                        key={header}
+                                        fontFamily="heading"
+                                        fontWeight="bold"
+                                        textTransform="uppercase"
+                                        letterSpacing="wider"
+                                        textAlign="center"
+                                        p={3}
+                                        lineHeight="4"
+                                        fontSize="xs"
+                                        backgroundColor='#f7f7f7'
+                                        color="gray.600"
+                                        borderBottom="1px"
+                                        borderColor="gray.100"
+                                        w='25%' // Assume 4 columns so each gets 25%
+                                    >
+                                        {header}
+                                    </Text>
+                                ))}
+                            </Flex>
 
-            {/* Détails des items */}
-            {invoiceData.items.map((item, index) => (
-                <Flex key={index} justify="space-between" pb='1rem' pt='0.3rem' borderBottomWidth='1px'>
-                    <Text w='4rem' ml='1.5vh'>{item.description}</Text>
-                    <Text ml='1.5vh'>{item.quantity}</Text>
-                    <Text ml='1.5vh'>{item.unitPrice}</Text>
-                    <Text  ml='1.5vh'>{item.quantity * item.unitPrice}</Text>
-                </Flex>
-            ))}
-        </>
+                            {/* Détails des items */}
+                            {invoiceData.items.map((item, index) => (
+                                <Flex key={index} justify="space-between" pb='1rem' pt='1rem' borderBottomWidth='1px'>
+                                    <Text w='25%' textAlign="center" >{item.description}</Text>
+                                    <Text w='25%' textAlign="center" >{item.quantity}</Text>
+                                    <Text w='25%' textAlign="center" >{item.unitPrice}</Text>
+                                    <Text w='25%' textAlign="center" >{item.quantity * item.unitPrice}</Text>
+                                </Flex>
+                            ))}
+                        </>
                     ) : (
                         <>
                             <Heading {...styleProps.subHeading} ml='2.5vh' mb='2vh' size="md">Articles / Services</Heading>
@@ -268,80 +220,74 @@ const InvoiceSummary = () => {
 
                 {isMobile ? (
                     <>
-                        {payments.map((payment, index) => (
-                            <Box key={index} borderBottom="1px solid #f2f2f2" pb="1rem" mb="1rem">
+                        {payments.length > 0 && (
+                            <Box pb="1rem" mb="2rem">
                                 <Heading {...styleProps.subHeading} ml='2.5vh' mb='2vh' size="md">Échéances de paiement</Heading>
-                                <Flex >
-                                    <Flex direction="column" justifyContent="space-between">
-                                        <Text
-                                            fontFamily="heading"
-                                            fontWeight="bold"
-                                            textTransform="uppercase"
-                                            letterSpacing="wider"
-                                            textAlign="center"
-                                            mb="1rem"
-                                            p={3}
-                                            lineHeight="4"
-                                            fontSize="xs"
-                                            backgroundColor='#f7f7f7'
-                                            color="gray.600"
-                                            borderBottom="1px"
-                                            borderColor="gray.100"
-                                            w='max-content'
-                                        >
-                                            Pourcentage %
-                                        </Text>
-
-
-                                        <Text ml='1.5vh'>{payment.percentage}%</Text>
-                                    </Flex>
-
-                                    <Flex direction="column" justifyContent="space-between">
-                                        <Text
-                                            fontFamily="heading"
-                                            fontWeight="bold"
-                                            textTransform="uppercase"
-                                            letterSpacing="wider"
-                                            textAlign="center"
-                                            mb="1rem"
-                                            p={3}
-                                            lineHeight="4"
-                                            fontSize="xs"
-                                            backgroundColor='#f7f7f7'
-                                            color="gray.600"
-                                            borderBottom="1px"
-                                            borderColor="gray.100"
-                                            w='max-content'
-                                        >
-                                            Date d'échéance
-                                        </Text>
-                                        <Text ml='1.5vh'>{payment.dueDate.toLocaleDateString()}</Text>
-                                    </Flex>
-
-                                    <Flex direction="column" justifyContent="space-between">
-                                        <Text
-                                            fontFamily="heading"
-                                            fontWeight="bold"
-                                            textTransform="uppercase"
-                                            letterSpacing="wider"
-                                            textAlign="center"
-                                            mb="1rem"
-                                            p={3}
-                                            lineHeight="4"
-                                            fontSize="xs"
-                                            backgroundColor='#f7f7f7'
-                                            color="gray.600"
-                                            borderBottom="1px"
-                                            borderColor="gray.100"
-                                            w='max-content'
-                                        >
-                                            Montant
-                                        </Text>
-                                        <Text ml='1.5vh'>{payment.amount} {invoiceData.devise}</Text>
-                                    </Flex>
+                                {/* En-têtes des colonnes */}
+                                <Flex justify="space-between">
+                                    <Text
+                                        fontFamily="heading"
+                                        fontWeight="bold"
+                                        textTransform="uppercase"
+                                        letterSpacing="wider"
+                                        textAlign="center"
+                                        p={3}
+                                        lineHeight="4"
+                                        fontSize="xs"
+                                        backgroundColor='#f7f7f7'
+                                        color="gray.600"
+                                        borderBottom="1px"
+                                        borderColor="gray.100"
+                                        minWw='33.333%'  // Three columns, so each gets about one-third
+                                    >
+                                        Pourcentage %
+                                    </Text>
+                                    <Text
+                                        fontFamily="heading"
+                                        fontWeight="bold"
+                                        textTransform="uppercase"
+                                        letterSpacing="wider"
+                                        textAlign="center"
+                                        p={3}
+                                        lineHeight="4"
+                                        fontSize="xs"
+                                        backgroundColor='#f7f7f7'
+                                        color="gray.600"
+                                        borderBottom="1px"
+                                        borderColor="gray.100"
+                                        minWw='33.333%'
+                                    >
+                                        Date d'échéance
+                                    </Text>
+                                    <Text
+                                        fontFamily="heading"
+                                        fontWeight="bold"
+                                        textTransform="uppercase"
+                                        letterSpacing="wider"
+                                        textAlign="center"
+                                        p={3}
+                                        lineHeight="4"
+                                        fontSize="xs"
+                                        backgroundColor='#f7f7f7'
+                                        color="gray.600"
+                                        borderBottom="1px"
+                                        borderColor="gray.100"
+                                        minWw='33.333%'
+                                    >
+                                        Montant
+                                    </Text>
                                 </Flex>
+
+                                {/* Détails des échéances pour chaque paiement */}
+                                {payments.map((payment, index) => (
+                                    <Flex key={index} pb='1rem' pt='1rem' borderBottomWidth='1px' justify="space-between">
+                                        <Text w='33.333%' textAlign="center">{payment.percentage}%</Text>
+                                        <Text w='33.333%' textAlign="center">{payment.dueDate.toLocaleDateString()}</Text>
+                                        <Text w='33.333%' textAlign="center">{payment.amount} {invoiceData.devise}</Text>
+                                    </Flex>
+                                ))}
                             </Box>
-                        ))}
+                        )}
                     </>
                 ) : (
                     <Flex direction='column' width='100%'>
