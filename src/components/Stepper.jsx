@@ -136,7 +136,7 @@ const Stepper = () => {
             <Button borderRadius='30px' mt="4" colorScheme="red"  w={{ base: '100%', lg: 'unset' }} isDisabled={true}>Pourcentage restant à attribuer : {remainingPercentage}%</Button>
         ) : ( 
             <Button onClick={handleSubmit} rightIcon={<ArrowForwardIcon />} w={{ base: '100%', lg: 'unset' }}  color='white' borderRadius='30px' backgroundColor='black'>
-                Vérifier les informations de facturation et envoyer la facture
+                {buttonLabel}
             </Button>
         );
     } else if (tabIndex === 2) {
@@ -171,11 +171,13 @@ const handleSubmit = () => {
       case 0:
         return "Créez votre facture en ligne";
       case 1:
-        return "Définir les échéances de paiement";
+        return "Vos échéances de paiement";
       default:
-        return "Finalisez et envoyez votre facture"; // Valeur par défaut
+        return "Envoyez votre facture"; // Valeur par défaut
     }
   };
+
+
   const tabText = (index, isMobile) => {
     // Définir les textes par défaut pour le bureau
     const texts = [

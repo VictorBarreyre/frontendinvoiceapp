@@ -216,10 +216,7 @@ const PaymentScheduleForm = ({  }) => {
 
 
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    onSubmit(payments);
-  };
+
 
   const paymentScheduleText = payments.length > 1 ? (
     <Text mt={1} color="#4A5568">
