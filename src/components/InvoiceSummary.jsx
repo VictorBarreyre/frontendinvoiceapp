@@ -221,10 +221,10 @@ const InvoiceSummary = () => {
                 {isMobile ? (
                     <>
                         {payments.length > 0 && (
-                            <Box pb="1rem" mb="2rem">
+                            <Box pb="1rem" mb="2rem"  w='100%'>
                                 <Heading {...styleProps.subHeading} ml='2.5vh' mb='2vh' size="md">Échéances de paiement</Heading>
                                 {/* En-têtes des colonnes */}
-                                <Flex justify="space-between">
+                                <Flex justify="space-between" w='100%'>
                                     <Text
                                         fontFamily="heading"
                                         fontWeight="bold"
@@ -238,9 +238,9 @@ const InvoiceSummary = () => {
                                         color="gray.600"
                                         borderBottom="1px"
                                         borderColor="gray.100"
-                                        minWw='33.333%'  // Three columns, so each gets about one-third
+                                        minW='33.333%'  // Three columns, so each gets about one-third
                                     >
-                                        Pourcentage %
+                                        %
                                     </Text>
                                     <Text
                                         fontFamily="heading"
@@ -255,9 +255,9 @@ const InvoiceSummary = () => {
                                         color="gray.600"
                                         borderBottom="1px"
                                         borderColor="gray.100"
-                                        minWw='33.333%'
+                                        minW='33.333%' 
                                     >
-                                        Date d'échéance
+                                        Date
                                     </Text>
                                     <Text
                                         fontFamily="heading"
@@ -272,7 +272,7 @@ const InvoiceSummary = () => {
                                         color="gray.600"
                                         borderBottom="1px"
                                         borderColor="gray.100"
-                                        minWw='33.333%'
+                                        minW='33.333%' 
                                     >
                                         Montant
                                     </Text>
