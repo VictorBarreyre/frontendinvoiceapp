@@ -119,7 +119,7 @@ const InvoiceSummary = () => {
             width: '100%'
         },
         totalSection: {
-            marginTop: "20px",
+    
             marginBottom: "20px"
             ,
         },
@@ -161,15 +161,32 @@ const InvoiceSummary = () => {
                     {isMobile ? (
                         <>
                             {/* En-têtes des colonnes à redéfinir car trop longues */}
-                            <Flex justify="space-between">
-                                {["Description", "Quantité", "Prix/U", "Total HT"].map(header => (
+                            <Flex justify="space-between"  backgroundColor='#f7f7f7'>
+                            <Flex justify="space-between" w='100%' backgroundColor='#f7f7f7'>
                                     <Text
-                                        key={header}
                                         fontFamily="heading"
                                         fontWeight="bold"
                                         textTransform="uppercase"
                                         letterSpacing="wider"
-                                        textAlign="center"
+                                        textAlign="left"
+                                        p={3}
+                                        pl='1rem'
+                                        lineHeight="4"
+                                        fontSize="xs"
+                                        backgroundColor='#f7f7f7'
+                                        color="gray.600"
+                                        borderBottom="1px"
+                                        borderColor="gray.100"
+                                        minW='38.333%'  // Three columns, so each gets about one-third
+                                    >
+                                      Description
+                                    </Text>
+                                    <Text
+                                        fontFamily="heading"
+                                        fontWeight="bold"
+                                        textTransform="uppercase"
+                                        letterSpacing="wider"
+                                        textAlign="left"
                                         p={3}
                                         lineHeight="4"
                                         fontSize="xs"
@@ -177,26 +194,42 @@ const InvoiceSummary = () => {
                                         color="gray.600"
                                         borderBottom="1px"
                                         borderColor="gray.100"
-                                        w='25%' // Assume 4 columns so each gets 25%
+                                        minW='31.333%'
                                     >
-                                        {header}
+                                      Prix/U
                                     </Text>
-                                ))}
+                                    <Text
+                                        fontFamily="heading"
+                                        fontWeight="bold"
+                                        textTransform="uppercase"
+                                        letterSpacing="wider"
+                                        textAlign="left"
+                                        p={3}
+                                        lineHeight="4"
+                                        fontSize="xs"
+                                        backgroundColor='#f7f7f7'
+                                        color="gray.600"
+                                        borderBottom="1px"
+                                        borderColor="gray.100"
+                                        minW='31.333%'
+                                    >
+                                   Total HT
+                                    </Text>
+                                </Flex>
+                        
                             </Flex>
 
                             {/* Détails des items */}
                             {invoiceData.items.map((item, index) => (
                                 <Flex key={index} justify="space-between" pb='1rem' pt='1rem' borderBottomWidth='1px'>
-                                    <Text w='25%' textAlign="center" >{item.description}</Text>
-                                    <Text w='25%' textAlign="center" >{item.quantity}</Text>
-                                    <Text w='25%' textAlign="center" >{item.unitPrice}</Text>
-                                    <Text w='25%' textAlign="center" >{item.quantity * item.unitPrice}</Text>
+                                    <Text w='38.333%' pl='1rem' textAlign="left" >{item.description} x {item.quantity} </Text>
+                                    <Text w='31.333%'  pl='1rem' textAlign="left" >{item.unitPrice} {invoiceData.devise}</Text>
+                                    <Text w='31.333%'  pl='1rem'textAlign="left"  >{item.quantity * item.unitPrice} {invoiceData.devise}</Text>
                                 </Flex>
                             ))}
                         </>
                     ) : (
                         <>
-                            <Heading {...styleProps.subHeading} ml='2.5vh' mb='2vh' size="md">Articles / Services</Heading>
                             <Table {...styleProps.table}>
                                 <Thead {...styleProps.thead}>
                                     <Tr>
@@ -211,8 +244,8 @@ const InvoiceSummary = () => {
                                         <Tr key={index}>
                                             <Td {...styleProps.td}>{item.description}</Td>
                                             <Td {...styleProps.td}>{item.quantity}</Td>
-                                            <Td {...styleProps.td}>{item.unitPrice}</Td>
-                                            <Td {...styleProps.tdend}>{item.quantity * item.unitPrice}</Td>
+                                            <Td {...styleProps.td}>{item.unitPrice} {invoiceData.devise}</Td>
+                                            <Td {...styleProps.tdend}>{item.quantity * item.unitPrice} {invoiceData.devise}</Td>
                                         </Tr>
                                     ))}
                                 </Tbody>
@@ -228,13 +261,14 @@ const InvoiceSummary = () => {
                             <Box pb="1rem" mb="2rem" w='100%'>
                                 <Heading {...styleProps.subHeading} ml='2.5vh' mb='2vh' size="md">Échéances de paiement</Heading>
                                 {/* En-têtes des colonnes */}
-                                <Flex justify="space-between" w='100%'>
+                                <Flex justify="space-between" w='100%' backgroundColor='#f7f7f7'>
+                        
                                     <Text
                                         fontFamily="heading"
                                         fontWeight="bold"
                                         textTransform="uppercase"
                                         letterSpacing="wider"
-                                        textAlign="center"
+                                        textAlign="left"
                                         p={3}
                                         lineHeight="4"
                                         fontSize="xs"
@@ -242,24 +276,7 @@ const InvoiceSummary = () => {
                                         color="gray.600"
                                         borderBottom="1px"
                                         borderColor="gray.100"
-                                        minW='33.333%'  // Three columns, so each gets about one-third
-                                    >
-                                        %
-                                    </Text>
-                                    <Text
-                                        fontFamily="heading"
-                                        fontWeight="bold"
-                                        textTransform="uppercase"
-                                        letterSpacing="wider"
-                                        textAlign="center"
-                                        p={3}
-                                        lineHeight="4"
-                                        fontSize="xs"
-                                        backgroundColor='#f7f7f7'
-                                        color="gray.600"
-                                        borderBottom="1px"
-                                        borderColor="gray.100"
-                                        minW='33.333%'
+                                        minW='38.333%'
                                     >
                                         Date
                                     </Text>
@@ -268,7 +285,25 @@ const InvoiceSummary = () => {
                                         fontWeight="bold"
                                         textTransform="uppercase"
                                         letterSpacing="wider"
-                                        textAlign="center"
+                                        textAlign="left"
+                                        p={3}
+                                        pl='1rem'
+                                        lineHeight="4"
+                                        fontSize="xs"
+                                        backgroundColor='#f7f7f7'
+                                        color="gray.600"
+                                        borderBottom="1px"
+                                        borderColor="gray.100"
+                                        minW='31.333%'  // Three columns, so each gets about one-third
+                                    >
+                                        %
+                                    </Text>
+                                    <Text
+                                        fontFamily="heading"
+                                        fontWeight="bold"
+                                        textTransform="uppercase"
+                                        letterSpacing="wider"
+                                        textAlign="left"
                                         p={3}
                                         lineHeight="4"
                                         fontSize="xs"
@@ -276,7 +311,7 @@ const InvoiceSummary = () => {
                                         color="gray.600"
                                         borderBottom="1px"
                                         borderColor="gray.100"
-                                        minW='33.333%'
+                                        minW='31.333%'
                                     >
                                         Montant
                                     </Text>
@@ -285,9 +320,9 @@ const InvoiceSummary = () => {
                                 {/* Détails des échéances pour chaque paiement */}
                                 {payments.map((payment, index) => (
                                     <Flex key={index} pb='1rem' pt='1rem' borderBottomWidth='1px' justify="space-between">
-                                        <Text w='33.333%' textAlign="center">{payment.percentage}%</Text>
-                                        <Text w='33.333%' textAlign="center">{payment.dueDate.toLocaleDateString()}</Text>
-                                        <Text w='33.333%' textAlign="center">{payment.amount} {invoiceData.devise}</Text>
+                                        <Text w='38.333%' pl='1rem' textAlign="left">{payment.dueDate.toLocaleDateString()}</Text>
+                                        <Text w='31.333%' pl='1rem' textAlign="left">{payment.percentage}%</Text>
+                                        <Text w='31.333%' pl='1rem'textAlign="left">{payment.amount} {invoiceData.devise}</Text>
                                     </Flex>
                                 ))}
                             </Box>
@@ -318,7 +353,7 @@ const InvoiceSummary = () => {
 
                     </Flex>
                 )}
-                <Text p='0' color='#4A5568' w='97%' mt={isMobile ? "0rem" : "1rem"}> Si toutes les informations sont correctes vous pouvez envoyer la facture, {invoiceData.client.name} recevra un email avec celle-ci en pièce jointe.</Text>
+                <Text p='0' color='#4A5568' w='97%' mt={isMobile ? "0rem" : "1rem"}> Si toutes les informations sont correctes vous pouvez envoyer la facture, <br/> {invoiceData.client.name} recevra un email avec celle-ci en pièce jointe.</Text>
                 <Flex width='100%' alignItems='end' direction='column'  {...styleProps.totalSection}>
                     <Text {...styleProps.subHeading}>Sous-total HT : {invoiceData.subtotal} {invoiceData.devise}</Text>
                     <Text {...styleProps.subHeading}>
