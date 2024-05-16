@@ -33,6 +33,8 @@ const InvoiceSummary = () => {
         // Ajoute l'écouteur d'événement
         window.addEventListener('resize', handleResize);
 
+        console.log(invoiceData)
+
         // Nettoie l'écouteur d'événement lors du démontage du composant
         return () => window.removeEventListener('resize', handleResize);
     }, [breakpointMd]); // S'exécute à nouveau seulement si breakpointMd change
@@ -118,6 +120,8 @@ const InvoiceSummary = () => {
         },
         totalSection: {
             marginTop: "20px",
+            marginBottom: "20px"
+            ,
         },
     };
 
@@ -156,7 +160,7 @@ const InvoiceSummary = () => {
                     <Heading {...styleProps.subHeading} ml='2.5vh' mb='2vh' size="md">Articles / Services</Heading>
                     {isMobile ? (
                         <>
-                            {/* En-têtes des colonnes */}
+                            {/* En-têtes des colonnes à redéfinir car trop longues */}
                             <Flex justify="space-between">
                                 {["Description", "Quantité", "Prix/U", "Total HT"].map(header => (
                                     <Text
@@ -221,7 +225,7 @@ const InvoiceSummary = () => {
                 {isMobile ? (
                     <>
                         {payments.length > 0 && (
-                            <Box pb="1rem" mb="2rem"  w='100%'>
+                            <Box pb="1rem" mb="2rem" w='100%'>
                                 <Heading {...styleProps.subHeading} ml='2.5vh' mb='2vh' size="md">Échéances de paiement</Heading>
                                 {/* En-têtes des colonnes */}
                                 <Flex justify="space-between" w='100%'>
@@ -255,7 +259,7 @@ const InvoiceSummary = () => {
                                         color="gray.600"
                                         borderBottom="1px"
                                         borderColor="gray.100"
-                                        minW='33.333%' 
+                                        minW='33.333%'
                                     >
                                         Date
                                     </Text>
@@ -272,7 +276,7 @@ const InvoiceSummary = () => {
                                         color="gray.600"
                                         borderBottom="1px"
                                         borderColor="gray.100"
-                                        minW='33.333%' 
+                                        minW='33.333%'
                                     >
                                         Montant
                                     </Text>
@@ -311,9 +315,17 @@ const InvoiceSummary = () => {
                             </Tbody>
                         </Table>
 
-                        <Text color='#4A5568' w='97%' mt='3rem' ml='1rem'> Si toutes les informations sont correctes vous pouvez envoyer la facture, {invoiceData.client.name} recevra un email avec celle-ci en pièce jointe et sera redirigé sur une page de paiement afin de sécuriser vos fonds. </Text>
+
                     </Flex>
                 )}
+                <Text p='0' color='#4A5568' w='97%' mt={isMobile ? "0rem" : "1rem"}> Si toutes les informations sont correctes vous pouvez envoyer la facture, {invoiceData.client.name} recevra un email avec celle-ci en pièce jointe.</Text>
+                <Flex width='100%' alignItems='end' direction='column'  {...styleProps.totalSection}>
+                    <Text {...styleProps.subHeading}>Sous-total HT : {invoiceData.subtotal} {invoiceData.devise}</Text>
+                    <Text {...styleProps.subHeading}>
+                        TVA : {invoiceData.vatRate} % ({invoiceData.vatAmount.toFixed(2)} {invoiceData.devise})
+                    </Text>                    
+                    <Text {...styleProps.heading}>Total TTC : {invoiceData.total} {invoiceData.devise}</Text>
+                </Flex>
 
             </VStack>
 

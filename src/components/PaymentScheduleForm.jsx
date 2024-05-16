@@ -228,99 +228,100 @@ const PaymentScheduleForm = ({  }) => {
     <>
 
       {isMobile ? (
-        <>
-          {payments.map((payment, index) => (
-            <Box key={index} borderBottom="1px solid #f2f2f2" pt='1rem' pb='1rem' mb='1rem'>
-              <Flex gap='10px'>
-                <Flex direction='column' justifyContent='space-between'>
-                  <Text
-                    fontFamily="heading"
-                    fontWeight="bold"
-                    textTransform="uppercase"
-                    letterSpacing="wider"
-                    textAlign="center"
-                    mb='1rem'
-                    pb={3}
-                    lineHeight="4"
-                    fontSize="xs"
-                    color="gray.600"
-                    borderBottom="1px"
-                    borderColor="gray.100"
-                  >
-                    Date d'échéance
-                  </Text>
-                  <DatePicker
-                    selected={payment.dueDate}
-                    onChange={(date) => updatePayment(index, 'dueDate', date)}
-                    customInput={<CustomInput />}
-                  />
-                </Flex>
-
-                <Flex justifyContent='space-between' w='40vw' direction='column'>
-                  <Text
-                    fontFamily="heading"
-                    fontWeight="bold"
-                    textTransform="uppercase"
-                    letterSpacing="wider"
-                    textAlign="center"
-                    mb='1rem'
-                    pb={3}
-                    lineHeight="4"
-                    fontSize="xs"
-                    color="gray.600"
-                    borderBottom="1px"
-                    borderColor="gray.100"
-                  >
-                    %
-                  </Text>
-                  <InputGroup>
-                    <Input
-                      _focus={{ borderColor: "#745FF2", boxShadow: "none" }}
-                      className='neue-down'
-                      type="number"
-                      value={payment.percentage}
-                      onChange={(e) => updatePayment(index, 'percentage', e.target.value)}
-                    />
-                    <InputRightElement pointerEvents="none" children="%" />
-                  </InputGroup>
-                </Flex>
-
-
-                <Flex alignItems='end'>
-                  <Flex h='100%' justifyContent='space-between' direction='column'>
-                    <Text
-                      fontFamily="heading"
-                      fontWeight="bold"
-                      textTransform="uppercase"
-                      letterSpacing="wider"
-                      textAlign="center"
-                      mb='1rem'
-                      pb={3}
-                      lineHeight="4"
-                      fontSize="xs"
-                      color="gray.600"
-                      borderBottom="1px"
-                      borderColor="gray.100"
-                    >
-                      Montant
-                    </Text>
-                    <Text textAlign="center" mb={2}>{payment.amount} {invoiceData.devise}</Text>
-                  </Flex>
-
-                </Flex>
-              </Flex>
-              {payments.length > 1 && (
-                <Link onClick={() => removePayment(index)} display='flex' alignItems='center' color="#745FF2" mt={4}>
-                  Supprimer cette échéance <DeleteIcon w='2.5' ml="2" />
-                </Link>
-              )}
-            </Box>
-          ))}
-          <Link onClick={addPaymentWithCalculatedPercentage} display='flex' alignItems='center' color="#745FF2" mb='2rem' mt={4}>
-            Ajouter cette échéance <AddIcon w='2.5' ml="2" />
-          </Link>
-          
-        </>
+     <>
+     {payments.map((payment, index) => (
+       <Box key={index} borderBottom="1px solid #f2f2f2" pt='1rem' pb='1rem' mb='1rem'>
+         <Flex gap='10px'>
+           {/* Colonne pour la date d'échéance, elle ne grandit pas automatiquement, elle prend seulement l'espace nécessaire */}
+           <Flex direction='column' justifyContent='space-between' flex="0 1 auto">
+             <Text
+               fontFamily="heading"
+               fontWeight="bold"
+               textTransform="uppercase"
+               letterSpacing="wider"
+               textAlign="center"
+               mb='1rem'
+               pb={3}
+               lineHeight="4"
+               fontSize="xs"
+               color="gray.600"
+               borderBottom="1px"
+               borderColor="gray.100"
+             >
+               Date d'échéance
+             </Text>
+             <DatePicker
+               selected={payment.dueDate}
+               onChange={(date) => updatePayment(index, 'dueDate', date)}
+               customInput={<CustomInput />}
+             />
+           </Flex>
+   
+           {/* Colonne pour le pourcentage, elle ne grandit pas automatiquement, elle prend seulement l'espace nécessaire */}
+           <Flex justifyContent='space-between' w='40vw' direction='column' flex="0 1 auto">
+             <Text
+               fontFamily="heading"
+               fontWeight="bold"
+               textTransform="uppercase"
+               letterSpacing="wider"
+               textAlign="center"
+               mb='1rem'
+               pb={3}
+               lineHeight="4"
+               fontSize="xs"
+               color="gray.600"
+               borderBottom="1px"
+               borderColor="gray.100"
+             >
+               %
+             </Text>
+             <InputGroup>
+               <Input
+                 _focus={{ borderColor: "#745FF2", boxShadow: "none" }}
+                 className='neue-down'
+                 type="number"
+                 value={payment.percentage}
+                 onChange={(e) => updatePayment(index, 'percentage', e.target.value)}
+               />
+               <InputRightElement pointerEvents="none" children="%" />
+             </InputGroup>
+           </Flex>
+   
+           {/* Colonne pour le montant, utilise flex-grow pour prendre tout l'espace restant */}
+           <Flex flex="1 0 auto" alignItems='end'>
+             <Flex h='100%' justifyContent='space-between' direction='column'>
+               <Text
+                 fontFamily="heading"
+                 fontWeight="bold"
+                 textTransform="uppercase"
+                 letterSpacing="wider"
+                 textAlign="center"
+                 mb='1rem'
+                 pb={3}
+                 lineHeight="4"
+                 fontSize="xs"
+                 color="gray.600"
+                 borderBottom="1px"
+                 borderColor="gray.100"
+               >
+                 Montant
+               </Text>
+               <Text textAlign="center" mb={2}>{payment.amount} {invoiceData.devise}</Text>
+             </Flex>
+           </Flex>
+         </Flex>
+         {payments.length > 1 && (
+           <Link onClick={() => removePayment(index)} display='flex' alignItems='center' color="#745FF2" mt={4}>
+             Supprimer cette échéance <DeleteIcon w='2.5' ml="2" />
+           </Link>
+         )}
+       </Box>
+     ))}
+     <Link onClick={addPaymentWithCalculatedPercentage} w='fit-content' display='flex' alignItems='center' color="#745FF2" mb='2rem' mt={4}>
+       Ajouter cette échéance <AddIcon w='2.5' ml="2" />
+     </Link>
+   </>
+   
       ) : (
 
           <Table variant="simple" className='neue-up' mt='2rem' mb='1rem' borderWidth='1px' pt='1rem' pl='2rem' pr='2rem' pb='1rem' w='100%' borderRadius='10px'>

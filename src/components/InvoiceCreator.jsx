@@ -101,8 +101,8 @@ const InvoiceCreator = ({ handleNavigateTo, totalError }) => {
   //useeffect qui met à jour le calcul de la tva et du total
   useEffect(() => {
     const subtotal = invoiceData.items.reduce((acc, curr) => acc + curr.quantity * curr.unitPrice, 0);
-    const vatAmount = subtotal * (invoiceData.vatRate / 100); // Calcul du montant de la TVA
-    const total = subtotal + vatAmount;
+    const vatAmount = subtotal * (invoiceData.vatRate / 100).toFixed(2); // Calcul du montant de la TVA
+    const total = (parseFloat(subtotal) + parseFloat(vatAmount)).toFixed(2);
     handleInvoiceDataChange((prevState) => ({ ...prevState, subtotal, vatAmount, total })); // Mise à jour de l'état pour inclure vatAmount
   }, [invoiceData.items, invoiceData.vatRate]);
 
@@ -141,6 +141,7 @@ const InvoiceCreator = ({ handleNavigateTo, totalError }) => {
 
     <>
         <VStack mt='2rem' boxShadow=' 1px solid black'  align="start">
+        
         <Flex w='100%' justifyContent='space-between' >
         <Flex w={{ base: '10.5rem', lg: 'auto' }} direction='column' justifyContent='space-between' pb="2rem" >
           <Heading mb='1rem' size="sm">Facture n° :</Heading>

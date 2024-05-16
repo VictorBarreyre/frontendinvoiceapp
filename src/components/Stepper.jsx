@@ -203,12 +203,12 @@ const handleSubmit = () => {
       <div className="stepper-container">
         <div className="tabs-container">
           <div className="tab-heading">
-            <Heading fontSize='26px'>{getHeadingText(tabIndex)}</Heading>
+            <Heading fontSize={{ base: '24px', lg: '26px' }} >{getHeadingText(tabIndex)}</Heading>
           </div>
           <div className="tab-list">
             <button className={`tab ${tabIndex === 0 ? 'active' : ''}`} onClick={() => handleTabClick(0)}>{tabText(0, isMobile)}</button>
-            <button className={`tab ${tabIndex === 1 ? 'active' : ''} ${!isStepNextAvailable ? 'disabled' : ''}`} onClick={() => handleTabClick(1)}>{tabText(1, isMobile)}</button>
-            <button className={`tab ${tabIndex === 2 ? 'active' : ''} ${!isStepNextAvailable ? 'disabled' : ''}`} onClick={() => handleTabClick(2)} >{tabText(2, isMobile)}</button>
+            <button className={`tab ${tabIndex === 1 ? 'active' : ''} ${!isStepNextAvailable ? 'disabled' : 'abled'}`} onClick={() => handleTabClick(1)}>{tabText(1, isMobile)}</button>
+            <button className={`tab ${tabIndex === 2 ? 'active' : ''} ${!isStepNextAvailable ? 'disabled' : 'abled'}`} onClick={() => handleTabClick(2)} >{tabText(2, isMobile)}</button>
           </div>
 
           <div className="tab-panel">

@@ -204,6 +204,7 @@ input:focus {
 
 .disabled{
   color:#718096;
+  cursor: not-allowed;
 }
 
 .tab-panel h3 {

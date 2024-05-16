@@ -4,8 +4,7 @@ import {CalendarIcon } from '@chakra-ui/icons';
 
 
 const CustomInput = React.forwardRef(({ value, onClick }, ref) => (  
-    <InputGroup 
-    className='neue-down-group'>
+    <InputGroup>
       <Input
         ref={ref}
         className='neue-down'
