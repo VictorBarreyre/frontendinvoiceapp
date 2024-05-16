@@ -141,7 +141,7 @@ const InvoiceCreator = ({ handleNavigateTo, totalError }) => {
 
     <>
         <VStack mt='2rem' boxShadow=' 1px solid black'  align="start">
-        
+        <Text mb='1rem' color="red"> {totalError()}</Text>
         <Flex w='100%' justifyContent='space-between' >
         <Flex w={{ base: '10.5rem', lg: 'auto' }} direction='column' justifyContent='space-between' pb="2rem" >
           <Heading mb='1rem' size="sm">Facture n° :</Heading>
@@ -438,16 +438,14 @@ const InvoiceCreator = ({ handleNavigateTo, totalError }) => {
                   </Tr>
 
                   <Tr border='none !important' alignContent='end' alignItems='end'>
-                    <Td color="#FB7575" borderBottom="none" colSpan={4} style={{ paddingLeft: '0', textAlign: 'end' }}> <Text> {totalError()}</Text> </Td>
+                    <Td color="red" borderBottom="none" colSpan={4} style={{ paddingLeft: '0', textAlign: 'end' }}> <Text> {totalError()}</Text> </Td>
                   </Tr>
                 </Tfoot>
               </Table>
 
             )
         }
-
-          </Flex>
-        
+          </Flex>        
           <Text color='red' >{showErrorMessage}</Text>
         </VStack>
     </>
