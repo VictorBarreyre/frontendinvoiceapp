@@ -18,6 +18,8 @@ const PaymentScheduleForm = ({  }) => {
     setRemainingPercentage
   } = useInvoiceData();
 
+  
+
   const [showText, setShowText] = useState('');
 
   const theme = useTheme();
