@@ -10,7 +10,7 @@ import InvoiceCreator from './components/InvoiceCreator';
 import { InvoiceDataProvider } from './context/InvoiceDataContext';
 import ConfirmationPage from '../roots/ConfirmationPage';
 import { extendTheme } from '@chakra-ui/react';
-
+import Success from '../roots/Succes';
 
 const theme = extendTheme({
   breakpoints: {
@@ -34,7 +34,7 @@ function App() {
             <Route path="/" element={<Stepper />} /> 
             <Route path="/about" element={<About />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/confirmation" element={<ConfirmationPage/>} />
+            <Route path="/success" element={<Success />} />
           </Routes>
         </Router>
         </InvoiceDataProvider>

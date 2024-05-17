@@ -6,6 +6,8 @@ import { ArrowForwardIcon } from '@chakra-ui/icons';
 import PaymentScheduleForm from './PaymentScheduleForm';
 import InvoiceSummary from './InvoiceSummary';
 import { useTheme } from '@chakra-ui/react';
+import { useNavigate } from 'react-router-dom';
+
 
 const Stepper = () => {
   const [tabIndex, setTabIndex] = useState(0);
@@ -29,6 +31,13 @@ const Stepper = () => {
 
   const [isMobile, setIsMobile] = useState(false);
 
+  const navigate = useNavigate();
+  const onSuccess = () => navigate('/success');
+  const onError = () => console.error("Erreur durant l'opération.");
+
+  const handleSendInvoice = () => {
+    handleInvoiceActionSendMail(invoiceData, onSuccess, onError);
+};
 
 
     // Détecter si l'appareil est mobile
@@ -142,7 +151,7 @@ const Stepper = () => {
     } else if (tabIndex === 2) {
         // Step 2 spécifique: Envoi de l'email
         return (
-            <Button onClick={handleInvoiceActionSendMail} rightIcon={<ArrowForwardIcon />} w={{ base: '100%', lg: 'unset' }}  color='white' borderRadius='30px' backgroundColor='black' >
+            <Button onClick={handleSendInvoice} rightIcon={<ArrowForwardIcon />} w={{ base: '100%', lg: 'unset' }}  color='white' borderRadius='30px' backgroundColor='black' >
                 {buttonLabel}
             </Button>
         );
