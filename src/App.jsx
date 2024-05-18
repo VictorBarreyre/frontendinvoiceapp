@@ -8,7 +8,7 @@ import Stepper from './components/Stepper';
 import { ChakraProvider } from '@chakra-ui/react';
 import InvoiceCreator from './components/InvoiceCreator';
 import { InvoiceDataProvider } from './context/InvoiceDataContext';
-import ConfirmationPage from '../roots/ConfirmationPage';
+import PaymentSuccess from '../roots/PaymentSucces';
 import { extendTheme } from '@chakra-ui/react';
 import Success from '../roots/Succes';
 
@@ -35,6 +35,7 @@ function App() {
             <Route path="/about" element={<About />} />
             <Route path="/login" element={<Login />} />
             <Route path="/success" element={<Success />} />
+            <Route path="/payment-success" element={<PaymentSuccess />} />
           </Routes>
         </Router>
         </InvoiceDataProvider>
