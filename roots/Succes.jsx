@@ -125,8 +125,9 @@ const SuccessPage = () => {
           <Heading fontSize={{ base: '24px', lg: '26px' }}>Facture envoyée avec Succès!</Heading>
           <Text>Votre facture a été envoyée avec succès à l'adresse email du destinataire.</Text>
           <Text>Vous pouvez aussi définir des relances de paiement par mail à {invoiceData.client.name}</Text>
-          <Text mb='2rem'>  Il vous suffit de régler {amount / 100} {invoiceData.devise} </Text>
-
+          <Text> Il vous suffit de régler {amount / 100} {invoiceData.devise} </Text>
+          <Text>Les relances sont définies en fonction des dates de vos échéances</Text>
+           <Flex w='fit-content' direction='column'> 
           {!showPaywall ? (
             <Button  mt='2rem' mb='2rem' w={{ base: '100%', lg: 'unset' }}  color='white' borderRadius='30px' backgroundColor='black' type="submit" onClick={handleCreateSession}>Payer maintenant</Button>
           ) : (
@@ -136,6 +137,7 @@ const SuccessPage = () => {
           )}
 
           <Link pt='2rem' to="/">Retour à la page d'accueil</Link>
+          </Flex>
         </div>
       </div>
     </div>
