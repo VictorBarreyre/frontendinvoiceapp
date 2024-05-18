@@ -6,7 +6,7 @@ import Login from '../roots/Login';
 import Header from './components/Header';
 import Stepper from './components/Stepper';
 import { ChakraProvider } from '@chakra-ui/react';
-import InvoiceCreator from './components/InvoiceCreator';
+import Abo from '../roots/Abo'
 import { InvoiceDataProvider } from './context/InvoiceDataContext';
 import PaymentSuccess from '../roots/PaymentSucces';
 import { extendTheme } from '@chakra-ui/react';
@@ -36,6 +36,7 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/success" element={<Success />} />
             <Route path="/payment-success" element={<PaymentSuccess />} />
+            <Route path="/abo" element={<Abo />} />
           </Routes>
         </Router>
         </InvoiceDataProvider>
