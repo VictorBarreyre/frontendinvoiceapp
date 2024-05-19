@@ -181,7 +181,7 @@ const Abo = () => {
             <div className="stepper-container">
                 <div className="tabs-container">
                     <Flex direction="column" alignItems="center">
-                        <Heading mb='2rem'>Abonnements</Heading>
+                        <Heading fontSize={{ base: '24px', lg: '26px' }} mb='1rem'> Choississez votre formule d'abonnements</Heading>
                         <Text mb='2rem'>Choississez votre formule d'abonnement</Text>
                         <Flex wrap="wrap" justify="center" spacing={4}>
                             {monthlyPrice && (
@@ -191,7 +191,7 @@ const Abo = () => {
                                     borderColor={selectedPlan === 'yearly' ? 'inherit' : '#745FF2'}
                                     borderRadius="lg"
                                     overflow="hidden"
-                                    p={6} m={4}
+                                    p={6} mr={4}
                                     maxW="sm"
                                     opacity={selectedPlan === 'yearly' ?  0.6 : 1}
                                     onClick={() => setSelectedPlan('monthly')}
@@ -234,7 +234,7 @@ const Abo = () => {
                                     borderRadius="lg"
                                     overflow="hidden"
                                     p={6}
-                                    m={4}
+                                    ml={4}
                                     maxW="sm"
                                     onClick={() => setSelectedPlan('yearly')}
                                     opacity={selectedPlan === 'monthly' ? 0.6 : 1}
