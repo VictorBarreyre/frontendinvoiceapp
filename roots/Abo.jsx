@@ -1,7 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { CardElement, useStripe, useElements, Elements } from '@stripe/react-stripe-js';
-import { Button, Heading, Flex, Text, Box, Spinner } from '@chakra-ui/react';
+import {
+    Button,
+    Heading,
+    Flex,
+    Text,
+    Box,
+    Spinner,
+    List,
+    ListItem,
+    ListIcon,
+    OrderedList,
+    UnorderedList,
+} from '@chakra-ui/react';
 import { loadStripe } from '@stripe/stripe-js';
+import { CheckIcon } from '@chakra-ui/icons';
 import { useInvoiceData } from '../src/context/InvoiceDataContext';
 
 const stripePromise = loadStripe('pk_test_51OwLFM00KPylCGutjKAkwhqleWEzuvici1dQUPCIvZHofEzLtGyM9Gdz5zEfvwSZKekKRgA1el5Ypnw7HLfYWOuB00ZdrKdygg');
@@ -132,93 +145,136 @@ const Abo = () => {
     const [product, setProduct] = useState(null);
     const [loading, setLoading] = useState(true);
     const { baseUrl } = useInvoiceData();
-    const [selectedPlan, setSelectedPlan] = useState(null);
-  
+    const [selectedPlan, setSelectedPlan] = useState('monthly');
+
     useEffect(() => {
-      fetch(`${baseUrl}/abonnement/products-and-prices`)
-        .then(response => {
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
-          return response.json();
-        })
-        .then(data => {
-          const targetProduct = data.find(p => p.name === 'Premium'); // Remplacez 'Premium' par le nom du produit que vous souhaitez afficher
-          setProduct(targetProduct);
-          setLoading(false);
-        })
-        .catch(error => {
-          console.error('Error fetching products:', error);
-          setLoading(false);
-        });
+        fetch(`${baseUrl}/abonnement/products-and-prices`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                const targetProduct = data.find(p => p.name === 'Premium'); // Remplacez 'Premium' par le nom du produit que vous souhaitez afficher
+                setProduct(targetProduct);
+                setLoading(false);
+            })
+            .catch(error => {
+                console.error('Error fetching products:', error);
+                setLoading(false);
+            });
     }, [baseUrl]);
-  
+
     if (loading) {
-      return <Spinner size="xl" />;
+        return <Spinner size="xl" />;
     }
-  
+
     if (!product) {
-      return <Text>Aucun produit trouvé.</Text>;
+        return <Text>Aucun produit trouvé.</Text>;
     }
     const monthlyPrice = product.prices.find(price => price.recurring?.interval === 'month');
     const yearlyPrice = product.prices.find(price => price.recurring?.interval === 'year');
-  
+
     return (
         <div className='flex-stepper'>
-        <div className="stepper-container">
-          <div className="tabs-container">
-      <Flex direction="column" alignItems="center">
-        <Heading mb='2rem'>Abonnements</Heading>
-        <Text mb='2rem'>Choississez votre formule d'abonnement</Text>
-        <Flex wrap="wrap" justify="center" spacing={4}>
-          {monthlyPrice && (
-            <Box className='neue-up' 
-            borderWidth="1px" 
-            borderColor={selectedPlan === 'yearly' ? 'inherit' : '#745FF2'}
-            borderRadius="lg" 
-            overflow="hidden" 
-            p={6} m={4} 
-            maxW="sm" 
-            onClick={() => setSelectedPlan('monthly')}
-            opacity={selectedPlan === 'yearly' ? 0.5 : 1}
-            cursor="pointer"
-            _hover={{ opacity: 1 }}>
+            <div className="stepper-container">
+                <div className="tabs-container">
+                    <Flex direction="column" alignItems="center">
+                        <Heading mb='2rem'>Abonnements</Heading>
+                        <Text mb='2rem'>Choississez votre formule d'abonnement</Text>
+                        <Flex wrap="wrap" justify="center" spacing={4}>
+                            {monthlyPrice && (
+                                <Box className='neue-up'
+                                    borderWidth="1px"
+                                    backgroundColor='#fdfdfd'
+                                    borderColor={selectedPlan === 'yearly' ? 'inherit' : '#745FF2'}
+                                    borderRadius="lg"
+                                    overflow="hidden"
+                                    p={6} m={4}
+                                    maxW="sm"
+                                    opacity={selectedPlan === 'yearly' ?  0.6 : 1}
+                                    onClick={() => setSelectedPlan('monthly')}
+                                    cursor="pointer"
+                                    _hover={{ opacity: 1 }}>
 
-              <Heading fontSize="xl" mb={4}>Mensuel</Heading>
-              <Text mb={4}>{product.description}</Text>
-              <Text>
-                {monthlyPrice.unit_amount / 100} {monthlyPrice.currency.toUpperCase()} / mois
-              </Text>
-   
-            </Box>
-          )}
-          {yearlyPrice && (
-            <Box className='neue-up' 
-            borderWidth="1px"
-            borderColor={selectedPlan === 'monthly' ? 'inherit' : '#745FF2'}
-            borderRadius="lg"
-            overflow="hidden"
-            p={6}
-            m={4}
-            maxW="sm"
-            onClick={() => setSelectedPlan('yearly')}
-            opacity={selectedPlan === 'monthly' ? 0.5 : 1}
-            cursor="pointer"
-            _hover={{ opacity: 1 }}>
+                                    <Heading
+                                        color={selectedPlan === 'yearly' ? 'inherit' : '#745FF2'}
+                                        fontSize="xl" mb={4}>Paiement mensuel</Heading>
+                                  <Heading mb='1rem' size="sm">{product.description}</Heading>
+                                  <Heading mb='1rem' mt='1rem' size="md">
+                                        {monthlyPrice.unit_amount / 100} {monthlyPrice.currency.toUpperCase()} / mois
+                                    </Heading>
+                                    <List mt='1.5rem' pt='1.5rem' borderTopWidth='1px' spacing={3}>
+                                        <ListItem>
+                                            <ListIcon as={CheckIcon} color='#745FF2' />
+                                            Lorem ipsum dolor sit amet, consectetur adipisicing elit
+                                        </ListItem>
+                                        <ListItem>
+                                            <ListIcon as={CheckIcon} color='#745FF2' />
+                                            Assumenda, quia temporibus eveniet a libero incidunt suscipit
+                                        </ListItem>
+                                        <ListItem>
+                                            <ListIcon as={CheckIcon} color='#745FF2' />
+                                            Quidem, ipsam illum quis sed voluptatum quae eum fugit earum
+                                        </ListItem>
+                                        {/* You can also use custom icons from react-icons */}
+                                        <ListItem>
+                                            <ListIcon as={CheckIcon} color='#745FF2' />
+                                            Quidem, ipsam illum quis sed voluptatum quae eum fugit earum
+                                        </ListItem>
+                                    </List>
+                                </Box>
+                            )}
+                            {yearlyPrice && (
+                                <Box className='neue-up'
+                                    borderWidth="1px"
+                                    backgroundColor='#fdfdfd'
+                                    borderColor={selectedPlan === 'monthly' ? 'inherit' : '#745FF2'}
+                                    borderRadius="lg"
+                                    overflow="hidden"
+                                    p={6}
+                                    m={4}
+                                    maxW="sm"
+                                    onClick={() => setSelectedPlan('yearly')}
+                                    opacity={selectedPlan === 'monthly' ? 0.6 : 1}
+                                    cursor="pointer"
+                                    _hover={{ opacity: 1 }}>
 
-              <Heading fontSize="xl" mb={4}>Annuel</Heading>
-              <Text mb={4}>{product.description}</Text>
-              <Text>
-                {yearlyPrice.unit_amount / 100} {yearlyPrice.currency.toUpperCase()} / an
-              </Text>
-            </Box>
-          )}
-        </Flex>
-      </Flex>
-      </div>
-      </div>
-    </div>
+                                    <Heading
+                                        color={selectedPlan === 'monthly' ? 'inherit' : '#745FF2'}
+                                        fontSize="xl" mb={4}>Paiement annuel</Heading>
+                                    <Heading mb='1rem' size="sm">{product.description}</Heading>
+                                    <Heading mb='1rem' mt='1rem' size="md">
+                                        {yearlyPrice.unit_amount / 100} {yearlyPrice.currency.toUpperCase()} / an
+                                    </Heading>
+                                    <List mt='1.5rem' pt='1.5rem' borderTopWidth='1px' spacing={3}>
+                                        <ListItem>
+                                            <ListIcon as={CheckIcon} color='#745FF2' />
+                                            Lorem ipsum dolor sit amet, consectetur adipisicing elit
+                                        </ListItem>
+                                        <ListItem>
+                                            <ListIcon as={CheckIcon} color='#745FF2' />
+                                            Assumenda, quia temporibus eveniet a libero incidunt suscipit
+                                        </ListItem>
+                                        <ListItem>
+                                            <ListIcon as={CheckIcon} color='#745FF2'/>
+                                            Quidem, ipsam illum quis sed voluptatum quae eum fugit earum
+                                        </ListItem>
+                                        {/* You can also use custom icons from react-icons */}
+                                        <ListItem>
+                                            <ListIcon as={CheckIcon} color='#745FF2' />
+                                            Quidem, ipsam illum quis sed voluptatum quae eum fugit earum
+                                        </ListItem>
+                                    </List>
+                                </Box>
+                            )}
+                        </Flex>
+                    </Flex>
+                </div>
+            </div>
+        </div>
     );
-  };
-  
-  export default Abo;
+};
+
+export default Abo;
