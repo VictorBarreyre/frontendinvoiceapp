@@ -167,7 +167,11 @@ const Abo = () => {
     }, [baseUrl]);
 
     if (loading) {
-        return <Spinner size="xl" />;
+        return ( 
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '90vh' }}>
+        <Spinner color='#745FF2' size="md" />
+      </div>)
+      ;
     }
 
     if (!product) {
@@ -219,11 +223,7 @@ const Abo = () => {
                                             <ListIcon as={CheckIcon} color='#745FF2' />
                                             Quidem, ipsam illum quis sed voluptatum quae eum fugit earum
                                         </ListItem>
-                                        {/* You can also use custom icons from react-icons */}
-                                        <ListItem>
-                                            <ListIcon as={CheckIcon} color='#745FF2' />
-                                            Quidem, ipsam illum quis sed voluptatum quae eum fugit earum
-                                        </ListItem>
+                                       
                                     </List>
                                 </Box>
                             )}
@@ -262,11 +262,7 @@ const Abo = () => {
                                             <ListIcon as={CheckIcon} color='#745FF2'/>
                                             Quidem, ipsam illum quis sed voluptatum quae eum fugit earum
                                         </ListItem>
-                                        {/* You can also use custom icons from react-icons */}
-                                        <ListItem>
-                                            <ListIcon as={CheckIcon} color='#745FF2' />
-                                            Quidem, ipsam illum quis sed voluptatum quae eum fugit earum
-                                        </ListItem>
+                                    
                                     </List>
                                 </Box>
                             )}
