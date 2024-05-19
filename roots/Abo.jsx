@@ -182,7 +182,7 @@ const Abo = () => {
                 <div className="tabs-container">
                     <Flex direction="column" alignItems="center">
                         <Heading fontSize={{ base: '24px', lg: '26px' }} mb='1rem'> Choississez votre formule d'abonnements</Heading>
-                        <Text mb='2rem'>Choississez votre formule d'abonnement</Text>
+                        <Text w='70%' textAlign='center' mb='2rem'>Une fois votre abonnement créé, nous vous enverrons un e-mail contenant un récapulatif de votre formule et un mot de pass provisoire que nous vous invitons à modifier dans votre espace profil.</Text>
                         <Flex wrap="wrap" justify="center" spacing={4}>
                             {monthlyPrice && (
                                 <Box className='neue-up'
@@ -202,7 +202,8 @@ const Abo = () => {
                                         color={selectedPlan === 'yearly' ? 'inherit' : '#745FF2'}
                                         fontSize="xl" mb={4}>Paiement mensuel</Heading>
                                   <Heading mb='1rem' size="sm">{product.description}</Heading>
-                                  <Heading mb='1rem' mt='1rem' size="md">
+                                  <Heading
+                                   mb='1rem' mt='1rem' size="md">
                                         {monthlyPrice.unit_amount / 100} {monthlyPrice.currency.toUpperCase()} / mois
                                     </Heading>
                                     <List mt='1.5rem' pt='1.5rem' borderTopWidth='1px' spacing={3}>
