@@ -8,7 +8,6 @@ import Stepper from './components/Stepper';
 import { ChakraProvider } from '@chakra-ui/react';
 import { Elements } from '@stripe/react-stripe-js';
 import Abo from '../roots/Abo'
-import Checkout from '../roots/Checkout';
 import { InvoiceDataProvider } from './context/InvoiceDataContext';
 import PaymentSuccess from '../roots/PaymentSucces';
 import { extendTheme } from '@chakra-ui/react';
@@ -45,7 +44,6 @@ function App() {
             <Route path="/success" element={<Success />} />
             <Route path="/payment-success" element={<PaymentSuccess />} />
             <Route path="/abo" element={<Abo />} />
-            <Route path="/checkout" element={<Checkout />} />
           </Routes>
         </Router>
         </InvoiceDataProvider>

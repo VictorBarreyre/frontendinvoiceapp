@@ -1,102 +1,150 @@
-import React, { useState } from 'react';
-import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
-import { Button, Box, Input } from '@chakra-ui/react';
+import React, { useState, useEffect } from 'react';
+import { PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js';
+import { Button, Box, Input, Flex } from '@chakra-ui/react';
 import { useInvoiceData } from '../context/InvoiceDataContext';
 import { loadStripe } from '@stripe/stripe-js';
+import CountrySelector from './CountrySelector';
 
 const stripePromise = loadStripe('pk_test_51OwLFM00KPylCGutjKAkwhqleWEzuvici1dQUPCIvZHofEzLtGyM9Gdz5zEfvwSZKekKRgA1el5Ypnw7HLfYWOuB00ZdrKdygg');
 
 const SubscribeForm = ({ priceId }) => {
-  const stripe = useStripe();
-  const elements = useElements();
-  const [email, setEmail] = useState('');
-  const { baseUrl } = useInvoiceData();
+    const stripe = useStripe();
+    const elements = useElements();
+    const [email, setEmail] = useState('');
+    const [clientSecret, setClientSecret] = useState('');
+    const { invoiceData, baseUrl } = useInvoiceData();
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+    useEffect(() => {
+        if (email && priceId) {
+            const fetchClientSecret = async () => {
+                const response = await fetch(`${baseUrl}/abonnement/create-subscription`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: email, priceId: priceId }),
+                });
 
-    if (!stripe || !elements) {
-      return;
-    }
+                if (!response.ok) {
+                    const errorResponse = await response.json();
+                    console.error('Error:', errorResponse);
+                    return;
+                }
 
-    const cardElement = elements.getElement(CardElement);
+                const data = await response.json();
+                setClientSecret(data.clientSecret);
+                console.log(clientSecret)
+                console.log(email)
+                console.log(priceId)
+            };
 
-    // Créer un payment method
-    const { error, paymentMethod } = await stripe.createPaymentMethod({
-      type: 'card',
-      card: cardElement,
-      billing_details: {
-        email: email,
-      },
-    });
+            fetchClientSecret();
+        }
+    }, [ email, priceId]);
 
-    if (error) {
-      console.error(error);
-      return;
-    }
+    const handleCheckout = async () => {
+        const response = await fetch(`${baseUrl}/abonnement/create-checkout-session`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ priceId: priceId }),
+        });
 
-    // Appeler le backend pour créer un abonnement
-    const response = await fetch(`${baseUrl}/create-subscription`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        email: email,
-        payment_method: paymentMethod.id,
-        priceId: priceId,
-      }),
-    });
+        if (!response.ok) {
+            const errorResponse = await response.json();
+            console.error('Error:', errorResponse);
+            return;
+        }
 
-    const subscription = await response.json();
+        const { sessionId } = await response.json();
+        const { error } = await stripe.redirectToCheckout({ sessionId });
 
-    if (subscription.error) {
-      console.error(subscription.error.message);
-      return;
-    }
+        if (error) {
+            console.error('Error redirecting to checkout:', error);
+        }
+    };
 
-    const { clientSecret } = subscription;
+    const handleSubmit = async (event) => {
+        event.preventDefault();
 
-    const result = await stripe.confirmCardPayment(clientSecret);
+        if (!stripe || !elements) {
+            return;
+        }
 
-    if (result.error) {
-      console.error(result.error.message);
-    } else {
-      if (result.paymentIntent.status === 'succeeded') {
-        console.log('Subscription succeeded');
-        // Rediriger vers une page de succès ou afficher un message de succès
-      }
-    }
-  };
+        const result = await stripe.confirmPayment({
+            elements,
+            confirmParams: { return_url: `${window.location.origin}/success` },
+            redirect: 'if_required',
+        });
 
-  return (
-    <form onSubmit={handleSubmit} style={{ width: '100%', maxWidth: '400px' }}>
-      <Input
-        className='neue-down'
-        type="email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        placeholder="Email"
-        required
-        mb='1rem'
-      />
-           <Input
-        className='neue-down'
-        type="Nom et prénom"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        placeholder="Nom et prénom"
-        required
-        mb='2rem'
-      />
-      <Box mb={4}>
-        <CardElement />
-      </Box>
-      <Button mt='2rem' mb='2rem' w={{ base: '100%', lg: 'unset' }} color='white' borderRadius='30px' backgroundColor='black' disabled={!stripe}>
-        Souscrire
-      </Button>
-    </form>
-  );
+        if (result.error) {
+            console.error(result.error.message);
+        } else {
+            if (result.paymentIntent.status === 'succeeded') {
+                console.log('Subscription succeeded');
+            }
+        }
+    };
+
+    return (
+        <form onSubmit={handleSubmit} style={{ width: '100%' }}>
+            <Input
+                className='neue-down'
+                type="email"
+                value={invoiceData.issuer.email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Email"
+                required
+                mb='1rem'
+            />
+            <Input
+                className='neue-down'
+                type="text"
+                placeholder="Nom et prénom"
+                required
+                mb='1rem'
+            />
+            <Input
+                className='neue-down'
+                type="text"
+                placeholder="Adresse"
+                required
+                mb='1rem'
+            />
+            <Flex gap='10px'>
+                <Input
+                    className='neue-down'
+                    type="text"
+                    placeholder="Pays"
+                    required
+                    mb='2rem'
+                />
+                <Input
+                    className='neue-down'
+                    type="text"
+                    placeholder="Code Postal"
+                    required
+                    mb='2rem'
+                />
+            </Flex>
+            {clientSecret && (
+                <Box mb={4}>
+                    <Elements stripe={stripePromise} options={{ clientSecret }}>
+                        <PaymentElement />
+                    </Elements>
+                </Box>
+            )}
+            <Button
+                mt='2rem'
+                mb='2rem'
+                w={{ base: '100%', lg: 'unset' }}
+                color='white'
+                borderRadius='30px'
+                backgroundColor='black'
+                disabled={!stripe || !clientSecret}
+                onClick={handleCheckout}
+            >
+                Profiter de l'offre
+            </Button>
+        </form>
+    );
 };
 
 export default SubscribeForm;
