@@ -14,6 +14,7 @@ import {
     UnorderedList,
 } from '@chakra-ui/react';
 import { loadStripe } from '@stripe/stripe-js';
+import { useNavigate } from 'react-router-dom';
 import { CheckIcon } from '@chakra-ui/icons';
 import { useInvoiceData } from '../src/context/InvoiceDataContext';
 
@@ -146,6 +147,7 @@ const Abo = () => {
     const [loading, setLoading] = useState(true);
     const { baseUrl } = useInvoiceData();
     const [selectedPlan, setSelectedPlan] = useState('monthly');
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetch(`${baseUrl}/abonnement/products-and-prices`)
@@ -166,6 +168,10 @@ const Abo = () => {
             });
     }, [baseUrl]);
 
+    const handleSubscribeClick = () => {
+        navigate('/checkout', { state: { priceId: selectedPriceId } });
+      };
+
     if (loading) {
         return ( 
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '90vh' }}>
@@ -179,98 +185,99 @@ const Abo = () => {
     }
     const monthlyPrice = product.prices.find(price => price.recurring?.interval === 'month');
     const yearlyPrice = product.prices.find(price => price.recurring?.interval === 'year');
+    const selectedPriceId = selectedPlan === 'monthly' ? monthlyPrice.id : yearlyPrice.id;
+
 
     return (
         <div className='flex-stepper'>
-            <div className="stepper-container">
-                <div className="tabs-container">
-                    <Flex direction="column" alignItems="center">
-                        <Heading fontSize={{ base: '24px', lg: '26px' }} mb='1rem'> Choississez votre formule d'abonnements</Heading>
-                        <Text w='70%' textAlign='center' mb='2rem'>Une fois votre abonnement créé, nous vous enverrons un e-mail contenant un récapulatif de votre formule et un mot de pass provisoire que nous vous invitons à modifier dans votre espace profil.</Text>
-                        <Flex wrap="wrap" justify="center" spacing={4}>
-                            {monthlyPrice && (
-                                <Box className='neue-up'
-                                    borderWidth="1px"
-                                    backgroundColor='#fdfdfd'
-                                    borderColor={selectedPlan === 'yearly' ? 'inherit' : '#745FF2'}
-                                    borderRadius="lg"
-                                    overflow="hidden"
-                                    p={6} mr={4}
-                                    maxW="sm"
-                                    opacity={selectedPlan === 'yearly' ?  0.6 : 1}
-                                    onClick={() => setSelectedPlan('monthly')}
-                                    cursor="pointer"
-                                    _hover={{ opacity: 1 }}>
+      <div className="stepper-container">
+        <div className="tabs-container">
+          <Flex direction="column" alignItems="center">
+            <Heading fontSize={{ base: '24px', lg: '26px' }} mb='1rem'>Choississez votre formule d'abonnements</Heading>
+            <Text w='70%' textAlign='center' mb='2rem'>
+              Une fois votre abonnement créé, nous vous enverrons un e-mail contenant un récapulatif de votre formule <br />
+              et un mot de passe provisoire que nous vous invitons à modifier dans votre espace profil.
+            </Text>
+            <Flex wrap="wrap" justify="center" spacing={4}>
+              {monthlyPrice && (
+                <Box className='neue-up'
+                  borderWidth="1px"
+                  backgroundColor='#fdfdfd'
+                  borderColor={selectedPlan === 'yearly' ? 'inherit' : '#745FF2'}
+                  borderRadius="lg"
+                  overflow="hidden"
+                  p={6} mr={4}
+                  maxW="sm"
+                  opacity={selectedPlan === 'yearly' ? 0.6 : 1}
+                  onClick={() => setSelectedPlan('monthly')}
+                  cursor="pointer"
+                  _hover={{ opacity: 1 }}>
 
-                                    <Heading
-                                        color={selectedPlan === 'yearly' ? 'inherit' : '#745FF2'}
-                                        fontSize="xl" mb={4}>Paiement mensuel</Heading>
-                                  <Heading mb='1rem' size="sm">{product.description}</Heading>
-                                  <Heading
-                                   mb='1rem' mt='1rem' size="md">
-                                        {monthlyPrice.unit_amount / 100} {monthlyPrice.currency.toUpperCase()} / mois
-                                    </Heading>
-                                    <List mt='1.5rem' pt='1.5rem' borderTopWidth='1px' spacing={3}>
-                                        <ListItem>
-                                            <ListIcon as={CheckIcon} color='#745FF2' />
-                                            Lorem ipsum dolor sit amet, consectetur adipisicing elit
-                                        </ListItem>
-                                        <ListItem>
-                                            <ListIcon as={CheckIcon} color='#745FF2' />
-                                            Assumenda, quia temporibus eveniet a libero incidunt suscipit
-                                        </ListItem>
-                                        <ListItem>
-                                            <ListIcon as={CheckIcon} color='#745FF2' />
-                                            Quidem, ipsam illum quis sed voluptatum quae eum fugit earum
-                                        </ListItem>
-                                       
-                                    </List>
-                                </Box>
-                            )}
-                            {yearlyPrice && (
-                                <Box className='neue-up'
-                                    borderWidth="1px"
-                                    backgroundColor='#fdfdfd'
-                                    borderColor={selectedPlan === 'monthly' ? 'inherit' : '#745FF2'}
-                                    borderRadius="lg"
-                                    overflow="hidden"
-                                    p={6}
-                                    ml={4}
-                                    maxW="sm"
-                                    onClick={() => setSelectedPlan('yearly')}
-                                    opacity={selectedPlan === 'monthly' ? 0.6 : 1}
-                                    cursor="pointer"
-                                    _hover={{ opacity: 1 }}>
+                  <Heading color={selectedPlan === 'yearly' ? 'inherit' : '#745FF2'} fontSize="xl" mb={4}>Paiement mensuel</Heading>
+                  <Heading mb='1rem' size="sm">{product.description}</Heading>
+                  <Heading mb='1rem' mt='1rem' size="md">
+                    {monthlyPrice.unit_amount / 100} {monthlyPrice.currency.toUpperCase()} / mois
+                  </Heading>
+                  <List mt='1.5rem' pt='1.5rem' borderTopWidth='1px' spacing={3}>
+                    <ListItem>
+                      <ListIcon as={CheckIcon} color='#745FF2' />
+                      Lorem ipsum dolor sit amet, consectetur adipisicing elit
+                    </ListItem>
+                    <ListItem>
+                      <ListIcon as={CheckIcon} color='#745FF2' />
+                      Assumenda, quia temporibus eveniet a libero incidunt suscipit
+                    </ListItem>
+                    <ListItem>
+                      <ListIcon as={CheckIcon} color='#745FF2' />
+                      Quidem, ipsam illum quis sed voluptatum quae eum fugit earum
+                    </ListItem>
+                  </List>
+                </Box>
+              )}
+              {yearlyPrice && (
+                <Box className='neue-up'
+                  borderWidth="1px"
+                  backgroundColor='#fdfdfd'
+                  borderColor={selectedPlan === 'monthly' ? 'inherit' : '#745FF2'}
+                  borderRadius="lg"
+                  overflow="hidden"
+                  p={6}
+                  ml={4}
+                  maxW="sm"
+                  onClick={() => setSelectedPlan('yearly')}
+                  opacity={selectedPlan === 'monthly' ? 0.6 : 1}
+                  cursor="pointer"
+                  _hover={{ opacity: 1 }}>
 
-                                    <Heading
-                                        color={selectedPlan === 'monthly' ? 'inherit' : '#745FF2'}
-                                        fontSize="xl" mb={4}>Paiement annuel</Heading>
-                                    <Heading mb='1rem' size="sm">{product.description}</Heading>
-                                    <Heading mb='1rem' mt='1rem' size="md">
-                                        {yearlyPrice.unit_amount / 100} {yearlyPrice.currency.toUpperCase()} / an
-                                    </Heading>
-                                    <List mt='1.5rem' pt='1.5rem' borderTopWidth='1px' spacing={3}>
-                                        <ListItem>
-                                            <ListIcon as={CheckIcon} color='#745FF2' />
-                                            Lorem ipsum dolor sit amet, consectetur adipisicing elit
-                                        </ListItem>
-                                        <ListItem>
-                                            <ListIcon as={CheckIcon} color='#745FF2' />
-                                            Assumenda, quia temporibus eveniet a libero incidunt suscipit
-                                        </ListItem>
-                                        <ListItem>
-                                            <ListIcon as={CheckIcon} color='#745FF2'/>
-                                            Quidem, ipsam illum quis sed voluptatum quae eum fugit earum
-                                        </ListItem>
-                                    
-                                    </List>
-                                </Box>
-                            )}
-                        </Flex>
-                    </Flex>
-                </div>
-            </div>
+                  <Heading color={selectedPlan === 'monthly' ? 'inherit' : '#745FF2'} fontSize="xl" mb={4}>Paiement annuel</Heading>
+                  <Heading mb='1rem' size="sm">{product.description}</Heading>
+                  <Heading mb='1rem' mt='1rem' size="md">
+                    {yearlyPrice.unit_amount / 100} {yearlyPrice.currency.toUpperCase()} / an
+                  </Heading>
+                  <List mt='1.5rem' pt='1.5rem' borderTopWidth='1px' spacing={3}>
+                    <ListItem>
+                      <ListIcon as={CheckIcon} color='#745FF2' />
+                      Lorem ipsum dolor sit amet, consectetur adipisicing elit
+                    </ListItem>
+                    <ListItem>
+                      <ListIcon as={CheckIcon} color='#745FF2' />
+                      Assumenda, quia temporibus eveniet a libero incidunt suscipit
+                    </ListItem>
+                    <ListItem>
+                      <ListIcon as={CheckIcon} color='#745FF2' />
+                      Quidem, ipsam illum quis sed voluptatum quae eum fugit earum
+                    </ListItem>
+                  </List>
+                </Box>
+              )}
+            </Flex>
+            <Button mt='2rem' mb='2rem' w={{ base: '100%', lg: 'unset' }} color='white' borderRadius='30px' backgroundColor='black' onClick={handleSubscribeClick}>
+              Souscrire
+            </Button>
+          </Flex>
         </div>
+      </div>
+    </div>
     );
 };
 

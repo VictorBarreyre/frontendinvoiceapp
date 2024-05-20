@@ -6,11 +6,17 @@ import Login from '../roots/Login';
 import Header from './components/Header';
 import Stepper from './components/Stepper';
 import { ChakraProvider } from '@chakra-ui/react';
+import { Elements } from '@stripe/react-stripe-js';
 import Abo from '../roots/Abo'
+import Checkout from '../roots/Checkout';
 import { InvoiceDataProvider } from './context/InvoiceDataContext';
 import PaymentSuccess from '../roots/PaymentSucces';
 import { extendTheme } from '@chakra-ui/react';
 import Success from '../roots/Succes';
+import { loadStripe } from '@stripe/stripe-js';
+
+const stripePromise = loadStripe('pk_test_51OwLFM00KPylCGutjKAkwhqleWEzuvici1dQUPCIvZHofEzLtGyM9Gdz5zEfvwSZKekKRgA1el5Ypnw7HLfYWOuB00ZdrKdygg');
+
 
 const theme = extendTheme({
   breakpoints: {
@@ -21,11 +27,13 @@ const theme = extendTheme({
   },
 });
 
+
 function App() {
 
 
   return (
     <>
+      <Elements stripe={stripePromise}> 
       <ChakraProvider theme={theme}>
       <InvoiceDataProvider>  
         <Router>
@@ -37,10 +45,12 @@ function App() {
             <Route path="/success" element={<Success />} />
             <Route path="/payment-success" element={<PaymentSuccess />} />
             <Route path="/abo" element={<Abo />} />
+            <Route path="/checkout" element={<Checkout />} />
           </Routes>
         </Router>
         </InvoiceDataProvider>
       </ChakraProvider>
+      </Elements>
     </>
   );
 }
