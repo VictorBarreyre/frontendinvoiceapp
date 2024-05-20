@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js';
+import { PaymentElement, useStripe, useElements, Elements } from '@stripe/react-stripe-js';
 import { Button, Box, Input, Flex } from '@chakra-ui/react';
 import { useInvoiceData } from '../context/InvoiceDataContext';
 import { loadStripe } from '@stripe/stripe-js';
@@ -7,59 +7,27 @@ import CountrySelector from './CountrySelector';
 
 const stripePromise = loadStripe('pk_test_51OwLFM00KPylCGutjKAkwhqleWEzuvici1dQUPCIvZHofEzLtGyM9Gdz5zEfvwSZKekKRgA1el5Ypnw7HLfYWOuB00ZdrKdygg');
 
-const SubscribeForm = ({ priceId }) => {
+const SubscribeForm = () => {
     const stripe = useStripe();
     const elements = useElements();
-    const [email, setEmail] = useState('');
+    const { invoiceData, createCheckoutSession } = useInvoiceData();
+    const [email, setEmail] = useState(invoiceData.issuer.email);
+    const [name, setName] = useState(invoiceData.issuer.name);
+    const [address, setAddress] = useState(invoiceData.issuer.adresse);
+    const [country, setCountry] = useState('');
+    const [postalCode, setPostalCode] = useState('');
     const [clientSecret, setClientSecret] = useState('');
-    const { invoiceData, baseUrl } = useInvoiceData();
 
     useEffect(() => {
-        if (email && priceId) {
-            const fetchClientSecret = async () => {
-                const response = await fetch(`${baseUrl}/abonnement/create-subscription`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email: email, priceId: priceId }),
-                });
-
-                if (!response.ok) {
-                    const errorResponse = await response.json();
-                    console.error('Error:', errorResponse);
-                    return;
-                }
-
-                const data = await response.json();
-                setClientSecret(data.clientSecret);
-                console.log(clientSecret)
-                console.log(email)
-                console.log(priceId)
-            };
-
-            fetchClientSecret();
+        if (email && name) {
+            createCheckoutSession(email, name, (clientSecret) => {
+                console.log(`Checkout session created: ${clientSecret}`);
+                setClientSecret(clientSecret);
+            }, () => {
+                console.error('Error creating checkout session');
+            });
         }
-    }, [ email, priceId]);
-
-    const handleCheckout = async () => {
-        const response = await fetch(`${baseUrl}/abonnement/create-checkout-session`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ priceId: priceId }),
-        });
-
-        if (!response.ok) {
-            const errorResponse = await response.json();
-            console.error('Error:', errorResponse);
-            return;
-        }
-
-        const { sessionId } = await response.json();
-        const { error } = await stripe.redirectToCheckout({ sessionId });
-
-        if (error) {
-            console.error('Error redirecting to checkout:', error);
-        }
-    };
+    }, [email, name, createCheckoutSession]);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -88,7 +56,7 @@ const SubscribeForm = ({ priceId }) => {
             <Input
                 className='neue-down'
                 type="email"
-                value={invoiceData.issuer.email}
+                value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Email"
                 required
@@ -97,6 +65,8 @@ const SubscribeForm = ({ priceId }) => {
             <Input
                 className='neue-down'
                 type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
                 placeholder="Nom et prénom"
                 required
                 mb='1rem'
@@ -104,6 +74,8 @@ const SubscribeForm = ({ priceId }) => {
             <Input
                 className='neue-down'
                 type="text"
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
                 placeholder="Adresse"
                 required
                 mb='1rem'
@@ -112,6 +84,8 @@ const SubscribeForm = ({ priceId }) => {
                 <Input
                     className='neue-down'
                     type="text"
+                    value={country}
+                    onChange={(e) => setCountry(e.target.value)}
                     placeholder="Pays"
                     required
                     mb='2rem'
@@ -119,6 +93,8 @@ const SubscribeForm = ({ priceId }) => {
                 <Input
                     className='neue-down'
                     type="text"
+                    value={postalCode}
+                    onChange={(e) => setPostalCode(e.target.value)}
                     placeholder="Code Postal"
                     required
                     mb='2rem'
@@ -139,7 +115,6 @@ const SubscribeForm = ({ priceId }) => {
                 borderRadius='30px'
                 backgroundColor='black'
                 disabled={!stripe || !clientSecret}
-                onClick={handleCheckout}
             >
                 Profiter de l'offre
             </Button>

@@ -24,9 +24,8 @@ import SubscribeForm from '../src/components/SubcribeForm';
 const Abo = () => {
     const [product, setProduct] = useState(null);
     const [loading, setLoading] = useState(true);
-    const { baseUrl } = useInvoiceData();
+    const { baseUrl, createCheckoutSession } = useInvoiceData();
     const [selectedPlan, setSelectedPlan] = useState('monthly');
-    const navigate = useNavigate();
     const { invoiceData } = useInvoiceData();
 
     useEffect(() => {
@@ -63,6 +62,14 @@ const Abo = () => {
     const monthlyPrice = product.prices.find(price => price.recurring?.interval === 'month');
     const yearlyPrice = product.prices.find(price => price.recurring?.interval === 'year');
     const selectedPriceId = selectedPlan === 'monthly' ? monthlyPrice.id : yearlyPrice.id;
+
+    const handleSendInvoice = () => {
+        createCheckoutSession(selectedPriceId, (sessionId) => {
+            console.log(`Checkout session created: ${sessionId}`);
+        }, () => {
+            console.error('Error creating checkout session');
+        });
+    };
 
     return (
         <div className='flex-stepper'>
