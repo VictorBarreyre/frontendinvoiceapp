@@ -94,6 +94,7 @@ export const InvoiceDataProvider = ({ children }) => {
     const isValidEmail = (email) => {
         return /\S+@\S+\.\S+/.test(email);
     };
+
     
     const createCheckoutSession = async (email, name, onSuccess, onError) => {
         try {
@@ -111,13 +112,19 @@ export const InvoiceDataProvider = ({ children }) => {
             }
     
             const { clientSecret } = await response.json();
-            onSuccess(clientSecret);
+            if (clientSecret) {
+                onSuccess(clientSecret);
+            } else {
+                console.error('No clientSecret returned from backend.');
+                onError();
+            }
         } catch (error) {
             console.error('Error creating checkout session:', error.message);
             onError();
         }
     };
     
+
 
     const handleInvoiceActionSendMail = async (invoiceData, onSuccess, onError) => {
         const { number, issuer, client, total } = invoiceData;

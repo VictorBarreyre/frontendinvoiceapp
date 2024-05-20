@@ -13,9 +13,6 @@ const SubscribeForm = () => {
     const { invoiceData, createCheckoutSession } = useInvoiceData();
     const [email, setEmail] = useState(invoiceData.issuer.email);
     const [name, setName] = useState(invoiceData.issuer.name);
-    const [address, setAddress] = useState(invoiceData.issuer.adresse);
-    const [country, setCountry] = useState('');
-    const [postalCode, setPostalCode] = useState('');
     const [clientSecret, setClientSecret] = useState('');
 
     useEffect(() => {
@@ -27,7 +24,7 @@ const SubscribeForm = () => {
                 console.error('Error creating checkout session');
             });
         }
-    }, [email, name, createCheckoutSession]);
+    }, [email, name]);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -74,8 +71,7 @@ const SubscribeForm = () => {
             <Input
                 className='neue-down'
                 type="text"
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
+                value={invoiceData.issuer.adresse}
                 placeholder="Adresse"
                 required
                 mb='1rem'
@@ -84,8 +80,6 @@ const SubscribeForm = () => {
                 <Input
                     className='neue-down'
                     type="text"
-                    value={country}
-                    onChange={(e) => setCountry(e.target.value)}
                     placeholder="Pays"
                     required
                     mb='2rem'
@@ -93,8 +87,6 @@ const SubscribeForm = () => {
                 <Input
                     className='neue-down'
                     type="text"
-                    value={postalCode}
-                    onChange={(e) => setPostalCode(e.target.value)}
                     placeholder="Code Postal"
                     required
                     mb='2rem'
