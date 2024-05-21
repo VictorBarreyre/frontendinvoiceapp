@@ -195,7 +195,7 @@ const InvoiceCreator = ({ handleNavigateTo, totalError }) => {
           </Flex>
 
 
-          <Flex direction='column' className='neue-up' borderWidth='1px' borderRadius='10px' pt='1rem' pl='1.5rem' pr='1.5rem' pb='1rem' w='100%' mb={{ base: '2rem', lg: '1rem' }}>
+          <Flex direction='column' className='neue-up' borderWidth='1px' borderRadius='10px' pt='1rem' pl='1.5rem' pr='1.5rem' pb='1rem' w='100%' mb={{ base: '2rem', lg: '0rem' }}>
         <Heading mb='1rem' mt='1rem' size="md">{itemsnames}</Heading>
         {
           isMobile ? (

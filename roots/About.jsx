@@ -47,12 +47,14 @@ const Feature = ({ title, text, icon, link }) => {
 // Page À propos
 const AboutPage = () => {
   return (
-    <Flex direction='column' alignItems='center' mt="7rem" pl={5} pr={5}>
-      <Flex alignItems='center' mb='3rem' direction='column' w='30rem'> 
-      <Heading textAlign='center' mb="4">À propos de dbill</Heading>
-      <Text textAlign='center' color='#4A5568'> Le Lorem Ipsum est simplement du faux texte employé dans la composition et la mise en page avant impression. </Text>
+    <div className='flex-stepper'>
+    <div className="stepper-container">
+        <div className="tabs-container">
+      <Flex mb='3rem' direction='column' > 
+      <Heading fontSize={{ base: '24px', lg: '26px' }}>À propos de dbill</Heading>
+      <Text color='#4A5568'> Le Lorem Ipsum est simplement du faux texte employé dans la composition et la mise en page avant impression. </Text>
       </Flex>
-      <Flex overflowX='auto' direction={{ base: 'column', lg: 'unset' }} spacing={10} px={12} >
+      <Flex overflowX='auto' direction={{ base: 'column', lg: 'unset' }} w='auto' spacing={10} px={12} >
         <Feature
           icon={<EditIcon color='#745FF2' w={8} h={8} />}
           title="Créer une facture"
@@ -78,7 +80,9 @@ const AboutPage = () => {
           link="Lorem"
         />
       </Flex>
-    </Flex>
+    </div>
+            </div>
+        </div>
   );
 };
 

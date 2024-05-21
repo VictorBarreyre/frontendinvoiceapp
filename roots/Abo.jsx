@@ -77,7 +77,7 @@ const Abo = () => {
                 <div className="tabs-container">
                     <Flex direction="column">
                         <Heading fontSize={{ base: '24px', lg: '26px' }} mb='1rem'>Choisissez votre formule d'abonnements</Heading>
-                        <Text w='100%' mb='3rem'>
+                        <Text color='#4A5568' w='100%' mb='3rem'>
                             Une fois votre abonnement créé, nous vous enverrons un e-mail contenant un récapitulatif de votre formule
                             et un mot de passe provisoire que nous vous invitons à modifier dans votre espace profil.
                         </Text>
@@ -191,7 +191,7 @@ const Abo = () => {
                                         </AccordionItem>
                                     )}
                                 </Accordion>
-                                <Text fontSize="14px"> En continuant, vous acceptez <Link color='#745FF2'> nos termes et conditions.</Link></Text>
+                                <Text color='#4A5568' fontSize="14px"> En continuant, vous acceptez <Link color='#745FF2'> nos termes et conditions.</Link></Text>
                             </Flex>
                         </Flex>
                     </Flex>

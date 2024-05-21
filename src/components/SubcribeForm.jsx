@@ -3,7 +3,6 @@ import { PaymentElement, useStripe, useElements, Elements } from '@stripe/react-
 import { Button, Box, Input, Flex } from '@chakra-ui/react';
 import { useInvoiceData } from '../context/InvoiceDataContext';
 import { loadStripe } from '@stripe/stripe-js';
-import CountrySelector from './CountrySelector';
 
 const stripePromise = loadStripe('pk_test_51OwLFM00KPylCGutjKAkwhqleWEzuvici1dQUPCIvZHofEzLtGyM9Gdz5zEfvwSZKekKRgA1el5Ypnw7HLfYWOuB00ZdrKdygg');
 
@@ -13,6 +12,9 @@ const SubscribeForm = () => {
     const { invoiceData, createCheckoutSession } = useInvoiceData();
     const [email, setEmail] = useState(invoiceData.issuer.email);
     const [name, setName] = useState(invoiceData.issuer.name);
+    const [address, setAddress] = useState(invoiceData.issuer.adresse);
+    const [country, setCountry] = useState('');
+    const [postalCode, setPostalCode] = useState('');
     const [clientSecret, setClientSecret] = useState('');
 
     useEffect(() => {
@@ -20,16 +22,18 @@ const SubscribeForm = () => {
             createCheckoutSession(email, name, (clientSecret) => {
                 console.log(`Checkout session created: ${clientSecret}`);
                 setClientSecret(clientSecret);
+                console.log('Client Secret:', clientSecret); // Ajout du console.log ici
             }, () => {
                 console.error('Error creating checkout session');
             });
         }
-    }, [email, name]);
+    }, [email, name, createCheckoutSession]);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
 
         if (!stripe || !elements) {
+            console.error('Stripe.js has not yet loaded.');
             return;
         }
 
@@ -46,6 +50,27 @@ const SubscribeForm = () => {
                 console.log('Subscription succeeded');
             }
         }
+    };
+
+    const stripeAppearance = {
+        theme: 'flat',
+        variables: {
+            fontFamily: 'SF Pro Display, sans-serif',
+        },
+        rules: {
+            '.Label': {
+                'fontSize': 'SF Pro Display, sans-serif',
+                'fontWeight': '600',
+                'marginBottom': '0.5rem',
+            },
+            '.Input': {
+                'backgroundColor': '#fdfdfd',
+                'border': '1px solid #E2E8F0',
+                'boxShadow': 'rgba(174, 174, 192, 0.4) -1.5px -1.5px 3px 0px, rgb(255, 255, 255) 1.5px 1.5px 3px 0px',
+                'borderRadius': '4px',
+                'padding': '10px',
+            },
+        },
     };
 
     return (
@@ -71,7 +96,8 @@ const SubscribeForm = () => {
             <Input
                 className='neue-down'
                 type="text"
-                value={invoiceData.issuer.adresse}
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
                 placeholder="Adresse"
                 required
                 mb='1rem'
@@ -80,6 +106,8 @@ const SubscribeForm = () => {
                 <Input
                     className='neue-down'
                     type="text"
+                    value={country}
+                    onChange={(e) => setCountry(e.target.value)}
                     placeholder="Pays"
                     required
                     mb='2rem'
@@ -87,19 +115,22 @@ const SubscribeForm = () => {
                 <Input
                     className='neue-down'
                     type="text"
+                    value={postalCode}
+                    onChange={(e) => setPostalCode(e.target.value)}
                     placeholder="Code Postal"
                     required
                     mb='2rem'
                 />
             </Flex>
             {clientSecret && (
-                <Box mb={4}>
-                    <Elements stripe={stripePromise} options={{ clientSecret }}>
+                <Elements stripe={stripePromise} options={{ clientSecret, appearance: stripeAppearance }}>
+                    <Box mb={4}>
                         <PaymentElement />
-                    </Elements>
-                </Box>
+                    </Box>
+                </Elements>
             )}
             <Button
+                type="submit"
                 mt='2rem'
                 mb='2rem'
                 w={{ base: '100%', lg: 'unset' }}

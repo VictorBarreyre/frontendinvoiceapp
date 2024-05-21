@@ -169,14 +169,16 @@
   margin-left: 3rem;
 }
 
-.tab .icon {
+.tab.icon {
   width: 20px; /* Ajustez la taille selon vos besoins */
   height: 20px; /* Ajustez la taille selon vos besoins */
   margin-right: 10px; /* Espace entre l'icône et le texte */
   vertical-align: middle; /* Pour aligner verticalement l'icône avec le texte */
 }
 
-
+.tab-panel{
+  margin-bottom: 2rem;
+}
 
 
 /* Smartphones en portrait */
