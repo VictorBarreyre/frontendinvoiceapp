@@ -16,21 +16,27 @@ const SubscribeForm = () => {
     const [country, setCountry] = useState('');
     const [postalCode, setPostalCode] = useState('');
     const [clientSecret, setClientSecret] = useState('');
+    const [isSessionCreated, setIsSessionCreated] = useState(false);
 
     useEffect(() => {
-        if (email && name) {
+        if (email && name && !isSessionCreated) {
             createCheckoutSession(email, name, (clientSecret) => {
                 console.log(`Checkout session created: ${clientSecret}`);
                 setClientSecret(clientSecret);
+                setIsSessionCreated(true);
                 console.log('Client Secret:', clientSecret); // Ajout du console.log ici
             }, () => {
                 console.error('Error creating checkout session');
             });
         }
-    }, [email, name, createCheckoutSession]);
+    }, [email, name, isSessionCreated, createCheckoutSession]);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
+
+        console.log('Stripe:', stripe);
+        console.log('Elements:', elements);
+        console.log('Client Secret at submission:', clientSecret); // Ajout du console.log ici
 
         if (!stripe || !elements) {
             console.error('Stripe.js has not yet loaded.');
