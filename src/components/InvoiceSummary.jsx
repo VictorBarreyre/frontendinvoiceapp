@@ -139,8 +139,8 @@ const InvoiceSummary = () => {
                     </Flex>
                 </Flex>
 
-                <Flex {...styleProps.issuerAndClient} justifyContent="space-between">
-                    <Flex flexDirection='column' align="start">
+                <Flex {...styleProps.issuerAndClient}  justifyContent="space-between">
+                    <Flex flexDirection='column' borderBottom={isMobile ? "1px solid #e2e8f0" : "unset"} paddingBottom={isMobile ? "1rem" : "unset"} align="start">
                         <Text {...styleProps.subHeading}>Émise par</Text>
                         <Text {...styleProps.text}>{invoiceData.issuer.name}</Text>
                         <Text {...styleProps.text}> {invoiceData.issuer.adresse}</Text>
