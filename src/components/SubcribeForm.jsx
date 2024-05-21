@@ -43,6 +43,13 @@ const SubscribeForm = () => {
             return;
         }
 
+        // Vérifier si le Payment Element est monté
+        const paymentElement = elements.getElement(PaymentElement);
+        if (!paymentElement) {
+            console.error('PaymentElement not found.');
+            return;
+        }
+
         const result = await stripe.confirmPayment({
             elements,
             confirmParams: { return_url: `${window.location.origin}/success` },
