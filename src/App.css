@@ -201,12 +201,17 @@
     margin-bottom: 1.2rem !important;
   }
 
+
+  .tab{
+    margin: 0 !important;
+  }
+
   .tab.active{
-    margin-right: 1rem;
+    margin: 0 !important;
   }
 
   .disabled{
-    margin-right: 1rem !important;
+    margin: 0 !important;
   }
 }
 
