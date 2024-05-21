@@ -78,15 +78,15 @@ const Abo = () => {
                     <Flex direction="column">
                         <Heading fontSize={{ base: '24px', lg: '26px' }} mb='1rem'>Choisissez votre formule d'abonnements</Heading>
                         <Text w='100%' mb='2rem'>
-                            Une fois votre abonnement créé, nous vous enverrons un e-mail contenant un récapitulatif de votre formule <br />
+                            Une fois votre abonnement créé, nous vous enverrons un e-mail contenant un récapitulatif de votre formule
                             et un mot de passe provisoire que nous vous invitons à modifier dans votre espace profil.
                         </Text>
-                        <Flex justifyContent='space-between' alignItems='start'>
-                            <Flex direction='column' w='50%' gap='15px'>
+                        <Flex direction={{ base: 'column-reverse', lg: 'unset' }}  mb={{base: '2rem', lg:'unset'}} justifyContent='space-between' alignItems='start'>
+                            <Flex direction='column' w={{ base: '100%', lg: '50%' }} gap='15px'>
                                 <Heading size="sm">Vos informations</Heading>
                                 <SubscribeForm priceId={selectedPriceId} />
                             </Flex>
-                            <Flex direction='column' w='45%' justify="center" gap='15px'>
+                            <Flex direction='column' w={{ base: '100%', lg: '45%' }} justify="center" gap='15px'>
                                 <Heading size="sm">Votre abonnement premium</Heading>
                                 <Accordion allowToggle>
                                     {monthlyPrice && (
