@@ -3,10 +3,10 @@ import { PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js'
 import { Button, Box, Input, Flex } from '@chakra-ui/react';
 import { useInvoiceData } from '../context/InvoiceDataContext';
 
-const SubscribeForm = ({ clientSecret }) => {
+const SubscribeForm = ({ clientSecret, setClientSecret, selectedPriceId }) => {
     const stripe = useStripe();
     const elements = useElements();
-    const { invoiceData } = useInvoiceData();
+    const { invoiceData, createSubscription } = useInvoiceData();
     const [email, setEmail] = useState(invoiceData.issuer.email);
     const [name, setName] = useState(invoiceData.issuer.name);
     const [address, setAddress] = useState(invoiceData.issuer.adresse);
@@ -21,11 +21,14 @@ const SubscribeForm = ({ clientSecret }) => {
             return;
         }
 
-        const paymentElement = elements.getElement(PaymentElement);
-        if (!paymentElement) {
-            console.error('PaymentElement not found.');
-            return;
-        }
+        const onSuccess = (clientSecret) => {
+            setClientSecret(clientSecret);
+        };
+        const onError = () => {
+            console.error('Error creating subscription');
+        };
+
+        await createSubscription(invoiceData.issuer.email, selectedPriceId, onSuccess, onError);
 
         const result = await stripe.confirmSetup({
             elements,
@@ -62,9 +65,12 @@ const SubscribeForm = ({ clientSecret }) => {
         },
     };
 
+    console.log(selectedPriceId)
+
     return (
         <form onSubmit={handleSubmit} style={{ width: '100%' }}>
             <Input
+                className='neue-down'
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -73,6 +79,7 @@ const SubscribeForm = ({ clientSecret }) => {
                 mb='1rem'
             />
             <Input
+                className='neue-down'
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
@@ -81,6 +88,7 @@ const SubscribeForm = ({ clientSecret }) => {
                 mb='1rem'
             />
             <Input
+                className='neue-down'
                 type="text"
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
@@ -90,6 +98,7 @@ const SubscribeForm = ({ clientSecret }) => {
             />
             <Flex gap='10px'>
                 <Input
+                    className='neue-down'
                     type="text"
                     value={country}
                     onChange={(e) => setCountry(e.target.value)}
@@ -98,6 +107,7 @@ const SubscribeForm = ({ clientSecret }) => {
                     mb='2rem'
                 />
                 <Input
+                    className='neue-down'
                     type="text"
                     value={postalCode}
                     onChange={(e) => setPostalCode(e.target.value)}
@@ -107,7 +117,7 @@ const SubscribeForm = ({ clientSecret }) => {
                 />
             </Flex>
             <Box mb={4}>
-                <PaymentElement />
+                <PaymentElement  />
             </Box>
             <Button
                 type="submit"

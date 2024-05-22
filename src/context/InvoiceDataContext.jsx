@@ -123,7 +123,35 @@ export const InvoiceDataProvider = ({ children }) => {
             onError();
         }
     };
+
     
+    const createSubscription = async (email, priceId, onSuccess, onError) => {
+        try {
+            const response = await fetch(`${baseUrl}/abonnement/create-subscription`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, priceId }),
+            });
+    
+            if (!response.ok) {
+                const errorResponse = await response.json();
+                console.error('Error creating subscription:', errorResponse);
+                onError();
+                return;
+            }
+    
+            const { clientSecret } = await response.json();
+            if (clientSecret) {
+                onSuccess(clientSecret);
+            } else {
+                console.error('No clientSecret returned from backend.');
+                onError();
+            }
+        } catch (error) {
+            console.error('Error creating subscription:', error.message);
+            onError();
+        }
+    };
     
 
 
@@ -213,7 +241,8 @@ export const InvoiceDataProvider = ({ children }) => {
             setRemainingPercentage,
             handleInvoiceActionSendMail,
             getClassForField,
-            createCheckoutSession
+            createCheckoutSession,
+            createSubscription
         }}>
             {children}
         </InvoiceDataContext.Provider>

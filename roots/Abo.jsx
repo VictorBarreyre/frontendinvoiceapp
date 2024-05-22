@@ -5,7 +5,6 @@ import {
     AccordionButton,
     AccordionPanel,
     AccordionIcon,
-    Button,
     Heading,
     Flex,
     Text,
@@ -17,7 +16,6 @@ import {
     Link,
 } from '@chakra-ui/react';
 import { CheckCircleIcon, CheckIcon } from '@chakra-ui/icons';
-import { useNavigate } from 'react-router-dom';
 import { useInvoiceData } from '../src/context/InvoiceDataContext';
 import SubscribeForm from '../src/components/SubcribeForm';
 import { Elements } from '@stripe/react-stripe-js';
@@ -86,6 +84,7 @@ const Abo = () => {
     const monthlyPrice = product.prices.find(price => price.recurring?.interval === 'month');
     const yearlyPrice = product.prices.find(price => price.recurring?.interval === 'year');
     const selectedPriceId = selectedPlan === 'monthly' ? monthlyPrice.id : yearlyPrice.id;
+    console.log(selectedPriceId)
 
     return (
         <div className='flex-stepper'>
@@ -102,7 +101,7 @@ const Abo = () => {
                                 <Heading size="sm">Vos informations</Heading>
                                 {clientSecret ? (
                                     <Elements stripe={stripePromise} options={{ clientSecret }}>
-                                        <SubscribeForm clientSecret={clientSecret} />
+                                        <SubscribeForm clientSecret={clientSecret} setClientSecret={setClientSecret} selectedPriceId={selectedPriceId} />
                                     </Elements>
                                 ) : (
                                     <p>Loading...</p>
