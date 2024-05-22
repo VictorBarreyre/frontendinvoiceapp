@@ -20,32 +20,56 @@ import { CheckCircleIcon, CheckIcon } from '@chakra-ui/icons';
 import { useNavigate } from 'react-router-dom';
 import { useInvoiceData } from '../src/context/InvoiceDataContext';
 import SubscribeForm from '../src/components/SubcribeForm';
+import { Elements } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
+
+const stripePromise = loadStripe('pk_test_51OwLFM00KPylCGutjKAkwhqleWEzuvici1dQUPCIvZHofEzLtGyM9Gdz5zEfvwSZKekKRgA1el5Ypnw7HLfYWOuB00ZdrKdygg');
 
 const Abo = () => {
     const [product, setProduct] = useState(null);
     const [loading, setLoading] = useState(true);
-    const { baseUrl, createCheckoutSession } = useInvoiceData();
+    const { invoiceData, baseUrl, createCheckoutSession } = useInvoiceData();
     const [selectedPlan, setSelectedPlan] = useState('monthly');
-    const { invoiceData } = useInvoiceData();
+    const [clientSecret, setClientSecret] = useState('');
 
     useEffect(() => {
-        fetch(`${baseUrl}/abonnement/products-and-prices`)
-            .then(response => {
+        const fetchProductsAndPrices = async () => {
+            try {
+                const response = await fetch(`${baseUrl}/abonnement/products-and-prices`);
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
-                return response.json();
-            })
-            .then(data => {
-                const targetProduct = data.find(p => p.name === 'Premium'); // Remplacez 'Premium' par le nom du produit que vous souhaitez afficher
+                const data = await response.json();
+                const targetProduct = data.find(p => p.name === 'Premium'); // Replace 'Premium' with the product name you want to display
                 setProduct(targetProduct);
                 setLoading(false);
-            })
-            .catch(error => {
+            } catch (error) {
                 console.error('Error fetching products:', error);
                 setLoading(false);
-            });
+            }
+        };
+
+        fetchProductsAndPrices();
     }, [baseUrl]);
+
+    useEffect(() => {
+        const fetchClientSecret = async () => {
+            try {
+                const onSuccess = (clientSecret) => {
+                    setClientSecret(clientSecret);
+                };
+                const onError = () => {
+                    console.error('Error creating checkout session');
+                };
+                await createCheckoutSession(invoiceData.issuer.email, invoiceData.issuer.name, onSuccess, onError);
+            } catch (error) {
+                console.error('Error creating checkout session:', error);
+            }
+        };
+        if (product) {
+            fetchClientSecret();
+        }
+    }, [createCheckoutSession, product, invoiceData.issuer.email, invoiceData.issuer.name]);
 
     if (loading) {
         return (
@@ -63,30 +87,28 @@ const Abo = () => {
     const yearlyPrice = product.prices.find(price => price.recurring?.interval === 'year');
     const selectedPriceId = selectedPlan === 'monthly' ? monthlyPrice.id : yearlyPrice.id;
 
-    const handleSendInvoice = () => {
-        createCheckoutSession(selectedPriceId, (sessionId) => {
-            console.log(`Checkout session created: ${sessionId}`);
-        }, () => {
-            console.error('Error creating checkout session');
-        });
-    };
-
     return (
         <div className='flex-stepper'>
             <div className="stepper-container">
                 <div className="tabs-container">
                     <Flex direction="column">
-                        <Heading fontSize={{ base: '24px', lg: '26px' }} mb='1rem'>Choisissez votre formule d'abonnements</Heading>
+                        <Heading fontSize={{ base: '24px', lg: '26px' }} mb='1rem'>Choisissez votre formule d'abonnement</Heading>
                         <Text color='#4A5568' w='100%' mb='3rem'>
                             Une fois votre abonnement créé, nous vous enverrons un e-mail contenant un récapitulatif de votre formule
                             et un mot de passe provisoire que nous vous invitons à modifier dans votre espace profil.
                         </Text>
-                        <Flex direction={{ base: 'column-reverse', lg: 'unset' }}   justifyContent='space-between' alignItems='start'>
+                        <Flex direction={{ base: 'column-reverse', lg: 'unset' }} justifyContent='space-between' alignItems='start'>
                             <Flex direction='column' w={{ base: '100%', lg: '50%' }} gap='15px'>
                                 <Heading size="sm">Vos informations</Heading>
-                                <SubscribeForm priceId={selectedPriceId} />
+                                {clientSecret ? (
+                                    <Elements stripe={stripePromise} options={{ clientSecret }}>
+                                        <SubscribeForm clientSecret={clientSecret} />
+                                    </Elements>
+                                ) : (
+                                    <p>Loading...</p>
+                                )}
                             </Flex>
-                            <Flex direction='column' w={{ base: '100%', lg: '45%' }} mb={{base: '3rem', lg:'unset'}} justify="center" gap='15px'>
+                            <Flex direction='column' w={{ base: '100%', lg: '45%' }} mb={{ base: '3rem', lg: 'unset' }} justify="center" gap='15px'>
                                 <Heading size="sm">Votre abonnement premium</Heading>
                                 <Accordion allowToggle>
                                     {monthlyPrice && (
