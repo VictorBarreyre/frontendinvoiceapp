@@ -86,6 +86,29 @@ const Abo = () => {
     const selectedPriceId = selectedPlan === 'monthly' ? monthlyPrice.id : yearlyPrice.id;
     console.log(selectedPriceId)
 
+
+
+    const stripeAppearance = {
+        theme: 'flat',
+        variables: {
+            fontFamily: 'SF Pro Display, sans-serif',
+        },
+        rules: {
+            '.Label': {
+                'fontSize': 'SF Pro Display, sans-serif',
+                'fontWeight': '600',
+                'marginBottom': '0.5rem',
+            },
+            '.Input': {
+                'backgroundColor': '#fdfdfd',
+                'border': '1px solid #E2E8F0',
+                'boxShadow': 'rgba(174, 174, 192, 0.4) -1.5px -1.5px 3px 0px, rgb(255, 255, 255) 1.5px 1.5px 3px 0px',
+                'borderRadius': '4px',
+                'padding': '10px',
+            },
+        },
+    };
+
     return (
         <div className='flex-stepper'>
             <div className="stepper-container">
@@ -100,7 +123,7 @@ const Abo = () => {
                             <Flex direction='column' w={{ base: '100%', lg: '50%' }} gap='15px'>
                                 <Heading size="sm">Vos informations</Heading>
                                 {clientSecret ? (
-                                    <Elements stripe={stripePromise} options={{ clientSecret }}>
+                                    <Elements  stripe={stripePromise} options={{ clientSecret, appearance: stripeAppearance }}>
                                         <SubscribeForm clientSecret={clientSecret} setClientSecret={setClientSecret} selectedPriceId={selectedPriceId} />
                                     </Elements>
                                 ) : (

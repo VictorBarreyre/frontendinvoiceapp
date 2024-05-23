@@ -13,10 +13,10 @@ export const InvoiceDataProvider = ({ children }) => {
         number: '000243',
         date: new Date().toISOString().split('T')[0],
         issuer: {
-            name: 'Jean Dupont',
+            name: 'Jean Dupoont',
             adresse: '43 rue de La Paix 75001 Paris',
             siret: '761289800089',
-            email: 'jeandupont@gmail.com',
+            email: 'jeandupoont@gmail.com',
             iban: 'FR76 1020 4000 4533 3444 5678'
         },
         client: {
@@ -107,24 +107,42 @@ export const InvoiceDataProvider = ({ children }) => {
             if (!response.ok) {
                 const errorResponse = await response.json();
                 console.error('Error creating checkout session:', errorResponse);
-                onError();
+                onError(errorResponse.error.message);
                 return;
             }
     
-            const { clientSecret } = await response.json();
+            const { clientSecret, sessionId } = await response.json();
             if (clientSecret) {
-                onSuccess(clientSecret);
+                onSuccess(clientSecret, sessionId);
             } else {
                 console.error('No clientSecret returned from backend.');
-                onError();
+                onError('No clientSecret returned from backend.');
             }
         } catch (error) {
-            console.error('Error creating checkout session:', error.message);
-            onError();
+            console.error('Error creating checkout session:', error);
+            onError(error.message);
         }
     };
-
     
+    const handleSendInvoice = () => {
+        const { email, name } = invoiceData.issuer;
+        if (!email || !name) {
+            console.error("Email or Name is missing.");
+            setShowError(true);
+            return;
+        }
+        createCheckoutSession(email, name, (clientSecret, sessionId) => {
+            console.log(`Checkout session created: ${clientSecret}`);
+            console.log(`Session ID: ${sessionId}`);
+            onSuccess();
+        }, (errorMessage) => {
+            console.error("Error during checkout creation:", errorMessage);
+            setShowError(true);
+        });
+    };
+    
+    
+
     const createSubscription = async (email, priceId, onSuccess, onError) => {
         try {
             const response = await fetch(`${baseUrl}/abonnement/create-subscription`, {
