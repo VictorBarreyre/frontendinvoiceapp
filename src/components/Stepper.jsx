@@ -20,7 +20,8 @@ const Stepper = () => {
     setIsTotalPercentage100,
     remainingPercentage,
     setRemainingPercentage,
-    createCheckoutSession
+    createCheckoutSession,
+    setSendButtonClicked
   } = useInvoiceData();
   const [isStepNextAvailable, setIsStepNextAvailable] = useState(false);
   const [showError, setShowError] = useState(false);
@@ -34,10 +35,8 @@ const Stepper = () => {
   const onError = () => console.error("Erreur durant l'opération.");
 
   const handleSendInvoice = () => {
-
     if (isSubmitting) return;
     setIsSubmitting(true);
-
     const { email, name } = invoiceData.issuer;
     if (!email || !name) {
         console.error("Email or Name is missing.");
@@ -45,7 +44,7 @@ const Stepper = () => {
         setIsSubmitting(false);
         return;
     }
-
+    setSendButtonClicked('sendInvoice');
     navigate('/abo');
 };
 

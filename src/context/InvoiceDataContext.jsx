@@ -13,10 +13,10 @@ export const InvoiceDataProvider = ({ children }) => {
         number: '000243',
         date: new Date().toISOString().split('T')[0],
         issuer: {
-            name: 'Marcelazazita Delaville',
+            name: 'Marco Delaville',
             adresse: '43 rue de La Paix 75001 Paris',
             siret: '761289800089',
-            email: 'maazzaDelaville@gmail.com',
+            email: 'marcodelaville@gmail.com',
             iban: 'FR76 1020 4000 4533 3444 5678'
         },
         client: {
@@ -49,6 +49,7 @@ export const InvoiceDataProvider = ({ children }) => {
     const [payments, setPayments] = useState([{ percentage: 100, dueDate: new Date() }]);
     const [isTotalPercentage100, setIsTotalPercentage100] = useState(false);
     const [remainingPercentage, setRemainingPercentage] = useState(100);
+    const [sendButtonClicked, setSendButtonClicked] = useState(null);
 
     const handleInvoiceDataChange = (newData) => {
         setInvoiceData(newData);
@@ -260,7 +261,9 @@ export const InvoiceDataProvider = ({ children }) => {
             handleInvoiceActionSendMail,
             getClassForField,
             createCheckoutSession,
-            createSubscription
+            createSubscription,
+            sendButtonClicked,
+            setSendButtonClicked
         }}>
             {children}
         </InvoiceDataContext.Provider>

@@ -26,7 +26,7 @@ const stripePromise = loadStripe('pk_test_51OwLFM00KPylCGutjKAkwhqleWEzuvici1dQU
 const Abo = () => {
     const [product, setProduct] = useState(null);
     const [loading, setLoading] = useState(true);
-    const { invoiceData, baseUrl, createCheckoutSession } = useInvoiceData();
+    const { invoiceData, baseUrl, createCheckoutSession, sendButtonClicked } = useInvoiceData();
     const [selectedPlan, setSelectedPlan] = useState('monthly');
     const [clientSecret, setClientSecret] = useState('');
     const [isCheckoutSessionCreated, setIsCheckoutSessionCreated] = useState(false); // Nouvel état
@@ -96,6 +96,13 @@ const Abo = () => {
     console.log(selectedPriceId)
 
 
+    const titleAbo = () => {
+        if (sendButtonClicked === 'sendInvoice') {
+            return "Texte pour envoyer la facture";
+        }
+        return "Choisissez votre formule d'abonnement";
+    };
+
 
     const stripeAppearance = {
         theme: 'flat',
@@ -123,10 +130,11 @@ const Abo = () => {
             <div className="stepper-container">
                 <div className="tabs-container">
                     <Flex direction="column">
-                        <Heading fontSize={{ base: '24px', lg: '26px' }} mb='1rem'>Choisissez votre formule d'abonnement</Heading>
+                        <Heading fontSize={{ base: '24px', lg: '26px' }} mb='1rem'>{titleAbo()}</Heading>
                         <Text color='#4A5568' w='100%' mb='3rem'>
-                            Une fois votre abonnement créé, nous vous enverrons un e-mail contenant un récapitulatif de votre formule
-                            et un mot de passe provisoire que nous vous invitons à modifier dans votre espace profil.
+                        Nous respectons votre choix de ne pas accepter les cookies. Pour une expérience optimale, 
+                        découvrez notre formule premium. Vous pouvez également accepter les cookies pour accéder gratuitement à notre contenu. 
+                        Après votre abonnement, vous recevrez un e-mail avec un récapitulatif et un mot de passe provisoire à modifier dans votre espace profil.
                         </Text>
                         <Flex direction={{ base: 'column-reverse', lg: 'unset' }} justifyContent='space-between' alignItems='start'>
                             <Flex direction='column' w={{ base: '100%', lg: '50%' }} gap='15px'>
