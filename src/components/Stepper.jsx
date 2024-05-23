@@ -24,20 +24,35 @@ const Stepper = () => {
   } = useInvoiceData();
   const [isStepNextAvailable, setIsStepNextAvailable] = useState(false);
   const [showError, setShowError] = useState(false);
-
   const theme = useTheme();
   const breakpointMd = parseInt(theme.breakpoints.md, 10);
   const [isMobile, setIsMobile] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const navigate = useNavigate();
   const onSuccess = () => navigate('/abo');
   const onError = () => console.error("Erreur durant l'opération.");
 
   const handleSendInvoice = () => {
-    createCheckoutSession(invoiceData.issuer.email, invoiceData.issuer.name, (clientSecret) => {
+    if (isSubmitting) return;
+    setIsSubmitting(true);
+
+    const { email, name } = invoiceData.issuer;
+    if (!email || !name) {
+      console.error("Email or Name is missing.");
+      setShowError(true);
+      setIsSubmitting(false);
+      return;
+    }
+    createCheckoutSession(email, name, (clientSecret, sessionId) => {
       console.log(`Checkout session created: ${clientSecret}`);
+      console.log(`Session ID: ${sessionId}`);
       onSuccess();
-    }, onError);
+    }, (errorMessage) => {
+      console.error("Error during checkout creation:", errorMessage);
+      setShowError(true);
+      setIsSubmitting(false);
+    });
   };
 
   useEffect(() => {
@@ -146,7 +161,7 @@ const Stepper = () => {
       );
     } else if (tabIndex === 2) {
       return (
-        <Button onClick={handleSendInvoice} rightIcon={<ArrowForwardIcon />} w={{ base: '100%', lg: 'unset' }} color='white' borderRadius='30px' backgroundColor='black'>
+        <Button onClick={handleSendInvoice} disabled={isSubmitting} rightIcon={<ArrowForwardIcon />} w={{ base: '100%', lg: 'unset' }} color='white' borderRadius='30px' backgroundColor='black'>
           {buttonLabel}
         </Button>
       );

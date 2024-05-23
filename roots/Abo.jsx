@@ -64,7 +64,7 @@ const Abo = () => {
                 console.error('Error creating checkout session:', error);
             }
         };
-        if (product) {
+        if (product && !clientSecret) {
             fetchClientSecret();
         }
     }, [createCheckoutSession, product, invoiceData.issuer.email, invoiceData.issuer.name]);
