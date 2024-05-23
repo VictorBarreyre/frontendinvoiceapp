@@ -13,10 +13,10 @@ export const InvoiceDataProvider = ({ children }) => {
         number: '000243',
         date: new Date().toISOString().split('T')[0],
         issuer: {
-            name: 'Marcel Delaville',
+            name: 'Marcelita Delaville',
             adresse: '43 rue de La Paix 75001 Paris',
             siret: '761289800089',
-            email: 'Delaville@gmail.com',
+            email: 'maDelaville@gmail.com',
             iban: 'FR76 1020 4000 4533 3444 5678'
         },
         client: {

@@ -29,8 +29,11 @@ const Abo = () => {
     const { invoiceData, baseUrl, createCheckoutSession } = useInvoiceData();
     const [selectedPlan, setSelectedPlan] = useState('monthly');
     const [clientSecret, setClientSecret] = useState('');
+        const [isCheckoutSessionCreated, setIsCheckoutSessionCreated] = useState(false); // Nouvel état
+
 
     useEffect(() => {
+
         const fetchProductsAndPrices = async () => {
             try {
                 const response = await fetch(`${baseUrl}/abonnement/products-and-prices`);
@@ -50,8 +53,11 @@ const Abo = () => {
         fetchProductsAndPrices();
     }, [baseUrl]);
 
+
     useEffect(() => {
         const fetchClientSecret = async () => {
+            if (isCheckoutSessionCreated) return; // Vérifie si la session de checkout a déjà été créée
+            setIsCheckoutSessionCreated(true);
             try {
                 const onSuccess = (clientSecret) => {
                     setClientSecret(clientSecret);
@@ -68,6 +74,8 @@ const Abo = () => {
             fetchClientSecret();
         }
     }, [createCheckoutSession, product, invoiceData.issuer.email, invoiceData.issuer.name]);
+
+
 
     if (loading) {
         return (

@@ -44,8 +44,6 @@ const SubscribeForm = ({ clientSecret, setClientSecret, selectedPriceId }) => {
         }
     };
 
-  
-
     return (
         <form onSubmit={handleSubmit} style={{ width: '100%' }}>
             <Input
@@ -96,7 +94,7 @@ const SubscribeForm = ({ clientSecret, setClientSecret, selectedPriceId }) => {
                 />
             </Flex>
             <Box mb={4}>
-                <PaymentElement   />
+                <PaymentElement />
             </Box>
             <Button
                 type="submit"
