@@ -34,26 +34,20 @@ const Stepper = () => {
   const onError = () => console.error("Erreur durant l'opération.");
 
   const handleSendInvoice = () => {
+
     if (isSubmitting) return;
     setIsSubmitting(true);
 
     const { email, name } = invoiceData.issuer;
     if (!email || !name) {
-      console.error("Email or Name is missing.");
-      setShowError(true);
-      setIsSubmitting(false);
-      return;
+        console.error("Email or Name is missing.");
+        setShowError(true);
+        setIsSubmitting(false);
+        return;
     }
-    createCheckoutSession(email, name, (clientSecret, sessionId) => {
-      console.log(`Checkout session created: ${clientSecret}`);
-      console.log(`Session ID: ${sessionId}`);
-      onSuccess();
-    }, (errorMessage) => {
-      console.error("Error during checkout creation:", errorMessage);
-      setShowError(true);
-      setIsSubmitting(false);
-    });
-  };
+
+    navigate('/abo');
+};
 
   useEffect(() => {
     const handleResize = () => {

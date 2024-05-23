@@ -29,7 +29,7 @@ const Abo = () => {
     const { invoiceData, baseUrl, createCheckoutSession } = useInvoiceData();
     const [selectedPlan, setSelectedPlan] = useState('monthly');
     const [clientSecret, setClientSecret] = useState('');
-    const [isCheckoutSessionCreated, setIsCheckoutSessionCreated] = useState(true); // Nouvel état
+    const [isCheckoutSessionCreated, setIsCheckoutSessionCreated] = useState(false); // Nouvel état
 
     
 
