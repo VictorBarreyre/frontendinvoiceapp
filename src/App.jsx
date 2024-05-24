@@ -1,55 +1,58 @@
-import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'; // Notez le remplacement de Switch par Routes
+import React, { useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { Button, Flex, Box } from '@chakra-ui/react';
 import './App.css';
 import About from '../roots/About';
-import Login from '../roots/Login';
+import Signin from '../roots/Signin';
+import Signup from '../roots/Signup';
 import Header from './components/Header';
 import Stepper from './components/Stepper';
 import { ChakraProvider } from '@chakra-ui/react';
-import { Elements } from '@stripe/react-stripe-js';
-import Abo from '../roots/Abo'
 import { InvoiceDataProvider } from './context/InvoiceDataContext';
-import PaymentSuccess from '../roots/PaymentSucces';
-import { extendTheme } from '@chakra-ui/react';
-import Success from '../roots/Succes';
-import { loadStripe } from '@stripe/stripe-js';
-
-const stripePromise = loadStripe('pk_test_51OwLFM00KPylCGutjKAkwhqleWEzuvici1dQUPCIvZHofEzLtGyM9Gdz5zEfvwSZKekKRgA1el5Ypnw7HLfYWOuB00ZdrKdygg');
-
-
-const theme = extendTheme({
-  breakpoints: {
-    sm: '320px',
-    md: '768px',
-    lg: '1024px',
-    xl: '1280px',
-  },
-});
-
+import theme from '../theme';
+import { useAuth } from '../src/context/AuthContext';
+import Sidebar from './components/Sidebar';
+import Profil from '../roots/Profil';
+import Factures from '../roots/Factures';
+import Paiements from '../roots/Paiements';
+import Paramètres from '../roots/Paramètres';
 
 function App() {
+  const { user, setUser, logout } = useAuth();
 
+  useEffect(() => {
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
 
   return (
-    <>
-      <Elements stripe={stripePromise}> 
-      <ChakraProvider theme={theme}>
-      <InvoiceDataProvider>  
+    <ChakraProvider theme={theme}>
+      <InvoiceDataProvider>
         <Router>
-          <Header/>
-          <Routes> 
-            <Route path="/" element={<Stepper />} /> 
-            <Route path="/about" element={<About />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/success" element={<Success />} />
-            <Route path="/payment-success" element={<PaymentSuccess />} />
-            <Route path="/abo" element={<Abo />} />
-          </Routes>
+          <Flex direction="column" height="100vh">
+            <Header />
+            <Flex flex="1" overflow="hidden">
+              {user && <Sidebar />}
+              <Box flex="1" overflowY="auto">
+                <Routes>
+                <Route path="/" element={<Stepper />} /> 
+                  <Route path="/about" element={<About />} />
+                  <Route path="/signin" element={!user ? <Signin /> : <Navigate to="/" />} />
+                  <Route path="/signup" element={!user ? <Signup /> : <Navigate to="/" />} />
+                  <Route path="/profil" element={<Profil />} />
+                  <Route path="/factures" element={<Factures />} />
+                  <Route path="/paiements" element={<Paiements />} />
+                  <Route path="/parametres" element={<Paramètres />} />
+                  <Route path="*" element={<Navigate to="/" />} />
+                </Routes>
+              </Box>
+            </Flex>
+          </Flex>
         </Router>
-        </InvoiceDataProvider>
-      </ChakraProvider>
-      </Elements>
-    </>
+      </InvoiceDataProvider>
+    </ChakraProvider>
   );
 }
 

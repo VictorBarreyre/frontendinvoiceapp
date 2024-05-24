@@ -119,18 +119,14 @@
   border: 1px solid red;
 }
 
-.flex-stepper{
-  display: flex;
-  width: 100%;
-  justify-content: center;
-}
 
 .stepper-container {
   display: flex;
   flex-direction: column;
-  width: 85%;
-  margin-top: 3rem;
+  width: 90%;
+  margin-top: 7rem;
   margin-bottom: 2rem;
+  margin-left: 3rem;
 }
 
 .tabs-container {
@@ -169,33 +165,22 @@
   margin-left: 3rem;
 }
 
-.tab.icon {
+.tab .icon {
   width: 20px; /* Ajustez la taille selon vos besoins */
   height: 20px; /* Ajustez la taille selon vos besoins */
   margin-right: 10px; /* Espace entre l'icône et le texte */
   vertical-align: middle; /* Pour aligner verticalement l'icône avec le texte */
 }
 
-.tab-panel{
-  margin-bottom: 2rem;
-}
+
 
 
 /* Smartphones en portrait */
 @media only screen and (max-width: 600px) {
-
-  .stepper-container{
-    margin-top: 0rem;
-    width: 100%;
-    margin-bottom: 0rem;
-  }
-
-
   .tabs-container {
     width: 100vw;
-    padding: 2rem;
     padding-left: 1rem;
-    padding-right: 1rem;
+  padding-right: 1rem;
   }
 
   .tab-list{
@@ -203,18 +188,18 @@
     margin-bottom: 1.2rem !important;
   }
 
-
-  .tab{
-    margin: 0 !important;
-  }
-
   .tab.active{
-    margin: 0 !important;
+    margin-right: 1rem;
   }
 
   .disabled{
-    margin: 0 !important;
+    margin-right: 1rem !important;
   }
+
+    .stepper-container {
+      margin-top: 4rem;
+      margin-bottom: 0;
+    }
 }
 
 

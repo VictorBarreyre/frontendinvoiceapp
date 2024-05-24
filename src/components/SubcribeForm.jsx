@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js';
-import { Button, Box, Input, Flex } from '@chakra-ui/react';
+import { Button, Box, Input, Flex, Alert, AlertIcon } from '@chakra-ui/react';
 import { useInvoiceData } from '../context/InvoiceDataContext';
 
 const SubscribeForm = ({ clientSecret, setClientSecret, selectedPriceId }) => {
@@ -12,6 +12,7 @@ const SubscribeForm = ({ clientSecret, setClientSecret, selectedPriceId }) => {
     const [address, setAddress] = useState(invoiceData.issuer.adresse);
     const [country, setCountry] = useState('');
     const [postalCode, setPostalCode] = useState('');
+    const [error, setError] = useState(null);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -21,21 +22,17 @@ const SubscribeForm = ({ clientSecret, setClientSecret, selectedPriceId }) => {
             return;
         }
 
-        // Submit the payment elements
-        const elementsResult = await elements.submit();
-        if (elementsResult.error) {
-            console.error(elementsResult.error.message);
-            return;
-        }
-
         const onSuccess = (clientSecret) => {
             setClientSecret(clientSecret);
         };
-        const onError = () => {
-            console.error('Error creating subscription');
+        const onError = (errorMessage) => {
+            console.error('Error creating subscription:', errorMessage);
+            setError(errorMessage);
         };
 
         await createSubscription(invoiceData.issuer.email, selectedPriceId, onSuccess, onError);
+
+        if (error) return;
 
         const result = await stripe.confirmPayment({
             elements,
@@ -45,6 +42,7 @@ const SubscribeForm = ({ clientSecret, setClientSecret, selectedPriceId }) => {
 
         if (result.error) {
             console.error(result.error.message);
+            setError(result.error.message);
         } else {
             if (result.paymentIntent.status === 'succeeded') {
                 console.log('PaymentIntent succeeded');
@@ -54,6 +52,12 @@ const SubscribeForm = ({ clientSecret, setClientSecret, selectedPriceId }) => {
 
     return (
         <form onSubmit={handleSubmit} style={{ width: '100%' }}>
+            {error && (
+                <Alert status="error" mb={4}>
+                    <AlertIcon />
+                    {error}
+                </Alert>
+            )}
             <Input
                 className='neue-down'
                 type="email"

@@ -1,37 +1,56 @@
-import React, { createContext, useContext, useState } from 'react';
-import InvoicePDF from '../components/InvoicePDF';
-import { pdf } from '@react-pdf/renderer';
+import React, { createContext, useContext, useState,useEffect } from 'react';
+import { useAuth } from './AuthContext';
 
 const InvoiceDataContext = createContext();
 
 export const useInvoiceData = () => useContext(InvoiceDataContext);
 
 export const InvoiceDataProvider = ({ children }) => {
+
+    const { user } = useAuth();
+
     const [subject, setSubject] = useState("Votre Facture");
     const [message, setMessage] = useState("Voici votre facture");
+
     const [invoiceData, setInvoiceData] = useState({
-        number: '000243',
+        number: '02',
         date: new Date().toISOString().split('T')[0],
         issuer: {
-            name: 'Marco Delaville',
-            adresse: '43 rue de La Paix 75001 Paris',
-            siret: '761289800089',
-            email: 'marcodelaville@gmail.com',
-            iban: 'FR76 1020 4000 4533 3444 5678'
+            name: '',
+            adresse: '',
+            siret: '',
+            email: '',
+            iban: ''
         },
         client: {
             name: 'Victor Barreyre',
-            adresse: '43 grande rue 91450 Étiolles',
-            siret: '761289800089',
+            adresse: '43 Grande rue',
+            siret: 'zrzaeazeaz',
             email: 'barreyrevictor.contact@gmail.com',
-            iban:'',
+            iban: '',
         },
-        items: [{ description: 'test', quantity: 1, unitPrice: 0 }],
+        items: [{ description: 'TEST', quantity: 1, unitPrice: 1 }],
         subtotal: 0,
         vatRate: 20,
         total: 0,
         devise: '€',
     });
+
+    useEffect(() => {
+        console.log(user)
+        if (user) {
+            setInvoiceData(prevData => ({
+                ...prevData,
+                issuer: {
+                    name: user.name || '',
+                    adresse: user.adresse || '',
+                    siret: user.siret || '',
+                    email: user.email || '',
+                    iban: user.iban || ''
+                }
+            }));
+        }
+    }, [user]);
 
     const baseUrl = "http://localhost:8000";
     const [requiredFieldsValid, setRequiredFieldsValid] = useState({
@@ -124,6 +143,8 @@ export const InvoiceDataProvider = ({ children }) => {
             onError(error.message);
         }
     };
+
+
     
     const handleSendInvoice = () => {
         const { email, name } = invoiceData.issuer;
@@ -228,6 +249,8 @@ export const InvoiceDataProvider = ({ children }) => {
             console.error('Erreur lors de la génération ou de l’envoi du PDF', error);
         }
     };
+
+
 
     return (
         <InvoiceDataContext.Provider value={{

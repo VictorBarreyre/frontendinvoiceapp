@@ -1,34 +1,63 @@
-import React from 'react';
-import { Box, VStack, Link, useColorModeValue, Text } from '@chakra-ui/react';
-import { Link as RouterLink } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import {
+  Button,
+  Link as Chakralink,
+}
+  from '@chakra-ui/react'
 
+
+
+//definir une logique active en fonction du root car bug sur la couleur violet 
 const Sidebar = () => {
-  // Utilisez useColorModeValue pour gérer les couleurs dans différents modes (clair/sombre)
-  const bgColor = useColorModeValue('gray.100', 'gray.900');
-  const textColor = useColorModeValue('gray.600', 'gray.200');
+  const [activeTab, setActiveTab] = useState('tab1');
+  const { user, logout } = useAuth();
+  const [redirectOnLogout, setRedirectOnLogout] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation(); 
+
+  const handleTabClick = (tabId) => {
+    setActiveTab(tabId);
+  };
+
+  if (!user) {
+    return null; // Ne rien afficher si l'utilisateur n'est pas connecté
+  }
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
+
+  const getActiveClass = (path) => {
+    return location.pathname === path ? 'active-dashboard' : '';
+  };
+
+  if (redirectOnLogout) {
+    return <Navigate to="/" />;
+  }
 
   return (
-    <Box
-    className='neue-up'
-      position="fixed"
-      left={0}
-      top='8vh'
-      h="100vh"
-      w={{ base: '100%', md: '250px' }} // Responsive: pleine largeur sur mobile, 250px sur tablette et au-dessus
-      bg='white'
-      p={5}
-    >
-      <VStack align="start" spacing={4}>
-        <Text fontSize="lg" fontWeight="bold" color={textColor}>
-          Guide Stripe
-        </Text>
-        {/* Liste des liens */}
-        <Link as={RouterLink} to="/overview" color={textColor}>Vue d'ensemble</Link>
-        <Link as={RouterLink} to="/setup" color={textColor}>Configuration</Link>
-        <Link as={RouterLink} to="/charges" color={textColor}>Gestion des charges</Link>
-        {/* Ajoutez plus de liens selon vos besoins */}
-      </VStack>
-    </Box>
+    <div className="sidebar neue-up" style={{ display: 'flex', flexDirection: 'column', height: '80%' }}>
+      <ul className="tab-list-dashboard">
+        <li className={`tab ${getActiveClass('/profil')}`}>
+          <Link to="/profil" onClick={() => handleTabClick('tab1')}>Profil</Link>
+        </li>
+        <li className={`tab ${getActiveClass('/factures')}`}>
+          <Link to="/factures" onClick={() => handleTabClick('tab2')}>Factures</Link>
+        </li>
+        <li className={`tab ${getActiveClass('/paiements')}`}>
+          <Link to="/paiements" onClick={() => handleTabClick('tab3')}>Paiements</Link>
+        </li>
+        <li className={`tab ${getActiveClass('/parametres')}`}>
+          <Link to="/parametres" onClick={() => handleTabClick('tab4')}>Paramètres</Link>
+        </li>
+      </ul>
+      <Chakralink onClick={handleLogout} type="submit" color='red' borderRadius='30px' mb='1.5rem' mt="4" w='100%' colorScheme="gray">
+        Déconnexion
+      </Chakralink>
+    </div>
   );
 };
 
