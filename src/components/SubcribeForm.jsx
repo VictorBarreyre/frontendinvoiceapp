@@ -21,6 +21,13 @@ const SubscribeForm = ({ clientSecret, setClientSecret, selectedPriceId }) => {
             return;
         }
 
+        // Submit the payment elements
+        const elementsResult = await elements.submit();
+        if (elementsResult.error) {
+            console.error(elementsResult.error.message);
+            return;
+        }
+
         const onSuccess = (clientSecret) => {
             setClientSecret(clientSecret);
         };
@@ -30,16 +37,17 @@ const SubscribeForm = ({ clientSecret, setClientSecret, selectedPriceId }) => {
 
         await createSubscription(invoiceData.issuer.email, selectedPriceId, onSuccess, onError);
 
-        const result = await stripe.confirmSetup({
+        const result = await stripe.confirmPayment({
             elements,
             confirmParams: { return_url: `${window.location.origin}/success` },
+            clientSecret
         });
 
         if (result.error) {
             console.error(result.error.message);
         } else {
-            if (result.setupIntent.status === 'succeeded') {
-                console.log('SetupIntent succeeded');
+            if (result.paymentIntent.status === 'succeeded') {
+                console.log('PaymentIntent succeeded');
             }
         }
     };
