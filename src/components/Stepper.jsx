@@ -16,12 +16,9 @@ const Stepper = () => {
     setAttemptedNavigation,
     buttonLabel,
     setButtonLabel,
-    isTotalPercentage100,
-    setIsTotalPercentage100,
     remainingPercentage,
-    setRemainingPercentage,
-    createCheckoutSession,
-    setSendButtonClicked
+    setSendButtonClicked,
+    requiredFieldsValid
   } = useInvoiceData();
   const [isStepNextAvailable, setIsStepNextAvailable] = useState(false);
   const [showError, setShowError] = useState(false);
@@ -31,8 +28,6 @@ const Stepper = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const navigate = useNavigate();
-  const onSuccess = () => navigate('/abo');
-  const onError = () => console.error("Erreur durant l'opération.");
 
   const handleSendInvoice = () => {
     if (isSubmitting) return;
@@ -94,14 +89,15 @@ const Stepper = () => {
   const handleNavigateTo = () => {
     const isTotalValid = invoiceData.total > 0;
     if (isStepNextAvailable && tabIndex < 2 && isTotalValid) {
-      setTabIndex(prevTabIndex => prevTabIndex + 1);
-      setShowError(false);
+        setTabIndex(prevTabIndex => prevTabIndex + 1);
+        setShowError(false);
     } else {
-      console.warn("Les champs requis pour passer à l'étape suivante ne sont pas tous remplis ou le total est à 0.");
-      setAttemptedNavigation(true);
-      setShowError(true);
+        console.warn("Les champs requis pour passer à l'étape suivante ne sont pas tous remplis ou le total est à 0.");
+        setAttemptedNavigation(true);
+        setShowError(true);
     }
-  };
+};
+
 
   useEffect(() => {
     updateButtonLabel();
@@ -136,7 +132,7 @@ const Stepper = () => {
 
   const totalError = () => {
     if (attemptedNavigation && invoiceData.total <= 0) {
-      return 'La somme de la facture ne peut pas être égale à 0.';
+      return 'Certains champs sont manquants ou incomplets.';
     }
     return null;
   };
@@ -192,6 +188,17 @@ const Stepper = () => {
     return isMobile ? mobileTexts[index] : texts[index];
   };
 
+  useEffect(() => {
+    const checkStepNextAvailability = () => {
+        return Object.values(requiredFieldsValid).every(value => value === true) &&
+            invoiceData.items.every(item => item.quantity > 0) &&
+            invoiceData.total > 0;
+    };
+    setShowError(false);
+    setIsStepNextAvailable(checkStepNextAvailability());
+}, [invoiceData, requiredFieldsValid]);
+
+
   return (
     <div className='flex-stepper'>
       <div className="stepper-container">
@@ -206,7 +213,7 @@ const Stepper = () => {
           </div>
 
           <div className="tab-panel">
-            {tabIndex === 0 && <InvoiceCreator totalError={totalError} errorMsg={errorMsg} handleNavigateTo={handleNavigateTo} />}
+            {tabIndex === 0 && <InvoiceCreator totalError={totalError} errorMsg={errorMsg} handleNavigateTo={handleNavigateTo} attemptedNavigation={attemptedNavigation} />}
             {tabIndex === 1 && <PaymentScheduleForm handleNavigateTo={handleNavigateTo} />}
             {tabIndex === 2 && <InvoiceSummary />}
           </div>

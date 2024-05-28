@@ -9,9 +9,6 @@ export const InvoiceDataProvider = ({ children }) => {
 
     const { user } = useAuth();
 
-    const [subject, setSubject] = useState("Votre Facture");
-    const [message, setMessage] = useState("Voici votre facture");
-
     const [invoiceData, setInvoiceData] = useState({
         number: '02',
         date: new Date().toISOString().split('T')[0],
@@ -29,7 +26,7 @@ export const InvoiceDataProvider = ({ children }) => {
             email: 'barreyrevictor.contact@gmail.com',
             iban: '',
         },
-        items: [{ description: 'TEST', quantity: 1, unitPrice: 1 }],
+        items: [{ description: '', quantity: 1, unitPrice: 0 }],
         subtotal: 0,
         vatRate: 20,
         total: 0,

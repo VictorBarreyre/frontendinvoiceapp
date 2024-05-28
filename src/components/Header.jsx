@@ -18,7 +18,7 @@ const Header = () => {
       align="center"
       justify="space-between"
       wrap="wrap"
-      padding="1rem 3rem"
+      padding={{ base: '0rem 1rem', md: '1rem 3rem' }}
       color="white"
       backgroundColor="white"
       height='4rem'

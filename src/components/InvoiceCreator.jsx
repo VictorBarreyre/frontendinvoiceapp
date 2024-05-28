@@ -14,30 +14,15 @@ import InvoicePDF from '../components/InvoicePDF'
 
 
 
-const InvoiceCreator = ({ handleNavigateTo, totalError }) => {
-
-  const [subject, setSubject] = useState("Votre Facture");
-  const [message, setMessage] = useState("Voici votre facture");
-
+const InvoiceCreator = ({ totalError }) => {
 
   const {
     invoiceData,
     handleInvoiceDataChange,
-    requiredFieldsValid,
     getClassForField,
-    setRequiredFieldsValid,
-    pdfInstance,
     setPdfInstance,
     startDate,
     setStartDate,
-    buttonLabel,
-    setButtonLabel,
-    attemptedDownloadWithoutRequiredFields,
-    setAttemptedDownloadWithoutRequiredFields,
-    attemptedNavigation,
-    setAttemptedNavigation,
-    showErrorMessage,
-    setShowErrorMessage,
     itemsnames,
     setItemsNames,
     handleChange,
@@ -69,14 +54,6 @@ const InvoiceCreator = ({ handleNavigateTo, totalError }) => {
     handleInvoiceDataChange(prevState => ({ ...prevState, vatRate: parseFloat(e.target.value) || 0 }));
   };
 
-  //fonction pour definir le contour rouge si l'input est pas rempli
-  const requiredClassnameField = (attemptedDownloadWithoutRequiredFields, requiredFieldsValid) => {
-    if (attemptedDownloadWithoutRequiredFields === false && requiredFieldsValid['issuer.name'] === false) {
-      return 'emptyinput';
-    } else {
-      return 'classicinput';
-    }
-  };
 
   useEffect(() => {
     const generatePdfDocument = async () => {
@@ -89,13 +66,6 @@ const InvoiceCreator = ({ handleNavigateTo, totalError }) => {
     generatePdfDocument();
   }, [invoiceData]);
 
-
-  //useeffect pour afficher ou pas le message d'erreur
-  useEffect(() => {
-    if (attemptedDownloadWithoutRequiredFields === false && requiredFieldsValid['issuer.name'] === false) {
-      setShowErrorMessage('Veuillez renseigner les champs obligatoires');
-    }
-  }, [attemptedDownloadWithoutRequiredFields, requiredFieldsValid]);
 
 
   //useeffect qui met à jour le calcul de la tva et du total
@@ -120,27 +90,13 @@ const InvoiceCreator = ({ handleNavigateTo, totalError }) => {
     updateItemsNames();
   }, [invoiceData.items]);
 
-  //useeffect qui se charge d'update le texte dans le button fianal  
-  useEffect(() => {
-    const updateButtonLabel = () => {
-      const email = invoiceData.client.email;
-      if (email && isValidEmail(email)) {
-        setButtonLabel("Définir mes échéances de paiement");
-      } else {
-        setButtonLabel('Télécharger la facture');
-      }
-    };
-
-    updateButtonLabel();
-  }, [invoiceData.client.email]);
-
 
 
   //*définir les slugs obligatoires pour la création de facture (car si exemple pas de num de facture pas de facture téléchargeable)
   return (
 
     <>
-        <VStack mt='2rem' boxShadow=' 1px solid black'  align="start">
+        <VStack mt={{ base: '1rem', lg: '2rem' }} boxShadow=' 1px solid black'  align="start">
         <Text mb='1rem' color="red"> {totalError()}</Text>
         <Flex w='100%' justifyContent='space-between' >
         <Flex w={{ base: '10.5rem', lg: 'auto' }} direction='column' justifyContent='space-between' pb="2rem" >
@@ -171,26 +127,30 @@ const InvoiceCreator = ({ handleNavigateTo, totalError }) => {
           <Flex flexDirection={{ base: 'column', lg: 'row' }} w='25vw' justifyContent='space-between' width='-webkit-fill-available' pb="2rem" >
             <Flex direction="column" w={{ base: 'unset', lg: '25vw' }} alignItems='start'>
               <Heading mb='1rem' size="sm">Informations sur l'émetteur :</Heading>
-              <Input className={requiredClassnameField(attemptedDownloadWithoutRequiredFields, requiredFieldsValid)}
+              <Input 
+                className={getClassForField(invoiceData.issuer.name)}
                 placeholder="Nom et Prénom / Société*"
                 name="issuer.name"
                 value={invoiceData.issuer.name}
                 onChange={handleChange} />
-              <Input className={requiredClassnameField(attemptedDownloadWithoutRequiredFields, requiredFieldsValid)}
+              <Input 
+                className={getClassForField(invoiceData.issuer.adresse)}
                 placeholder="Adresse*" name="issuer.adresse" value={invoiceData.issuer.adresse} onChange={handleChange} />
-              <Input className='classicinput' placeholder="N° Siret" name="issuer.siret" value={invoiceData.issuer.siret} onChange={handleChange} />
-              <Input className='classicinput' placeholder="Email de l'émetteur" name="issuer.email" value={invoiceData.issuer.email} onChange={handleChange} />
+              <Input 
+              className='classicinput' placeholder="N° Siret" name="issuer.siret" value={invoiceData.issuer.siret} onChange={handleChange} />
+              <Input 
+              className={getClassForField(invoiceData.issuer.email)} placeholder="Email de l'émetteur" name="issuer.email" value={invoiceData.issuer.email} onChange={handleChange} />
             </Flex>
 
 
             <Flex w={{ base: 'unset', lg: '25vw' }} mt={{ base: '3rem', lg: '5rem' }} direction="column" alignItems='start'>
               <Heading mb='1rem' size="sm">Informations sur le client :</Heading>
-              <Input className={requiredClassnameField(attemptedDownloadWithoutRequiredFields, requiredFieldsValid)}
+              <Input className={getClassForField(invoiceData.client.name)}
                 placeholder="Nom et Prénom / Société*" name="client.name" value={invoiceData.client.name} onChange={handleChange} />
-              <Input className={requiredClassnameField(attemptedDownloadWithoutRequiredFields, requiredFieldsValid)}
+              <Input className={getClassForField(invoiceData.client.adresse)}
                 placeholder="Adresse*" name="client.adresse" value={invoiceData.client.adresse} onChange={handleChange} />
               <Input className='classicinput' placeholder="N° Siret" name="client.siret" value={invoiceData.client.siret} onChange={handleChange} />
-              <Input className='classicinput' placeholder="Email du client " name="client.email" value={invoiceData.client.email} onChange={handleChange} />
+              <Input className={getClassForField(invoiceData.client.email)} placeholder="Email du client " name="client.email" value={invoiceData.client.email} onChange={handleChange} />
             </Flex>
           </Flex>
 
@@ -321,15 +281,9 @@ const InvoiceCreator = ({ handleNavigateTo, totalError }) => {
                     placeholder="Taux de TVA"
                   />
                 </Flex>
-                <Flex width='100%' borderTop='1px solid #f2f2f2'>
+                <Flex mb='1rem' pt='1rem' width='100%' borderTop='1px solid #f2f2f2'>
                   <Heading width='100%' textAlign='end' mt='1rem' size='md'>Total TTC : {invoiceData.total}{invoiceData.devise}</Heading>
                 </Flex>
-
-                <Flex border='none !important' alignContent='end' alignItems='end'>
-                  <Text color="#FB7575" fontSize='13px' borderBottom="none" colSpan={4} style={{ paddingLeft: '0', textAlign: 'end' }}>{totalError()}</Text>
-                </Flex>
-
-
               </Flex>
             </>
           )
@@ -446,7 +400,6 @@ const InvoiceCreator = ({ handleNavigateTo, totalError }) => {
             )
         }
           </Flex>        
-          <Text color='red' >{showErrorMessage}</Text>
         </VStack>
     </>
   );
