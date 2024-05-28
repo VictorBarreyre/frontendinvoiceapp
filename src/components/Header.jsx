@@ -12,7 +12,7 @@ const Header = () => {
 
   return (
     <Flex
-    className='neue-up'
+      className='neue-up'
       position='fixed'
       as="nav"
       align="center"
@@ -34,34 +34,35 @@ const Header = () => {
       </Flex>
 
       <IconButton
+        background='none'
         aria-label="Open Menu"
         size="md"
-        mr={2}
+        
         icon={<HamburgerIcon />}
         display={{ sm: 'flex', md: 'none' }}
         onClick={toggleDrawer}
       />
 
-      <Box display={{ base: 'none', md: 'flex' }} alignItems="center">
+      <Flex display={{ base: 'none', md: 'flex' }} alignItems="center">
         <Link as={RouterLink} color='black' to="/about" px="4" _hover={{ textDecoration: 'underline' }}>
           À propos
         </Link>
-        <Link as={RouterLink} color='black' to="/about" px="4" mr='1rem' _hover={{ textDecoration: 'underline' }}>
+        <Link as={RouterLink} color='black' to="/about" px="4" mr='1rem'  _hover={{ textDecoration: 'underline' }}>
           Comment ça marche ?
         </Link>
-        <AccountButton/>
-      </Box>
+        <AccountButton />
+      </Flex>
 
       <Drawer isOpen={isOpen} placement="right" onClose={toggleDrawer}>
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
           <DrawerHeader>Menu</DrawerHeader>
-          <DrawerBody>
+          <DrawerBody display='flex' flexDirection='column' alignContent='center' alignItems='center'>
             <Link as={RouterLink} to="/about" p="4" display="block" onClick={toggleDrawer}>
               À propos
             </Link>
-            <Link as={RouterLink} to="/about" p="4" display="block" onClick={toggleDrawer}>
+            <Link as={RouterLink} to="/about" p="4" mb='1rem' display="block" onClick={toggleDrawer}>
               Comment ça marche ?
             </Link>
             <AccountButton onClick={toggleDrawer} />
