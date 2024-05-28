@@ -186,6 +186,7 @@
     padding-left: 1rem;
     padding-right: 1rem;
     padding-top: 2rem;
+    padding-bottom: 1rem ;
   }
 
   .tab-list{
@@ -207,6 +208,11 @@
       margin-bottom: 0;
       margin-left:0rem
     }
+
+
+.tab-panel{
+  margin-bottom: 0rem;
+}
 }
 
 
