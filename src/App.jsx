@@ -58,6 +58,7 @@ function App() {
                   <Route path="*" element={<Navigate to="/" />} />
                   <Route path="/payment-success" element={<PaymentSuccess />} />
                   <Route path="/abo" element={<Abo />} />
+                  <Route path="/success" element={<Success />} />
                 </Routes>
               </Box>
             </Flex>

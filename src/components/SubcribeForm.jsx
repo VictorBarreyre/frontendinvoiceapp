@@ -14,41 +14,50 @@ const SubscribeForm = ({ clientSecret, setClientSecret, selectedPriceId }) => {
     const [postalCode, setPostalCode] = useState('');
     const [error, setError] = useState(null);
 
-    const handleSubmit = async (event) => {
-        event.preventDefault();
 
-        if (!stripe || !elements) {
-            console.error('Stripe.js has not yet loaded.');
-            return;
-        }
+   const handleSubmit = async (event) => {
+    event.preventDefault();
 
-        const onSuccess = (clientSecret) => {
-            setClientSecret(clientSecret);
-        };
-        const onError = (errorMessage) => {
-            console.error('Error creating subscription:', errorMessage);
-            setError(errorMessage);
-        };
+    if (!stripe || !elements) {
+        console.error('Stripe.js has not yet loaded.');
+        return;
+    }
 
-        await createSubscription(invoiceData.issuer.email, selectedPriceId, onSuccess, onError);
+    const { error: submitError } = await elements.submit();
+    if (submitError) {
+        console.error(submitError.message);
+        setError(submitError.message);
+        return;
+    }
 
-        if (error) return;
-
-        const result = await stripe.confirmPayment({
-            elements,
-            confirmParams: { return_url: `${window.location.origin}/success` },
-            clientSecret
-        });
-
-        if (result.error) {
-            console.error(result.error.message);
-            setError(result.error.message);
-        } else {
-            if (result.paymentIntent.status === 'succeeded') {
-                console.log('PaymentIntent succeeded');
-            }
-        }
+    const onSuccess = (clientSecret) => {
+        setClientSecret(clientSecret);
     };
+    const onError = (errorMessage) => {
+        console.error('Error creating subscription:', errorMessage);
+        setError(errorMessage);
+    };
+
+    await createSubscription(invoiceData.issuer.email, selectedPriceId, onSuccess, onError);
+
+    if (error) return;
+
+    const result = await stripe.confirmPayment({
+        elements,
+        confirmParams: { return_url: `${window.location.origin}/success` },
+        clientSecret
+    });
+
+    if (result.error) {
+        console.error(result.error.message);
+        setError(result.error.message);
+    } else {
+        if (result.paymentIntent.status === 'succeeded') {
+            console.log('PaymentIntent succeeded');
+        }
+    }
+};
+
 
     return (
         <form onSubmit={handleSubmit} style={{ width: '100%' }}>
