@@ -123,7 +123,7 @@
 .stepper-container {
   display: flex;
   flex-direction: column;
-  width: 90%;
+  width: 80%;
   margin-top: 7rem;
   margin-bottom: 2rem;
   margin-left: 3rem;
@@ -177,7 +177,12 @@
   margin-bottom: 2rem;
 }
 
+.flex-stepper{ 
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
+}
 
 /* Smartphones en portrait */
 @media only screen and (max-width: 600px) {
@@ -186,7 +191,7 @@
     padding-left: 1rem;
     padding-right: 1rem;
     padding-top: 2rem;
-    padding-bottom: 1rem ;
+    padding-bottom: 1.8rem ;
   }
 
   .tab-list{
