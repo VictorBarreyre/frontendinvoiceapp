@@ -42,7 +42,7 @@ const SubscribeForm = ({ clientSecret, setClientSecret, selectedPriceId }) => {
 
     if (error) return;
 
-    const result = await stripe.confirmSetup({
+    const result = await stripe.confirmPayment({
         elements,
         confirmParams: { return_url: `${window.location.origin}/success` },
         clientSecret

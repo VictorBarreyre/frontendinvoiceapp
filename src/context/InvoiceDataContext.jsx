@@ -178,23 +178,40 @@ export const InvoiceDataProvider = ({ children }) => {
     
             const { clientSecret } = await response.json();
             if (clientSecret) {
-                // Générer un mot de passe aléatoire
-                const randomPassword = Math.random().toString(36).slice(-8);
-    
-                // Appeler la fonction signupUser pour créer l'utilisateur
-                const signupResponse = await fetch(`${baseUrl}/api/users/signup`, {
+                // Vérifiez si l'utilisateur existe avant de le créer
+                const userResponse = await fetch(`${baseUrl}/api/users/check`, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ email, password: randomPassword, name: 'Utilisateur' })
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email })
                 });
     
-                if (!signupResponse.ok) {
-                    const signupErrorResponse = await signupResponse.json();
-                    console.error('Error signing up user:', signupErrorResponse);
-                    onError(signupErrorResponse.message);
+                if (!userResponse.ok) {
+                    const userErrorResponse = await userResponse.json();
+                    console.error('Error checking user:', userErrorResponse);
+                    onError(userErrorResponse.message);
                     return;
+                }
+    
+                const { exists } = await userResponse.json();
+                if (!exists) {
+                    // Générer un mot de passe aléatoire
+                    const randomPassword = Math.random().toString(36).slice(-8);
+    
+                    // Appeler la fonction signupUser pour créer l'utilisateur
+                    const signupResponse = await fetch(`${baseUrl}/api/users/signup`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ email, password: randomPassword, name: 'Utilisateur' })
+                    });
+    
+                    if (!signupResponse.ok) {
+                        const signupErrorResponse = await signupResponse.json();
+                        console.error('Error signing up user:', signupErrorResponse);
+                        onError(signupErrorResponse.message);
+                        return;
+                    }
                 }
     
                 onSuccess(clientSecret);
@@ -207,6 +224,7 @@ export const InvoiceDataProvider = ({ children }) => {
             onError(error.message);
         }
     };
+    
     
     
     
