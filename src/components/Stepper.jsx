@@ -18,7 +18,9 @@ const Stepper = () => {
     setButtonLabel,
     remainingPercentage,
     setSendButtonClicked,
-    requiredFieldsValid
+    requiredFieldsValid,
+    handleInvoiceActionSendMail,
+    checkActiveSubscription
   } = useInvoiceData();
   const [isStepNextAvailable, setIsStepNextAvailable] = useState(false);
   const [showError, setShowError] = useState(false);
@@ -29,7 +31,7 @@ const Stepper = () => {
 
   const navigate = useNavigate();
 
-  const handleSendInvoice = () => {
+  const handleSendInvoice = async () => {
     if (isSubmitting) return;
     setIsSubmitting(true);
     const { email, name } = invoiceData.issuer;
@@ -40,8 +42,23 @@ const Stepper = () => {
         return;
     }
     setSendButtonClicked('sendInvoice');
-    navigate('/abo');
+
+    const hasActiveSubscription = await checkActiveSubscription(email);
+
+    if (hasActiveSubscription) {
+        await handleInvoiceActionSendMail(invoiceData, () => {
+            setIsSubmitting(false);
+            console.log('Invoice sent successfully.');
+        }, (error) => {
+            setIsSubmitting(false);
+            console.error('Error sending invoice:', error);
+        });
+    } else {
+        navigate('/abo');
+        setIsSubmitting(false);
+    }
 };
+
 
   useEffect(() => {
     const handleResize = () => {

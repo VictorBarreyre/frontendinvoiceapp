@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState,useEffect } from 'react';
 import { useAuth } from './AuthContext';
+import InvoicePDF from '../components/InvoicePDF';
 
 const InvoiceDataContext = createContext();
 
@@ -225,11 +226,29 @@ export const InvoiceDataProvider = ({ children }) => {
         }
     };
     
-    
-    
-    
+    const checkActiveSubscription = async (email) => {
+        try {
+            const response = await fetch(`${baseUrl}/abonnement/check-active-subscription`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email }),
+            });
 
+            if (!response.ok) {
+                const errorResponse = await response.json();
+                console.error('Error checking subscription:', errorResponse);
+                return false;
+            }
 
+            const { hasActiveSubscription } = await response.json();
+            return hasActiveSubscription;
+        } catch (error) {
+            console.error('Error checking subscription:', error.message);
+            return false;
+        }
+    };
+    
+    
     const handleInvoiceActionSendMail = async (invoiceData, onSuccess, onError) => {
         const { number, issuer, client, total } = invoiceData;
         const areAllRequiredFieldsValid = number !== '' && issuer.name !== '' && client.name !== '';
@@ -321,7 +340,8 @@ export const InvoiceDataProvider = ({ children }) => {
             createCheckoutSession,
             createSubscription,
             sendButtonClicked,
-            setSendButtonClicked
+            setSendButtonClicked,
+            checkActiveSubscription
         }}>
             {children}
         </InvoiceDataContext.Provider>
