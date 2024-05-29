@@ -161,7 +161,6 @@ export const InvoiceDataProvider = ({ children }) => {
     };
     
     
-
     const createSubscription = async (email, priceId, onSuccess, onError) => {
         try {
             const response = await fetch(`${baseUrl}/abonnement/create-subscription`, {
@@ -179,16 +178,37 @@ export const InvoiceDataProvider = ({ children }) => {
     
             const { clientSecret } = await response.json();
             if (clientSecret) {
+                // Générer un mot de passe aléatoire
+                const randomPassword = Math.random().toString(36).slice(-8);
+    
+                // Appeler la fonction signupUser pour créer l'utilisateur
+                const signupResponse = await fetch(`${baseUrl}/api/users/signup`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password: randomPassword, name: 'Utilisateur' })
+                });
+    
+                if (!signupResponse.ok) {
+                    const signupErrorResponse = await signupResponse.json();
+                    console.error('Error signing up user:', signupErrorResponse);
+                    onError(signupErrorResponse.message);
+                    return;
+                }
+    
                 onSuccess(clientSecret);
             } else {
                 console.error('No clientSecret returned from backend.');
-                onError();
+                onError('No clientSecret returned from backend.');
             }
         } catch (error) {
             console.error('Error creating subscription:', error.message);
-            onError();
+            onError(error.message);
         }
     };
+    
+    
     
 
 
