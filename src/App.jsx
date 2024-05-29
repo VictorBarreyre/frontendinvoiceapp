@@ -16,6 +16,14 @@ import Profil from '../roots/Profil';
 import Factures from '../roots/Factures';
 import Paiements from '../roots/Paiements';
 import Paramètres from '../roots/Paramètres';
+import Abo from '../roots/Abo'
+import Success from '../roots/Succes';
+import { loadStripe } from '@stripe/stripe-js';
+import { Elements } from '@stripe/react-stripe-js';
+import PaymentSuccess from '../roots/PaymentSucces';
+
+const stripePromise = loadStripe('pk_test_51OwLFM00KPylCGutjKAkwhqleWEzuvici1dQUPCIvZHofEzLtGyM9Gdz5zEfvwSZKekKRgA1el5Ypnw7HLfYWOuB00ZdrKdygg');
+
 
 function App() {
   const { user, setUser, logout } = useAuth();
@@ -28,6 +36,8 @@ function App() {
   }, []);
 
   return (
+    <>
+    <Elements stripe={stripePromise}> 
     <ChakraProvider theme={theme}>
       <InvoiceDataProvider>
         <Router>
@@ -46,6 +56,8 @@ function App() {
                   <Route path="/paiements" element={<Paiements />} />
                   <Route path="/parametres" element={<Paramètres />} />
                   <Route path="*" element={<Navigate to="/" />} />
+                  <Route path="/payment-success" element={<PaymentSuccess />} />
+                  <Route path="/abo" element={<Abo />} />
                 </Routes>
               </Box>
             </Flex>
@@ -53,6 +65,8 @@ function App() {
         </Router>
       </InvoiceDataProvider>
     </ChakraProvider>
+    </Elements>
+    </>
   );
 }
 
