@@ -83,7 +83,7 @@ const Header = () => {
             <Link as={RouterLink} to="/parametres" p="4" display="block" onClick={toggleDrawer}>
               Paramètres
             </Link>
-            <Button onClick={handleLogout} color='red' mt="4" w='100%'>
+            <Button onClick={handleLogout} w={{ base: '100%', lg: 'fit-content' }} color='white' borderRadius='30px' pt='12px' pb='12px' pl='24px' pr='24px' backgroundColor='red' mt="4" colorScheme="gray">
               Déconnexion
             </Button>
           </DrawerBody>
