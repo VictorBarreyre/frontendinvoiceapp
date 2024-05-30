@@ -3,12 +3,19 @@ import { Flex, Box, Heading, Link, Button, useBreakpointValue, IconButton, Drawe
 import { Link as RouterLink } from 'react-router-dom';
 import { HamburgerIcon } from '@chakra-ui/icons';
 import AccountButton from '../componentslittle/AccountButton';
+import { useAuth } from '../context/AuthContext';
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const buttonSize = useBreakpointValue({ base: 'sm', md: 'md' });
+  const { user, logout } = useAuth();
 
   const toggleDrawer = () => setIsOpen(!isOpen);
+
+  const handleLogout = () => {
+    logout();
+    toggleDrawer();
+  };
 
   return (
     <Flex
@@ -27,7 +34,7 @@ const Header = () => {
     >
       <Flex align="center" mr={5}>
         <Heading as="h1" fontWeight='600' size="md">
-          <Link as={RouterLink}  fontWeight='600' color='black' to="/" _hover={{ textDecoration: 'none' }}>
+          <Link as={RouterLink} fontWeight='600' color='black' to="/" _hover={{ textDecoration: 'none' }}>
             dbill.io
           </Link>
         </Heading>
@@ -37,7 +44,6 @@ const Header = () => {
         background='none'
         aria-label="Open Menu"
         size="md"
-        
         icon={<HamburgerIcon />}
         display={{ sm: 'flex', md: 'none' }}
         onClick={toggleDrawer}
@@ -47,7 +53,7 @@ const Header = () => {
         <Link as={RouterLink} color='black' to="/about" px="4" _hover={{ textDecoration: 'underline' }}>
           À propos
         </Link>
-        <Link as={RouterLink} color='black' to="/about" px="4" mr='1rem'  _hover={{ textDecoration: 'underline' }}>
+        <Link as={RouterLink} color='black' to="/about" px="4" mr='1rem' _hover={{ textDecoration: 'underline' }}>
           Comment ça marche ?
         </Link>
         <AccountButton />
@@ -65,7 +71,21 @@ const Header = () => {
             <Link as={RouterLink} to="/about" p="4" mb='1rem' display="block" onClick={toggleDrawer}>
               Comment ça marche ?
             </Link>
-            <AccountButton onClick={toggleDrawer} />
+            <Link as={RouterLink} to="/profil" p="4" display="block" onClick={toggleDrawer}>
+              Profil
+            </Link>
+            <Link as={RouterLink} to="/factures" p="4" display="block" onClick={toggleDrawer}>
+              Factures
+            </Link>
+            <Link as={RouterLink} to="/paiements" p="4" display="block" onClick={toggleDrawer}>
+              Abonnement
+            </Link>
+            <Link as={RouterLink} to="/parametres" p="4" display="block" onClick={toggleDrawer}>
+              Paramètres
+            </Link>
+            <Button onClick={handleLogout} color='red' mt="4" w='100%'>
+              Déconnexion
+            </Button>
           </DrawerBody>
         </DrawerContent>
       </Drawer>

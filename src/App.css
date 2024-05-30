@@ -187,6 +187,12 @@
 
 /* Smartphones en portrait */
 @media only screen and (max-width: 600px) {
+
+  .sidebar{
+display: none !important;
+  }
+
+
   .tabs-container {
     width: 100vw;
     padding-left: 1rem;
