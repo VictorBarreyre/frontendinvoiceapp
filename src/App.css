@@ -123,7 +123,7 @@
 .stepper-container {
   display: flex;
   flex-direction: column;
-  width: 80%;
+  width: 90%;
   margin-top: 7rem;
   margin-bottom: 2rem;
   margin-left: 3rem;
@@ -177,12 +177,13 @@
   margin-bottom: 2rem;
 }
 
+/* à ajouter que si l'utilisateur est log
 .flex-stepper{ 
   display: flex;
   justify-content: center;
   align-items: center;
-
 }
+*/
 
 /* Smartphones en portrait */
 @media only screen and (max-width: 600px) {

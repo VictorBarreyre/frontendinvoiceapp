@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import {
   Button,
@@ -18,23 +18,24 @@ import {
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { useInvoiceData } from '../context/InvoiceDataContext';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext'
-
+import { useAuth } from '../context/AuthContext';
 
 function SignInForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const toast = useToast();
   const { baseUrl } = useInvoiceData();
-  const { login, resetPassword } = useAuth();
+  const { login } = useAuth();
   const navigate = useNavigate();
 
   const handlePasswordVisibility = () => setShowPassword(!showPassword);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true); // Prevent multiple submissions
 
     try {
       const response = await fetch(`${baseUrl}/api/users/signin`, {
@@ -44,37 +45,38 @@ function SignInForm() {
         },
         body: JSON.stringify({ email, password })
       });
-      const data = await response.json();
 
-      if (response.ok) {
-        const userData = {
-          _id:data._id,
-          email,
-          token: data.token,
-          name: data.name,
-          adresse: data.adresse,
-          siret: data.siret,
-          iban: data.iban
-        }; // Assurez-vous que ces données sont correctes
-        login(userData); // Met à jour l'état global de l'utilisateur dans votre contexte
-        navigate('/profil');
-      } else {
-        throw new Error(data.message || 'Impossible de se connecter');
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Utilisateur ou mot de passe incorrect');
       }
+
+      const data = await response.json();
+      const userData = {
+        _id: data._id,
+        email,
+        token: data.token,
+        name: data.name,
+        adresse: data.adresse,
+        siret: data.siret,
+        iban: data.iban
+      };
+
+      login(userData); // Update global user state in your context
+      navigate('/profil');
     } catch (error) {
-      setErrorMessage(error.message);
-      console.log(errorMessage);
+      setErrorMessage(error.message || 'Utilisateur ou mot de passe incorrect');
       toast({
         title: 'Erreur de connexion',
-        description: error.message,
+        description: error.message || 'Utilisateur ou mot de passe incorrect',
         status: 'error',
         duration: 9000,
         isClosable: true,
       });
+    } finally {
+      setIsSubmitting(false); // Re-enable the form
     }
   };
-
-
 
   return (
     <Box className='tabs-container' p='3rem' mt='7rem' borderWidth="1px" w="35rem" mx="auto">
@@ -114,10 +116,9 @@ function SignInForm() {
             <ChakraText mt={4} textAlign='center'>
               <ChakraLink as={RouterLink} to="/forgotpass" style={{ color: "#745FF2" }}>Mot de passe oublié ?</ChakraLink>
             </ChakraText>
-
           </FormControl>
-          {errorMessage && <ChakraText mt='1rem' color="#FB7575">{errorMessage}</ChakraText>}
-          <Button type="submit" color='white' borderRadius='30px' backgroundColor='black' mt="4" colorScheme="gray">
+          {errorMessage && <ChakraText mt='1rem' textAlign='center' color="red">{errorMessage}</ChakraText>}
+          <Button type="submit" color='white' borderRadius='30px' backgroundColor='black' mt="4" colorScheme="gray" isLoading={isSubmitting}>
             Se connecter
           </Button>
           <ChakraText mt={4}>

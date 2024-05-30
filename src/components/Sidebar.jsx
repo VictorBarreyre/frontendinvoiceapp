@@ -48,7 +48,7 @@ const Sidebar = () => {
           <Link to="/factures" onClick={() => handleTabClick('tab2')}>Factures</Link>
         </li>
         <li className={`tab ${getActiveClass('/paiements')}`}>
-          <Link to="/paiements" onClick={() => handleTabClick('tab3')}>Paiements</Link>
+          <Link to="/paiements" onClick={() => handleTabClick('tab3')}>Abonnement</Link>
         </li>
         <li className={`tab ${getActiveClass('/parametres')}`}>
           <Link to="/parametres" onClick={() => handleTabClick('tab4')}>Paramètres</Link>

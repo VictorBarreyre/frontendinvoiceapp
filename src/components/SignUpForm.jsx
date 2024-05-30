@@ -18,8 +18,7 @@ import {
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { useInvoiceData } from '../context/InvoiceDataContext';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext'
-
+import { useAuth } from '../context/AuthContext';
 
 function SignupForm() {
   const [email, setEmail] = useState('');
@@ -30,15 +29,22 @@ function SignupForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const toast = useToast();
-  const { baseUrl } = useInvoiceData();
+  const { baseUrl, isValidEmail } = useInvoiceData();
   const { login } = useAuth();
   const navigate = useNavigate();
 
   const handlePasswordVisibility = () => setShowPassword(!showPassword);
-  const handleConfirmPassworddVisibility = () => setShowConfirmPassword(current => !current);;
+  const handleConfirmPasswordVisibility = () => setShowConfirmPassword(current => !current);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Vérifiez si l'email est valide
+    if (!isValidEmail(email)) {
+      setErrorMessage("L'adresse e-mail n'est pas valide.");
+      return; // Stop the submission if email is not valid
+    }
+
     if (password !== confirmPassword) {
       setErrorMessage("Les mots de passe ne correspondent pas.");
       return; // Stop the submission if passwords do not match
@@ -66,7 +72,13 @@ function SignupForm() {
       }
     } catch (error) {
       setErrorMessage(error.message);
-      console.log(errorMessage)
+      toast({
+        title: 'Erreur d\'inscription',
+        description: error.message,
+        status: 'error',
+        duration: 9000,
+        isClosable: true,
+      });
     }
   };
 
@@ -95,7 +107,7 @@ function SignupForm() {
                 onChange={(e) => setPassword(e.target.value)}
               />
               <InputRightElement width="4.5rem">
-              <IconButton
+                <IconButton
                   background='none'
                   h="2rem"
                   size="lg"
@@ -113,19 +125,20 @@ function SignupForm() {
           <FormControl isRequired>
             <FormLabel htmlFor="confirmPassword">Confirmez le mot de passe</FormLabel>
             <InputGroup>
-            <Input 
-            _focus={{ borderColor: "#745FF2", boxShadow: "none" }} 
-            className='neue-down' 
-            id="confirmPassword" 
-            type={showConfirmPassword ? "text" : "password"}
-            value={confirmPassword} 
-            onChange={(e) => setConfirmPassword(e.target.value)} />
-            <InputRightElement width="4.5rem">
-              <IconButton
+              <Input 
+                _focus={{ borderColor: "#745FF2", boxShadow: "none" }} 
+                className='neue-down' 
+                id="confirmPassword" 
+                type={showConfirmPassword ? "text" : "password"}
+                value={confirmPassword} 
+                onChange={(e) => setConfirmPassword(e.target.value)} 
+              />
+              <InputRightElement width="4.5rem">
+                <IconButton
                   background='none'
                   h="2rem"
                   size="lg"
-                  onClick={handleConfirmPassworddVisibility}
+                  onClick={handleConfirmPasswordVisibility}
                   icon={showConfirmPassword ? <ViewOffIcon /> : <ViewIcon />}
                   sx={{
                     _hover: { background: 'none', boxShadow: 'none', transform: 'none' },
@@ -134,14 +147,14 @@ function SignupForm() {
                   }}
                 />
               </InputRightElement>
-              </InputGroup>
-            {errorMessage && <ChakraText mt='1rem' color="#FB7575">{errorMessage}</ChakraText>}
+            </InputGroup>
+            {errorMessage && <ChakraText mt='1rem' color="red">{errorMessage}</ChakraText>}
           </FormControl>
-          <Button onClick={handleSubmit} color='white' borderRadius='30px' backgroundColor='black' mt="4" colorScheme="gray">
+          <Button type="submit" color='white' borderRadius='30px' backgroundColor='black' mt="4" colorScheme="gray">
             Créer mon compte
           </Button>
           <ChakraText mt={4}>
-          Déjà inscrit ? <ChakraLink as={RouterLink} to="/signin" style={{ color: "#745FF2" }}>Connectez-vous</ChakraLink>
+            Déjà inscrit ? <ChakraLink as={RouterLink} to="/signin" style={{ color: "#745FF2" }}>Connectez-vous</ChakraLink>
           </ChakraText>
         </VStack>
       </form>
