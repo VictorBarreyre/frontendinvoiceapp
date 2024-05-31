@@ -38,7 +38,7 @@ const Paiements = () => {
   }
 
   return (
-    <Box className='neue-up' borderRadius='1vw' backgroundColor='white' w='90%' h='80%' mt='7rem' ml='3rem'>
+    <Box borderWidth='1px' className='neue-up' borderRadius='1vw' backgroundColor='white' w='90%' h='80%' mt='7rem' ml='3rem'>
       <Flex p='3rem' direction='column'>
         <Heading pb='1rem' mb='2rem' borderBottom='2px solid #efefef' fontSize='26px'>Abonnement</Heading>
         <Text fontSize='20px'>Statut de l'abonnement : {subscriptionStatus}</Text>

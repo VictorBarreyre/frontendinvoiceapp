@@ -39,7 +39,7 @@ const Sidebar = () => {
   }
 
   return (
-    <div className="sidebar neue-up" style={{ display: 'flex', flexDirection: 'column', height: '80%' }}>
+    <div className="sidebar neue-up" style={{ display: 'flex', flexDirection: 'column', height: '80%', borderWidth:'1px' }}>
       <ul className="tab-list-dashboard">
         <li className={`tab ${getActiveClass('/profil')}`}>
           <Link to="/profil" onClick={() => handleTabClick('tab1')}>Profil</Link>

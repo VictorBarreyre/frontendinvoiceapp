@@ -69,7 +69,7 @@ const Profil = () => {
   }
 
   return (
-    <Box className='neue-up' borderRadius='1vw' backgroundColor='white' w='90%' h={{ base: 'content', lg: '80%' }} mt='7rem' ml='3rem'>
+    <Box className='neue-up' borderWidth='1px' borderRadius='1vw' backgroundColor='white' w='90%' h={{ base: 'content', lg: '80%' }} mt='7rem' ml='3rem'>
       <Flex direction='column' p='3rem' >
         <Heading pb='1rem' mb='2rem' borderBottom='2px solid #efefef' fontSize='26px'>Votre Profil</Heading>
         <Flex direction='column' h={{ base: 'content', lg: '20rem' }} flexWrap={{ base: 'unwrap', lg: 'wrap' }} mb='1rem'>

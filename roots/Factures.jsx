@@ -26,7 +26,7 @@ const Factures = () => {
 
 
   return (
-    <Box className='neue-up'  borderRadius='1vw' backgroundColor='white' w='90%' h='80%' mt='7rem' ml='3rem'>
+    <Box className='neue-up' borderWidth='1px' borderRadius='1vw' backgroundColor='white' w='90%' h='80%' mt='7rem' ml='3rem'>
     <Flex p='3rem' direction='column'> 
     <Heading pb='1rem' mb='2rem' borderBottom='2px solid #efefef' fontSize='26px'>Factures</Heading>
     {message && <Text>{message}</Text>}
