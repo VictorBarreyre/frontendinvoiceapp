@@ -48,6 +48,8 @@ table{
 }
 
 #root {
+  display: flex;
+  flex-direction: column;
   font-family: 'SF Pro Display';
   line-height: 1.5;
   font-weight: 400;

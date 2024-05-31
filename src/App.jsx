@@ -21,6 +21,7 @@ import Success from '../roots/Succes';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
 import PaymentSuccess from '../roots/PaymentSucces';
+import Footer from './components/Footer';
 
 const stripePromise = loadStripe('pk_test_51OwLFM00KPylCGutjKAkwhqleWEzuvici1dQUPCIvZHofEzLtGyM9Gdz5zEfvwSZKekKRgA1el5Ypnw7HLfYWOuB00ZdrKdygg');
 
@@ -62,6 +63,7 @@ function App() {
               </Box>
             </Flex>
           </Flex>
+          <Footer/>
         </Router>
       </InvoiceDataProvider>
     </ChakraProvider>

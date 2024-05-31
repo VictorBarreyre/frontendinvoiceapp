@@ -41,11 +41,14 @@ const Paiements = () => {
     <Box borderWidth='1px' className='neue-up' borderRadius='1vw' backgroundColor='white' w='90%' h='80%' mt='7rem' ml='3rem'>
       <Flex p='3rem' direction='column'>
         <Heading pb='1rem' mb='2rem' borderBottom='2px solid #efefef' fontSize='26px'>Abonnement</Heading>
-        <Text fontSize='20px'>Statut de l'abonnement : {subscriptionStatus}</Text>
+        
         {subscriptionStatus === 'Actif' ? (
           <Text color='green.500'>Votre abonnement est actuellement actif.</Text>
         ) : (
+          <> 
           <Text color='red.500'>Vous n'avez pas d'abonnement actif.</Text>
+          <Text>Vous pouvez le renouveler en choisissant la formule ci dessous</Text>
+          </>
         )}
       </Flex>
     </Box>
