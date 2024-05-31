@@ -48,7 +48,6 @@ function App() {
               <Box flex="1" overflowY="auto">
                 <Routes>
                 <Route path="/" element={<Stepper />} /> 
-                  <Route path="/about" element={<About />} />
                   <Route path="/signin" element={!user ? <Signin /> : <Navigate to="/" />} />
                   <Route path="/signup" element={!user ? <Signup /> : <Navigate to="/" />} />
                   <Route path="/profil" element={<Profil />} />

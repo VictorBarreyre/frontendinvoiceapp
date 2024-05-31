@@ -54,7 +54,7 @@ const AboutPage = () => {
       <Heading fontSize={{ base: '24px', lg: '26px' }}>À propos de dbill</Heading>
       <Text color='#4A5568'> Le Lorem Ipsum est simplement du faux texte employé dans la composition et la mise en page avant impression. </Text>
       </Flex>
-      <Flex overflowX='auto' direction={{ base: 'column', lg: 'unset' }} w='auto' spacing={10} px={12} >
+      <Flex overflowX='auto' direction={{ base: 'column', lg: 'unset' }} w='auto' spacing={10} px={12} p={{base:'0', lg :'unset'}} >
         <Feature
           icon={<EditIcon color='#745FF2' w={8} h={8} />}
           title="Créer une facture"

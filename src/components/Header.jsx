@@ -48,9 +48,7 @@ const Header = () => {
         onClick={toggleDrawer}
       />
       <Flex display={{ base: 'none', md: 'flex' }} alignItems="center">
-        <Link as={RouterLink} color='black' to="/about" px="4" _hover={{ textDecoration: 'underline' }}>
-          À propos
-        </Link>
+     
         <Link as={RouterLink} color='black' to="/" px="4" mr='1rem' _hover={{ textDecoration: 'underline' }}>
           Créez votre facture
         </Link>
@@ -88,9 +86,7 @@ const Header = () => {
                 <Link as={RouterLink} to="/" p="4" display="block" onClick={toggleDrawer}>
                     Créer une facture
                   </Link>
-                  <Link as={RouterLink} to="/about" p="4" display="block" onClick={toggleDrawer}>
-                    À propos
-                  </Link>
+                  
                   <Link as={RouterLink} to="/about" p="4" mb='1rem' display="block" onClick={toggleDrawer}>
                     Comment ça marche ?
                   </Link>

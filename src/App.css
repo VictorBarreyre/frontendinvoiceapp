@@ -130,6 +130,7 @@
 }
 
 .tabs-container {
+  border-width: 1px;
   padding: 3rem;
   background: white;
   border-radius: 1vw;
