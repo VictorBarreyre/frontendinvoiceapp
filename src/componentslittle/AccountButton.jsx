@@ -11,25 +11,29 @@ function AccountButton() {
     return user ? (
 
         <Button
-        as={RouterLink}
-        to="/"
-        size={buttonSize}
-        backgroundColor='black'
-        color='white'
-        borderRadius='30px'
-        sx={{
-            '&:hover': {
-                boxShadow: 'rgba(174, 174, 192, 0.4) -1.5px -1.5px 3px 0px, rgba(255, 255, 255) 1.5px 1.5px 3px 0px',
-                color: '#745FF2',
-                backgroundColor: 'white !important'
-            }
-        }}
-    >
-        Créez votre facture
-    </Button>
+            as={RouterLink}
+            h='auto'
+            pt='12px' pb='12px' pl='24px' pr='24px'
+            to="/"
+            size={buttonSize}
+            backgroundColor='black'
+            color='white'
+            borderRadius='30px'
+            sx={{
+                '&:hover': {
+                    boxShadow: 'rgba(174, 174, 192, 0.4) -1.5px -1.5px 3px 0px, rgba(255, 255, 255) 1.5px 1.5px 3px 0px',
+                    color: '#745FF2',
+                    backgroundColor: 'white !important'
+                }
+            }}
+        >
+            Créez votre facture
+        </Button>
 
     ) : (
         <Button
+            pt='12px' pb='12px' pl='24px' pr='24px'
+            h='auto'
             as={RouterLink}
             to="/signin"
             size={buttonSize}

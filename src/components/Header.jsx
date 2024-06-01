@@ -60,34 +60,26 @@ const Header = () => {
             </Link>
           </DrawerHeader>
           <DrawerBody display='flex' flexDirection='column' alignContent='center' alignItems='center' justifyContent='center'>
-            <Flex direction='column' justifyContent='space-between' h='100%' alignItems='center'>
-              <Flex direction='column' justifyContent='center' alignItems='center' h='inherit'>
-                {user && (
-                  <Flex direction='column' justifyContent='end' alignItems='center' h='100%' >
-                    <Link as={RouterLink} to="/profil" p="4" display="block" onClick={toggleDrawer}>
-                      Profil
-                    </Link>
-                    <Link as={RouterLink} to="/factures" p="4" display="block" onClick={toggleDrawer}>
-                      Factures
-                    </Link>
-                    <Link as={RouterLink} to="/paiements" p="4" display="block" onClick={toggleDrawer}>
-                      Abonnement
-                    </Link>
-                    <Link as={RouterLink} to="/parametres" p="4" display="block" onClick={toggleDrawer}>
-                      Paramètres
-                    </Link>
-                  </Flex>
-                )}
-                <Flex direction='column' justifyContent='center' alignItems='center' h='inherit'>
-                <Link as={RouterLink} to="/" p="4" display="block" onClick={toggleDrawer}>
+            <Flex direction='column' justifyContent='center' alignItems='center' h='100%' >
+              {user && (
+                <Flex direction='column' justifyContent='center' alignItems='center' mb='3rem' h='100%' >
+                  <Link as={RouterLink} to="/" p="4" display="block" onClick={toggleDrawer}>
                     Créer une facture
                   </Link>
-                  
-                  <Link as={RouterLink} to="/about" p="4" mb='1rem' display="block" onClick={toggleDrawer}>
-                    Comment ça marche ?
+                  <Link as={RouterLink} to="/profil" p="4" display="block" onClick={toggleDrawer}>
+                    Profil
+                  </Link>
+                  <Link as={RouterLink} to="/factures" p="4" display="block" onClick={toggleDrawer}>
+                    Factures
+                  </Link>
+                  <Link as={RouterLink} to="/paiements" p="4" display="block" onClick={toggleDrawer}>
+                    Abonnement
+                  </Link>
+                  <Link as={RouterLink} to="/parametres" p="4" display="block" onClick={toggleDrawer}>
+                    Paramètres
                   </Link>
                 </Flex>
-              </Flex>
+              )}
               {user && (
                 <Button onClick={handleLogout} w={{ base: '100%', lg: 'fit-content' }} color='white' borderRadius='30px' pt='12px' pb='12px' pl='24px' pr='24px' backgroundColor='red' mb="4" colorScheme="gray">
                   Déconnexion

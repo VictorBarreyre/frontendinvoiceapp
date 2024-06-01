@@ -3,6 +3,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import {
   Button,
+  Box,
   Link as Chakralink,
 }
   from '@chakra-ui/react'
@@ -39,7 +40,8 @@ const Sidebar = () => {
   }
 
   return (
-    <div className="sidebar neue-up" style={{ display: 'flex', flexDirection: 'column', height: '80%', borderWidth:'1px' }}>
+    <Box as="nav" >
+    <div className="sidebar neue-up" style={{ display: 'flex', flexDirection: 'column', height: '69.7vh', borderWidth:'1px' }}>
       <ul className="tab-list-dashboard">
         <li className={`tab ${getActiveClass('/profil')}`}>
           <Link to="/profil" onClick={() => handleTabClick('tab1')}>Profil</Link>
@@ -58,6 +60,7 @@ const Sidebar = () => {
         Déconnexion
       </Chakralink>
     </div>
+    </Box>
   );
 };
 
