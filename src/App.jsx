@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { Button, Flex, Box } from '@chakra-ui/react';
+import { Flex, Box } from '@chakra-ui/react';
 import './App.css';
 import About from '../roots/About';
 import Signin from '../roots/Signin';
@@ -16,7 +16,7 @@ import Profil from '../roots/Profil';
 import Factures from '../roots/Factures';
 import Paiements from '../roots/Paiements';
 import Paramètres from '../roots/Paramètres';
-import Abo from '../roots/Abo'
+import Abo from '../roots/Abo';
 import Success from '../roots/Succes';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
@@ -26,9 +26,7 @@ import CGU from '../roots/CGU';
 import MentionsLegales from '../roots/MentionsLégales';
 import PolitiqueConfidentialite from '../roots/PolConf';
 
-
 const stripePromise = loadStripe('pk_test_51OwLFM00KPylCGutjKAkwhqleWEzuvici1dQUPCIvZHofEzLtGyM9Gdz5zEfvwSZKekKRgA1el5Ypnw7HLfYWOuB00ZdrKdygg');
-
 
 function App() {
   const { user, setUser, logout } = useAuth();
@@ -41,42 +39,41 @@ function App() {
   }, []);
 
   return (
-    <>
     <Elements stripe={stripePromise}> 
-    <ChakraProvider theme={theme}>
-      <InvoiceDataProvider>
-        <Router>
-          <Flex direction="column" height="100vh">
-            <Header />
-            <Flex flex="1" overflow="hidden">
-              {user && <Sidebar />}
-              <Box flex="1" overflowY="auto">
-                <Routes>
-                <Route path="/" element={<Stepper />} /> 
-                  <Route path="/signin" element={!user ? <Signin /> : <Navigate to="/" />} />
-                  <Route path="/signup" element={!user ? <Signup /> : <Navigate to="/" />} />
-                  <Route path="/profil" element={<Profil />} />
-                  <Route path="/factures" element={<Factures />} />
-                  <Route path="/paiements" element={<Paiements />} />
-                  <Route path="/parametres" element={<Paramètres />} />
-                  <Route path="*" element={<Navigate to="/" />} />
-                  <Route path="/payment-success" element={<PaymentSuccess />} />
-                  <Route path="/abonnement" element={<Abo />} />
-                  <Route path="/success" element={<Success />} />
-                  <Route path="/conditions-generales" element={<CGU/> }/>
-                  <Route path="/mentions-legales" element={<MentionsLegales/> }/>
-                  <Route path="/politique-de-confidentialite" element={<PolitiqueConfidentialite/> }/>
-
-                </Routes>
+      <ChakraProvider theme={theme}>
+        <InvoiceDataProvider>
+          <Router>
+            <Flex direction="column" minHeight="100vh">
+              <Header />
+              <Box as="main" className="main-content">
+                <Flex flex="1" overflow="hidden">
+                  {user && <Sidebar />}
+                  <Box flex="1" overflowY="auto">
+                    <Routes>
+                      <Route path="/" element={<Stepper />} />
+                      <Route path="/signin" element={!user ? <Signin /> : <Navigate to="/" />} />
+                      <Route path="/signup" element={!user ? <Signup /> : <Navigate to="/" />} />
+                      <Route path="/profil" element={<Profil />} />
+                      <Route path="/factures" element={<Factures />} />
+                      <Route path="/paiements" element={<Paiements />} />
+                      <Route path="/parametres" element={<Paramètres />} />
+                      <Route path="*" element={<Navigate to="/" />} />
+                      <Route path="/payment-success" element={<PaymentSuccess />} />
+                      <Route path="/abonnement" element={<Abo />} />
+                      <Route path="/success" element={<Success />} />
+                      <Route path="/conditions-generales" element={<CGU />} />
+                      <Route path="/mentions-legales" element={<MentionsLegales />} />
+                      <Route path="/politique-de-confidentialite" element={<PolitiqueConfidentialite />} />
+                    </Routes>
+                  </Box>
+                </Flex>
               </Box>
+              <Footer />
             </Flex>
-          </Flex>
-          <Footer/>
-        </Router>
-      </InvoiceDataProvider>
-    </ChakraProvider>
+          </Router>
+        </InvoiceDataProvider>
+      </ChakraProvider>
     </Elements>
-    </>
   );
 }
 

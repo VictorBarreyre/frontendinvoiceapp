@@ -7,13 +7,14 @@ const Footer = () => {
 
     return (
         <Box
+            className='neue-up'
             borderWidth='1px'
             as="footer"
             width="100%"
             py={{ base: '2rem', md: '3rem' }}
             px={{ base: '1rem', md: '3rem' }}
-            backgroundColor="White"
-            color="white"
+            backgroundColor="white"
+            color="black"
         >
             <Flex
                 direction={{ base: 'column', md: 'row' }}
@@ -30,24 +31,23 @@ const Footer = () => {
                     </Text>
                 </Flex>
                 <Flex direction={{ base: 'column', md: 'row' }} align="center">
-                    <Link as={RouterLink} to="/mentions-legales" mx="3" mb={{ base: '1rem', md: '0' }} color='black' fontSize={linkSize}>
+                    <Link as={RouterLink} to="/mentions-legales" mx="4" mb={{ base: '1rem', md: '0' }} color='black' fontSize={linkSize}>
                         Mentions légales
                     </Link>
-                    <Link as={RouterLink} to="/politique-de-confidentialite" mx="3" mb={{ base: '1rem', md: '0' }} color='black' fontSize={linkSize}>
+                    <Link as={RouterLink} to="/politique-de-confidentialite" mx="4" mb={{ base: '1rem', md: '0' }} color='black' fontSize={linkSize}>
                         Politique de confidentialité
                     </Link>
-                    <Link as={RouterLink} to="/conditions-generales" mx="3" mb={{ base: '1rem', md: '0' }} color='black' fontSize={linkSize}>
+                    <Link as={RouterLink} to="/conditions-generales" mx="4" mb={{ base: '1rem', md: '0' }} color='black' fontSize={linkSize}>
                         Conditions Générales d'Utilisation
                     </Link>
-                    <Link as={RouterLink} to="/contact" mx="3" color='black' fontSize={linkSize}>
+                    <Link as={RouterLink} to="/contact" mx="4" color='black' fontSize={linkSize}>
                         Contact
                     </Link>
-                    <Text textAlign="center"  mx="3" color='black' fontSize="sm">
-                        &copy; {new Date().getFullYear()} dbill.io. Tous droits réservés.
-                    </Text>
+                    <Text textAlign="center"  color='black' fontSize="sm">
+                &copy; {new Date().getFullYear()} dbill.io. Tous droits réservés.
+            </Text>
                 </Flex>
             </Flex>
-
         </Box>
     );
 };
