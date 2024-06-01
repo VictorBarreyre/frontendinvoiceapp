@@ -48,10 +48,6 @@ const Header = () => {
         onClick={toggleDrawer}
       />
       <Flex display={{ base: 'none', md: 'flex' }} alignItems="center">
-     
-        <Link as={RouterLink} color='black' to="/" px="4" mr='1rem' _hover={{ textDecoration: 'underline' }}>
-          Créez votre facture
-        </Link>
         <AccountButton />
       </Flex>
       <Drawer isOpen={isOpen} placement="right" onClose={toggleDrawer}>

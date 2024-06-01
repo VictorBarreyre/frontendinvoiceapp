@@ -31,7 +31,7 @@ function AccountButton() {
     ) : (
         <Button
             as={RouterLink}
-            to="/signup"
+            to="/signin"
             size={buttonSize}
             backgroundColor='black'
             color='white'
@@ -44,7 +44,7 @@ function AccountButton() {
                 }
             }}
         >
-            Créez votre compte
+            Connexion
         </Button>
     );
 }
