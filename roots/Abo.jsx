@@ -122,6 +122,16 @@ const Abo = () => {
                 'borderRadius': '4px',
                 'padding': '10px',
             },
+            '.Tab': {
+              'backgroundColor': '#fdfdfd',
+              'border': '1px solid #e2e8f0',
+              'borderRadius': '0.4rem',
+    
+            },
+            '.Tab--selected': {
+              'backgroundColor': '#745FF2',
+              'borderColor': '#745FF2',
+            },
         },
     };
 
