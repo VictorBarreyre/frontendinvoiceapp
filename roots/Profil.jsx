@@ -73,12 +73,12 @@ const Profil = () => {
     <div className="stepper-container">
       <div className="tabs-container">
       <Flex direction='column'>
-        <Heading pb='1rem' mb='2rem' borderBottom='2px solid #efefef' fontSize='26px'>Votre Profil</Heading>
+        <Heading pb='1rem' mb={{ base: '0rem', lg: '2rem' }} borderBottom={{ base: 'unset', lg: '2px solid #efefef' }} fontSize={{ base: '22px', lg: '26px' }}>Votre Profil</Heading>
         <Flex direction='column' h={{ base: 'content', lg: '20rem' }} flexWrap={{ base: 'unwrap', lg: 'wrap' }} mb='1rem'>
           {Object.entries(userData).map(([field, value]) => {
             if (field !== 'password' && field !== 'token' && field !== '_id') {
               return (
-                <FormControl width='20rem' mt='4' isRequired key={field}>
+                <FormControl  width={{ base: 'unset', lg: '20rem' }} mt='4' isRequired key={field}>
                 <Text mb='0.5rem' size="sm">{field.charAt(0).toUpperCase() + field.slice(1)}</Text>
                 <InputGroup  display='flex' alignContent='center' alignItems='center' >
                   <Input

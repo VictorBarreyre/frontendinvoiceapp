@@ -222,7 +222,7 @@ const Stepper = () => {
       <div className="stepper-container">
         <div className="tabs-container">
           <div className="tab-heading">
-            <Heading fontSize={{ base: '24px', lg: '26px' }}>{getHeadingText(tabIndex)}</Heading>
+            <Heading fontSize={{ base: '20px', lg: '26px' }}>{getHeadingText(tabIndex)}</Heading>
           </div>
           <div className="tab-list">
             <button className={`tab ${tabIndex === 0 ? 'active' : ''}`} onClick={() => handleTabClick(0)}>{tabText(0, isMobile)}</button>

@@ -30,7 +30,7 @@ const Factures = () => {
       <div className="stepper-container">
         <div className="tabs-container">
           <Flex direction='column'>
-            <Heading pb='1rem' mb='2rem' borderBottom='2px solid #efefef' fontSize='26px'>Factures</Heading>
+          <Heading pb='1rem' mb={{ base: '0rem', lg: '2rem' }} borderBottom={{ base: 'unset', lg: '2px solid #efefef' }} fontSize={{ base: '22px', lg: '26px' }}>Factures</Heading>
             {message && <Text>{message}</Text>}
             {invoices.map(invoice => (
               <Text key={invoice._id}>{invoice.description} - Montant: {invoice.amount}</Text>
