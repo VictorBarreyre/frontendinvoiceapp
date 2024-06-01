@@ -55,7 +55,7 @@ const Stepper = () => {
             console.error('Error sending invoice:', error);
         });
     } else {
-        navigate('/abo');
+        navigate('/abonnement');
         setIsSubmitting(false);
     }
 };

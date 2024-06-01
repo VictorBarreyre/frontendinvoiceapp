@@ -28,7 +28,7 @@ const Header = () => {
       padding={{ base: '0rem 1rem', md: '1rem 3rem' }}
       color="white"
       backgroundColor="white"
-      height='4rem'
+      height='auto'
       width='100%'
       zIndex='1000'
     >

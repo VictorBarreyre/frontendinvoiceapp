@@ -32,7 +32,7 @@ function AccountButton() {
 
     ) : (
         <Button
-            pt='12px' pb='12px' pl='24px' pr='24px'
+            pt='0.7rem' pb='0.7rem' pl='1.2rem' pr='1.2rem' 
             h='auto'
             as={RouterLink}
             to="/signin"
