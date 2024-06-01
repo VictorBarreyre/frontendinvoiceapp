@@ -149,8 +149,8 @@ const Paiements = () => {
               <Text color='green.500'>Votre abonnement est actuellement actif.</Text>
             ) : (
               <>
-                <Text color='red.500'>Vous n'avez pas d'abonnement actif.</Text>
-                <Text>Vous pouvez le renouveler en choisissant la formule ci-dessous</Text>
+                <Text color='red'>Vous n'avez pas d'abonnement actif.</Text>
+                <Text mt='0.5rem'>Pour continuer à créer et envoyer des factures automatiquement, n'hésitez pas à renouveler votre abonnement premium.</Text>
                 <Flex direction={{ base: 'column-reverse', lg: 'unset' }} justifyContent='space-between' alignItems='start' mt='3rem'>
                   <Flex  direction='column' w={{ base: '100%', lg: '50%' }} gap='15px'>
                     <Heading size="sm">Vos informations</Heading>
