@@ -1,7 +1,8 @@
-import React, { createContext, useContext, useState,useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useAuth } from './AuthContext';
 import InvoicePDF from '../components/InvoicePDF';
 import { pdf, PDFViewer } from '@react-pdf/renderer';
+import axios from 'axios';
 
 const InvoiceDataContext = createContext();
 
@@ -114,23 +115,16 @@ export const InvoiceDataProvider = ({ children }) => {
         return /\S+@\S+\.\S+/.test(email);
     };
 
-    
     const createCheckoutSession = async (email, name, onSuccess, onError) => {
         try {
-            const response = await fetch(`${baseUrl}/abonnement/create-checkout-session`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, name }),
+            const response = await axios.post(`${baseUrl}/abonnement/create-checkout-session`, {
+                email,
+                name
+            }, {
+                headers: { 'Content-Type': 'application/json' }
             });
-    
-            if (!response.ok) {
-                const errorResponse = await response.json();
-                console.error('Error creating checkout session:', errorResponse);
-                onError(errorResponse.error.message);
-                return;
-            }
-    
-            const { clientSecret, sessionId } = await response.json();
+
+            const { clientSecret, sessionId } = response.data;
             if (clientSecret) {
                 onSuccess(clientSecret, sessionId);
             } else {
@@ -139,12 +133,10 @@ export const InvoiceDataProvider = ({ children }) => {
             }
         } catch (error) {
             console.error('Error creating checkout session:', error);
-            onError(error.message);
+            onError(error.response?.data?.error?.message || error.message);
         }
     };
 
-
-    
     const handleSendInvoice = () => {
         const { email, name } = invoiceData.issuer;
         if (!email || !name) {
@@ -161,61 +153,45 @@ export const InvoiceDataProvider = ({ children }) => {
             setShowError(true);
         });
     };
-    
-    
+
     const createSubscription = async (email, priceId, onSuccess, onError) => {
         try {
-            const response = await fetch(`${baseUrl}/abonnement/create-subscription`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, priceId }),
+            const response = await axios.post(`${baseUrl}/abonnement/create-subscription`, {
+                email,
+                priceId
+            }, {
+                headers: { 'Content-Type': 'application/json' }
             });
-    
-            if (!response.ok) {
-                const errorResponse = await response.json();
-                console.error('Error creating subscription:', errorResponse);
-                onError();
-                return;
-            }
-    
-            const { clientSecret } = await response.json();
+
+            const { clientSecret } = response.data;
             if (clientSecret) {
                 // Vérifiez si l'utilisateur existe avant de le créer
-                const userResponse = await fetch(`${baseUrl}/api/users/check`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email })
+                const userResponse = await axios.post(`${baseUrl}/api/users/check`, { email }, {
+                    headers: { 'Content-Type': 'application/json' }
                 });
-    
-                if (!userResponse.ok) {
-                    const userErrorResponse = await userResponse.json();
-                    console.error('Error checking user:', userErrorResponse);
-                    onError(userErrorResponse.message);
-                    return;
-                }
-    
-                const { exists } = await userResponse.json();
+
+                const { exists } = userResponse.data;
                 if (!exists) {
                     // Générer un mot de passe aléatoire
                     const randomPassword = Math.random().toString(36).slice(-8);
-    
+
                     // Appeler la fonction signupUser pour créer l'utilisateur
-                    const signupResponse = await fetch(`${baseUrl}/api/users/signup`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ email, password: randomPassword, name: 'Utilisateur' })
+                    const signupResponse = await axios.post(`${baseUrl}/api/users/signup`, {
+                        email,
+                        password: randomPassword,
+                        name: 'Utilisateur'
+                    }, {
+                        headers: { 'Content-Type': 'application/json' }
                     });
-    
-                    if (!signupResponse.ok) {
-                        const signupErrorResponse = await signupResponse.json();
+
+                    if (!signupResponse.status === 201) {
+                        const signupErrorResponse = signupResponse.data;
                         console.error('Error signing up user:', signupErrorResponse);
                         onError(signupErrorResponse.message);
                         return;
                     }
                 }
-    
+
                 onSuccess(clientSecret);
             } else {
                 console.error('No clientSecret returned from backend.');
@@ -223,33 +199,24 @@ export const InvoiceDataProvider = ({ children }) => {
             }
         } catch (error) {
             console.error('Error creating subscription:', error.message);
-            onError(error.message);
+            onError(error.response?.data?.error?.message || error.message);
         }
     };
-    
+
     const checkActiveSubscription = async (email) => {
         try {
-            const response = await fetch(`${baseUrl}/abonnement/check-active-subscription`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email }),
+            const response = await axios.post(`${baseUrl}/abonnement/check-active-subscription`, { email }, {
+                headers: { 'Content-Type': 'application/json' }
             });
 
-            if (!response.ok) {
-                const errorResponse = await response.json();
-                console.error('Error checking subscription:', errorResponse);
-                return false;
-            }
-
-            const { hasActiveSubscription } = await response.json();
+            const { hasActiveSubscription } = response.data;
             return hasActiveSubscription;
         } catch (error) {
             console.error('Error checking subscription:', error.message);
             return false;
         }
     };
-    
-    
+
     const handleInvoiceActionSendMail = async (invoiceData, onSuccess, onError) => {
         const { number, issuer, client, total } = invoiceData;
         const areAllRequiredFieldsValid = number !== '' && issuer.name !== '' && client.name !== '';
@@ -266,11 +233,8 @@ export const InvoiceDataProvider = ({ children }) => {
             const pdfBlob = await asPDF.toBlob();
 
             if (client.email && isValidEmail(client.email)) {
-                const factureIdResponse = await fetch(`${baseUrl}/email/generateFactureId`, { method: "GET" });
-                if (!factureIdResponse.ok) throw new Error("Erreur lors de la génération du factureId.");
-
-                const factureIdData = await factureIdResponse.json();
-                const factureId = factureIdData.factureId;
+                const factureIdResponse = await axios.get(`${baseUrl}/email/generateFactureId`);
+                const { factureId } = factureIdResponse.data;
 
                 const confirmationLink = `http://localhost:5173/confirmation?facture=${factureId}&montant=${total}`;
                 const messageEmail = `Cher ${client.name},\n\nVeuillez trouver ci-joint votre facture n° ${number}.\n\nPour confirmer votre accord et signer électroniquement le contrat, veuillez cliquer sur le lien ci-dessous :\n\n${confirmationLink}\n\nNous vous remercions pour votre confiance et restons à votre disposition pour toute information complémentaire.\n\nCordialement,\n${issuer.name}`;
@@ -285,16 +249,13 @@ export const InvoiceDataProvider = ({ children }) => {
                 formData.append('destinataire', JSON.stringify(client));
                 formData.append('factureId', factureId);
 
-                const createAndSendEmailResponse = await fetch(`${baseUrl}/email/sendEmail`, {
-                    method: "POST",
-                    body: formData,
-                });
+                const createAndSendEmailResponse = await axios.post(`${baseUrl}/email/sendEmail`, formData);
 
-                if (createAndSendEmailResponse.ok) {
+                if (createAndSendEmailResponse.status === 200) {
                     console.log("Facture créée et email envoyé avec succès !");
                     onSuccess();
                 } else {
-                    console.log('Erreur lors de la création de la facture et de l’envoi de l’email', await createAndSendEmailResponse.text());
+                    console.log('Erreur lors de la création de la facture et de l’envoi de l’email', createAndSendEmailResponse.data);
                     onError();
                 }
             } else {
@@ -304,8 +265,6 @@ export const InvoiceDataProvider = ({ children }) => {
             console.error('Erreur lors de la génération ou de l’envoi du PDF', error);
         }
     };
-
-
 
     return (
         <InvoiceDataContext.Provider value={{
@@ -330,11 +289,11 @@ export const InvoiceDataProvider = ({ children }) => {
             setItemsNames,
             handleChange,
             isValidEmail,
-            payments, 
+            payments,
             setPayments,
-            isTotalPercentage100, 
+            isTotalPercentage100,
             setIsTotalPercentage100,
-            remainingPercentage, 
+            remainingPercentage,
             setRemainingPercentage,
             handleInvoiceActionSendMail,
             getClassForField,

@@ -19,6 +19,7 @@ import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { useInvoiceData } from '../context/InvoiceDataContext';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import axios from 'axios';
 
 function SignInForm() {
   const [email, setEmail] = useState('');
@@ -38,20 +39,20 @@ function SignInForm() {
     setIsSubmitting(true); // Prevent multiple submissions
 
     try {
-      const response = await fetch(`${baseUrl}/api/users/signin`, {
-        method: 'POST',
+      const response = await axios.post(`${baseUrl}/api/users/signin`, {
+        email,
+        password
+      }, {
         headers: {
           'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ email, password })
+        }
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Utilisateur ou mot de passe incorrect');
+      if (response.status !== 200) {
+        throw new Error(response.data.message || 'Utilisateur ou mot de passe incorrect');
       }
 
-      const data = await response.json();
+      const data = response.data;
       const userData = {
         _id: data._id,
         email,
@@ -79,8 +80,7 @@ function SignInForm() {
   };
 
   return (
-
-    <Box className='tabs-container'p={{ base: '2rem', md: '3rem' }} mt={{ base: '4rem', md:'7rem', lg: '7rem' }} mb={{ base: 'Orem', md:'2rem', lg: '2rem' }} borderWidth="1px"  w={{ base: 'unset', md:'35rem', lg: '35rem' }} mx="auto" h={{ base: '100vh', md: 'inherit' }}>
+    <Box className='tabs-container' p={{ base: '2rem', md: '3rem' }} mt={{ base: '4rem', md: '7rem', lg: '7rem' }} mb={{ base: '0rem', md: '2rem', lg: '2rem' }} borderWidth="1px" w={{ base: 'unset', md: '35rem', lg: '35rem' }} mx="auto" h={{ base: '100vh', md: 'inherit' }}>
       <Heading textAlign='center' mb='2rem' fontSize='26px'>Connectez-vous à votre compte</Heading>
       <form onSubmit={handleSubmit}>
         <VStack spacing={4}>
@@ -128,7 +128,6 @@ function SignInForm() {
         </VStack>
       </form>
     </Box>
-
   );
 }
 

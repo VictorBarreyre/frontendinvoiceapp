@@ -19,6 +19,7 @@ import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { useInvoiceData } from '../context/InvoiceDataContext';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import axios from 'axios';
 
 function SignupForm() {
   const [email, setEmail] = useState('');
@@ -53,16 +54,19 @@ function SignupForm() {
     }
 
     try {
-      const response = await fetch(`${baseUrl}/api/users/signup`, {
-        method: 'POST',
+      const response = await axios.post(`${baseUrl}/api/users/signup`, {
+        email,
+        password,
+        name
+      }, {
         headers: {
           'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ email, password, name })
+        }
       });
-      const data = await response.json();
 
-      if (response.ok) {
+      const data = response.data;
+
+      if (response.status === 201) {
         localStorage.setItem('token', data.token);
         login({ email, name, id: data._id });
         navigate('/profil'); // Assurez-vous que la méthode login est récupérée avec useAuth()
@@ -83,7 +87,8 @@ function SignupForm() {
   };
 
   return (
-<Box className='tabs-container'p={{ base: '2rem', md: '3rem' }} mt={{ base: '4rem', md:'7rem', lg: '7rem' }} mb={{ base: 'Orem', md:'2rem', lg: '2rem' }} borderWidth="1px"  w={{ base: 'unset', md:'35rem', lg: '35rem' }} mx="auto" h={{ base: '100vh', md: 'inherit' }}>      <Heading textAlign='center' mb='2rem' fontSize='26px'>Créez votre compte</Heading>
+    <Box className='tabs-container' p={{ base: '2rem', md: '3rem' }} mt={{ base: '4rem', md: '7rem', lg: '7rem' }} mb={{ base: '0rem', md: '2rem', lg: '2rem' }} borderWidth="1px" w={{ base: 'unset', md: '35rem', lg: '35rem' }} mx="auto" h={{ base: '100vh', md: 'inherit' }}>
+      <Heading textAlign='center' mb='2rem' fontSize='26px'>Créez votre compte</Heading>
       <form onSubmit={handleSubmit}>
         <VStack spacing={4}>
           <FormControl isRequired>
@@ -124,13 +129,13 @@ function SignupForm() {
           <FormControl isRequired>
             <FormLabel htmlFor="confirmPassword">Confirmez le mot de passe</FormLabel>
             <InputGroup>
-              <Input 
-                _focus={{ borderColor: "#745FF2", boxShadow: "none" }} 
-                className='neue-down' 
-                id="confirmPassword" 
+              <Input
+                _focus={{ borderColor: "#745FF2", boxShadow: "none" }}
+                className='neue-down'
+                id="confirmPassword"
                 type={showConfirmPassword ? "text" : "password"}
-                value={confirmPassword} 
-                onChange={(e) => setConfirmPassword(e.target.value)} 
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
               />
               <InputRightElement width="4.5rem">
                 <IconButton
