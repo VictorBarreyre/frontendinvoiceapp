@@ -152,7 +152,7 @@ const Profil = () => {
               Mettre les informations à jour
             </Button>
 
-            <Chakralink onClick={onOpen} color='red !important' mt="3rem"  >
+            <Chakralink textAlign={{ base: 'center', lg: 'unset' }}  onClick={onOpen} color='red !important' mt="3rem"  >
               Supprimer mon compte
             </Chakralink>
 

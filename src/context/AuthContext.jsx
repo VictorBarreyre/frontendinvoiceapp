@@ -116,24 +116,25 @@ export const AuthProvider = ({ children }) => {
   
   const deleteAccount = async (password) => {
     try {
-        const response = await axios.delete(`/api/users/${user._id}`, {
-            headers: {
-                'Authorization': `Bearer ${user.token}` // Assurez-vous que l'authentification est correctement gérée
-            },
-            data: { password } // Ajoutez le mot de passe au corps de la requête
-        });
-
-        if (response.status !== 200) {
-            throw new Error('Could not delete the account.');
-        }
-
-        // Log out user after account deletion
-        logout();
+      const response = await axios.delete(`http://localhost:8000/api/users/${user._id}`, {
+        headers: {
+          'Authorization': `Bearer ${user.token}` // Assurez-vous que l'authentification est correctement gérée
+        },
+        data: { password } // Ajoutez le mot de passe au corps de la requête
+      });
+  
+      if (response.status !== 200) {
+        throw new Error('Could not delete the account.');
+      }
+  
+      // Log out user after account deletion
+      logout();
     } catch (error) {
-        console.error('Failed to delete account:', error);
-        throw error;
+      console.error('Failed to delete account:', error);
+      throw error;
     }
-};
+  };
+  
 
   return (
     <AuthContext.Provider value={{ user, setUser, login, logout, updateUserProfile, deleteAccount, fetchUserInvoices }}>
