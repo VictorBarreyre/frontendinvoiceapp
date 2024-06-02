@@ -1,3 +1,4 @@
+// Profil.jsx
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../src/context/AuthContext';
 import {
@@ -23,13 +24,15 @@ import {
   Input as ChakraInput,
   Link as Chakralink,
 } from '@chakra-ui/react';
-import { EditIcon } from '@chakra-ui/icons';
+import { EditIcon, ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { Link } from 'react-router-dom';
 
 const Profil = () => {
   const { user, updateUserProfile, deleteAccount } = useAuth();
   const [error, setError] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false); // État pour gérer la visibilité du mot de passe
+  const [passwordError, setPasswordError] = useState('');
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = React.useRef();
 
@@ -75,8 +78,17 @@ const Profil = () => {
     console.log(userData);
   };
 
-  const handleDeleteClick = () => {
-    deleteAccount(password);
+  const handleDeleteClick = async () => {
+    try {
+      await deleteAccount(password);
+      onClose();
+    } catch (error) {
+      setPasswordError('Mot de passe incorrect.');
+    }
+  };
+
+  const handlePasswordVisibility = () => {
+    setShowPassword(!showPassword);
   };
 
   if (!user) {
@@ -159,7 +171,29 @@ const Profil = () => {
                     Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.
                     <FormControl mt={4}>
                       <FormLabel>Mot de passe</FormLabel>
-                      <ChakraInput type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+                      <InputGroup>
+                        <ChakraInput
+                          className='neue-down'
+                          type={showPassword ? "text" : "password"}
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                        />
+                        <InputRightElement width="4.5rem">
+                          <IconButton
+                            background='none'
+                            h="2rem"
+                            size="lg"
+                            onClick={handlePasswordVisibility}
+                            icon={showPassword ? <ViewOffIcon /> : <ViewIcon />}
+                            sx={{
+                              _hover: { background: 'none', boxShadow: 'none', transform: 'none' },
+                              _active: { background: 'none', boxShadow: 'none', transform: 'none' },
+                              _focus: { boxShadow: 'none' }
+                            }}
+                          />
+                        </InputRightElement>
+                      </InputGroup>
+                      {passwordError && <Text color="red.500" mt={2}>{passwordError}</Text>}
                     </FormControl>
                   </AlertDialogBody>
 
