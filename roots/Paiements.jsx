@@ -142,7 +142,7 @@ const Paiements = () => {
         <div className="tabs-container">
           <Flex direction='column'>
             <Heading pb='1rem' mb={{ base: '0rem', lg: '2rem' }} borderBottom={{ base: 'unset', lg: '2px solid #efefef' }} fontSize={{ base: '22px', lg: '26px' }}>
-              Abonnement
+            Votre  Abonnement
             </Heading>
 
             {subscriptionStatus === 'Actif' ? (

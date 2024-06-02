@@ -197,7 +197,7 @@ display: none;
     width: 100vw;
     padding-left: 1rem;
     padding-right: 1rem;
-    padding-top: 2rem;
+    padding-top: 3rem;
     padding-bottom: 1.8rem ;
   }
 
@@ -216,7 +216,7 @@ display: none;
 
     .stepper-container {
       width: 100%;
-      margin-top: 4rem;
+      margin-top: 2rem;
       margin-bottom: 0;
       margin-left:0rem
     }
