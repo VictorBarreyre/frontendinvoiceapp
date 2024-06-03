@@ -87,7 +87,7 @@ function SignupForm() {
   };
 
   return (
-    <Box className='tabs-container' p={{ base: '2rem', md: '3rem' }} mt={{ base: '4rem', md: '7rem', lg: '7rem' }} mb={{ base: '0rem', md: '2rem', lg: '2rem' }} borderWidth="1px" w={{ base: 'unset', md: '35rem', lg: '35rem' }} mx="auto" h={{ base: '100vh', md: 'inherit' }}>
+    <Box className='tabs-container' p={{base: '2rem', md: '3rem'}} pt={{ base: '3rem'}} mt={{ base: '3rem', md: '7rem', lg: '7rem' }} mb={{ base: '0rem', md: '2rem', lg: '2rem' }} borderWidth="1px" w={{ base: '100%', md: '35rem', lg: '35rem' }} h={{ base: '100vh', md: 'inherit' }}>
       <Heading textAlign='center' mb='2rem' fontSize='26px'>Créez votre compte</Heading>
       <form onSubmit={handleSubmit}>
         <VStack spacing={4}>

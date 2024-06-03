@@ -1,4 +1,3 @@
-// Profil.jsx
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../src/context/AuthContext';
 import {
@@ -25,16 +24,18 @@ import {
   Link as Chakralink,
 } from '@chakra-ui/react';
 import { EditIcon, ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Profil = () => {
   const { user, updateUserProfile, deleteAccount } = useAuth();
   const [error, setError] = useState('');
   const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false); // État pour gérer la visibilité du mot de passe
+  const [showPassword, setShowPassword] = useState(false);
   const [passwordError, setPasswordError] = useState('');
+  const [accountDeleted, setAccountDeleted] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = React.useRef();
+  const navigate = useNavigate();
 
   const [userData, setUserData] = useState({
     _id: user ? user._id : '',
@@ -80,8 +81,11 @@ const Profil = () => {
 
   const handleDeleteClick = async () => {
     try {
-      await deleteAccount(password);
-      onClose();
+      const success = await deleteAccount(password);
+      if (success) {
+        setAccountDeleted(true);
+        setTimeout(() => navigate('/'), 3000); // Redirige après 3 secondes
+      }
     } catch (error) {
       setPasswordError('Mot de passe incorrect.');
     }
@@ -90,6 +94,23 @@ const Profil = () => {
   const handlePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
+
+  if (accountDeleted) {
+    return (
+      <div className='flex-stepper'>
+        <div className="stepper-container">
+          <div className="tabs-container">
+            <Heading fontSize={{ base: '24px', lg: '26px' }}>Compte supprimé avec succès!</Heading>
+            <Text>Votre compte a été supprimé avec succès.</Text>
+            <Text>Vous serez redirigé vers la page d'accueil sous peu.</Text>
+            <Flex mt='2rem' w='fit-content' direction='column'>
+              <Link to="/">Retour à la page d'accueil</Link>
+            </Flex>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (!user) {
     return <div>Veuillez vous connecter pour voir le profil.</div>;
@@ -152,7 +173,7 @@ const Profil = () => {
               Mettre les informations à jour
             </Button>
 
-            <Chakralink textAlign={{ base: 'center', lg: 'unset' }}  onClick={onOpen} color='red !important' mt="3rem"  >
+            <Chakralink textAlign={{ base: 'center', lg: 'unset' }} onClick={onOpen} color='red !important' mt="3rem">
               Supprimer mon compte
             </Chakralink>
 
@@ -188,27 +209,30 @@ const Profil = () => {
                             sx={{
                               _hover: { background: 'none', boxShadow: 'none', transform: 'none' },
                               _active: { background: 'none', boxShadow: 'none', transform: 'none' },
-                              _focus: { boxShadow: 'none' }
+                              _focus: { color: '#745FF2', boxShadow: 'none' }
                             }}
                           />
                         </InputRightElement>
                       </InputGroup>
-                      {passwordError && <Text color="red.500" mt={2}>{passwordError}</Text>}
+                      {passwordError && (
+                        <Text color="red.500" mt="2">
+                          {passwordError}
+                        </Text>
+                      )}
                     </FormControl>
                   </AlertDialogBody>
 
-                  <AlertDialogFooter >
-                    <Button w={{ base: '100%', lg: '50%' }} color='black' borderRadius='30px' pt='12px' pb='12px' pl='24px' pr='24px'  mt="4" colorScheme="gray"  ref={cancelRef} onClick={onClose}>
+                  <AlertDialogFooter>
+                    <Button ref={cancelRef} onClick={onClose}>
                       Annuler
                     </Button>
-                    <Button w={{ base: '100%', lg: '50%' }} color='white' borderRadius='30px' pt='12px' pb='12px' pl='24px' pr='24px' backgroundColor='red' mt="4" colorScheme="gray" onClick={handleDeleteClick} ml={3}>
+                    <Button colorScheme="red" onClick={handleDeleteClick} ml={3}>
                       Supprimer
                     </Button>
                   </AlertDialogFooter>
                 </AlertDialogContent>
               </AlertDialogOverlay>
             </AlertDialog>
-
           </Flex>
         </div>
       </div>

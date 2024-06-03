@@ -1,4 +1,3 @@
-
 /* CSS pour cacher l'icône de calendrier par défaut et styliser l'input */
 .custom-date-input::-webkit-calendar-picker-indicator {
   display: none;
@@ -28,7 +27,8 @@
 .classicinput:focus {
   border: 1px solid #745FF2;
   outline: none !important;
-  border-color:#745FF2 !important; /* Ajoute une bordure rouge lors du focus */
+  border-color: #745FF2 !important;
+  /* Ajoute une bordure rouge lors du focus */
 }
 
 .emptyinput {
@@ -37,7 +37,7 @@
 }
 
 .emptyinput::placeholder {
-  color:red;
+  color: red;
   /* Nouvelle couleur du texte du placeholder */
 }
 
@@ -51,7 +51,7 @@
   text-transform: uppercase;
   color: #4a5568;
   font-size: 13px;
-  font-weight:900;
+  font-weight: 900;
   letter-spacing: 0.1em;
 }
 
@@ -70,11 +70,11 @@
 
 .neue-up {
   background-color: #fdfdfd;
-  box-shadow: rgba(174, 174, 192, 0.4) 1.5px 1.5px 3px 0px, rgb(247 249 252) -1px -1px 3px 0px
-  ;
+  box-shadow: rgba(174, 174, 192, 0.4) 1.5px 1.5px 3px 0px, rgb(247 249 252) -1px -1px 3px 0px;
 }
 
-.neue-down.neue-down, .neue-down.neue-down[readonly] {
+.neue-down.neue-down,
+.neue-down.neue-down[readonly] {
   height: 2.5rem !important;
   padding: 1rem !important;
   border-radius: 5px !important;
@@ -137,11 +137,11 @@
   box-shadow: rgba(174, 174, 192, 0.4) 1.5px 1.5px 3px 0px, rgb(247 249 252) -1px -1px 3px 0px
 }
 
-.dashboard{
+.dashboard {
   display: flex;
 }
 
-.sidebar{
+.sidebar {
   border-radius: 1vw;
   align-items: flex-start;
   background-color: white;
@@ -149,11 +149,11 @@
   height: 69.7vh;
   margin-left: 2rem;
   margin-top: 7rem;
-  width: 15vw; 
+  width: 15vw;
   justify-content: space-between;
 }
 
-.tab-list-dashboard{
+.tab-list-dashboard {
   width: 100%;
   align-items: left;
   padding-top: 2rem;
@@ -161,20 +161,24 @@
 
 }
 
-.content-dashboard{
+.content-dashboard {
   margin-top: 7rem;
   margin-left: 3rem;
 }
 
 .tab .icon {
-  width: 20px; /* Ajustez la taille selon vos besoins */
-  height: 20px; /* Ajustez la taille selon vos besoins */
-  margin-right: 10px; /* Espace entre l'icône et le texte */
-  vertical-align: middle; /* Pour aligner verticalement l'icône avec le texte */
+  width: 20px;
+  /* Ajustez la taille selon vos besoins */
+  height: 20px;
+  /* Ajustez la taille selon vos besoins */
+  margin-right: 10px;
+  /* Espace entre l'icône et le texte */
+  vertical-align: middle;
+  /* Pour aligner verticalement l'icône avec le texte */
 }
 
 
-.tab-panel{
+.tab-panel {
   margin-bottom: 2rem;
 }
 
@@ -189,8 +193,8 @@
 /* Smartphones en portrait */
 @media only screen and (max-width: 600px) {
 
-  .sidebar{
-display: none;
+  .sidebar {
+    display: none;
   }
 
   .tabs-container {
@@ -198,33 +202,33 @@ display: none;
     padding-left: 1rem;
     padding-right: 1rem;
     padding-top: 3rem;
-    padding-bottom: 1.8rem ;
+    padding-bottom: 1.8rem;
   }
 
-  .tab-list{
+  .tab-list {
     justify-content: space-between;
     margin-bottom: 1.2rem !important;
   }
 
-  .tab.active{
+  .tab.active {
     margin-right: 0rem;
   }
 
-  .disabled{
+  .disabled {
     margin-right: 0rem !important;
   }
 
-    .stepper-container {
-      width: 100%;
-      margin-top: 2rem;
-      margin-bottom: 0;
-      margin-left:0rem
-    }
+  .stepper-container {
+    width: 100%;
+    margin-top: 3rem;
+    margin-bottom: 0;
+    margin-left: 0rem
+  }
 
 
-.tab-panel{
-  margin-bottom: 0rem;
-}
+  .tab-panel {
+    margin-bottom: 0rem;
+  }
 }
 
 
