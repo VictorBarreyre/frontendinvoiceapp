@@ -53,25 +53,32 @@ const Abo = () => {
 
   useEffect(() => {
     const fetchClientSecret = async () => {
-      if (isCheckoutSessionCreated) return;
-      setIsCheckoutSessionCreated(true);
-      try {
-        const onSuccess = (clientSecret) => {
-          setClientSecret(clientSecret);
-        };
-        const onError = () => {
-          console.error('Error creating checkout session');
-        };
-        const selectedPriceId = selectedPlan === 'monthly' ? product.prices.find(price => price.recurring?.interval === 'month').id : product.prices.find(price => price.recurring?.interval === 'year').id;
-        await createCheckoutSession(invoiceData.issuer.email, invoiceData.issuer.name, selectedPriceId, onSuccess, onError);
-      } catch (error) {
-        console.error('Error creating checkout session:', error);
-      }
+        if (isCheckoutSessionCreated) return;
+        setIsCheckoutSessionCreated(true);
+
+        try {
+            const selectedPriceId = selectedPlan === 'monthly' 
+                ? product.prices.find(price => price.recurring?.interval === 'month').id 
+                : product.prices.find(price => price.recurring?.interval === 'year').id;
+            
+            await createCheckoutSession(
+                invoiceData.issuer.email, 
+                invoiceData.issuer.name, 
+                selectedPriceId, 
+                (clientSecret) => setClientSecret(clientSecret), 
+                (error) => console.error('Error creating checkout session', error)
+            );
+        } catch (error) {
+            console.error('Error creating checkout session:', error);
+        }
     };
+
     if (product && !clientSecret) {
-      fetchClientSecret();
+        fetchClientSecret();
     }
-  }, [createCheckoutSession, product, invoiceData.issuer.email, invoiceData.issuer.name, selectedPlan]);
+}, [createCheckoutSession, product, invoiceData.issuer.email, invoiceData.issuer.name, selectedPlan, clientSecret, isCheckoutSessionCreated]);
+
+  
 
   if (loading) {
     return (
@@ -143,7 +150,7 @@ const Abo = () => {
                 <Heading size="sm">Vos informations</Heading>
                 {clientSecret ? (
                   <Elements stripe={stripePromise} options={{ clientSecret, appearance: stripeAppearance }}>
-                    <SubscribeForm clientSecret={clientSecret} setClientSecret={setClientSecret} selectedPriceId={selectedPriceId} />
+                    <SubscribeForm clientSecret={clientSecret} selectedPriceId={selectedPriceId} />
                   </Elements>
                 ) : (
                   <p>Loading...</p>

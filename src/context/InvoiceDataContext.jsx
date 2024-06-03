@@ -118,28 +118,28 @@ export const InvoiceDataProvider = ({ children }) => {
 
     const createCheckoutSession = async (email, name, priceId, onSuccess, onError) => {
         try {
-            const response = await axios.post(`${baseUrl}/abonnement/create-checkout-session`, {
-                email,
-                name,
-                priceId
-            }, {
-                headers: { 'Content-Type': 'application/json' }
-            });
-    
-            const { clientSecret, sessionId } = response.data;
-            if (clientSecret) {
-                onSuccess(clientSecret);
-            } else {
-                console.error('No clientSecret returned from backend.');
-                onError('No clientSecret returned from backend.');
-            }
+          const response = await axios.post(`${baseUrl}/abonnement/create-checkout-session`, {
+            email,
+            name,
+            priceId
+          }, {
+            headers: { 'Content-Type': 'application/json' }
+          });
+      
+          const { clientSecret, sessionId } = response.data;
+          if (clientSecret) {
+            onSuccess(clientSecret);
+          } else {
+            console.error('No clientSecret returned from backend.');
+            onError('No clientSecret returned from backend.');
+          }
         } catch (error) {
-            console.error('Error creating checkout session:', error);
-            onError(error.response?.data?.error?.message || error.message);
+          console.error('Error creating checkout session:', error);
+          onError(error.response?.data?.error?.message || error.message);
         }
-    };
-    
-
+      };
+      
+      
     
     const handleSendInvoice = () => {
         const { email, name } = invoiceData.issuer;

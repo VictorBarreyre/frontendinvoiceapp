@@ -3,10 +3,10 @@ import { PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js'
 import { Button, Box, Input, Flex, Alert, AlertIcon } from '@chakra-ui/react';
 import { useInvoiceData } from '../context/InvoiceDataContext';
 
-const SubscribeForm = ({ clientSecret, setClientSecret, selectedPriceId }) => {
+const SubscribeForm = ({ clientSecret }) => {
   const stripe = useStripe();
   const elements = useElements();
-  const { invoiceData, createSubscription } = useInvoiceData();
+  const { invoiceData } = useInvoiceData();
   const [email, setEmail] = useState(invoiceData.issuer.email);
   const [name, setName] = useState(invoiceData.issuer.name);
   const [address, setAddress] = useState(invoiceData.issuer.adresse);
@@ -29,22 +29,12 @@ const SubscribeForm = ({ clientSecret, setClientSecret, selectedPriceId }) => {
       return;
     }
 
-    const onSuccess = (clientSecret) => {
-      setClientSecret(clientSecret);
-    };
-    const onError = (errorMessage) => {
-      console.error('Error creating subscription:', errorMessage);
-      setError(errorMessage);
-    };
-
-    await createSubscription(invoiceData.issuer.email, selectedPriceId, onSuccess, onError);
-
     if (error) return;
 
     const result = await stripe.confirmPayment({
       elements,
       confirmParams: { return_url: `${window.location.origin}/success` },
-      clientSecret
+      clientSecret,
     });
 
     if (result.error) {
