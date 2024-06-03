@@ -53,30 +53,43 @@ const Abo = () => {
 
   useEffect(() => {
     const fetchClientSecret = async () => {
+        // Évitez de refaire la requête si elle a déjà été faite pour le plan courant
         if (isCheckoutSessionCreated) return;
+
+        // Identifier le `priceId` en fonction du plan sélectionné
+        const selectedPriceId = selectedPlan === 'monthly' 
+            ? product.prices.find(price => price.recurring?.interval === 'month').id 
+            : product.prices.find(price => price.recurring?.interval === 'year').id;
+
+        // Marquer que la requête est en cours pour éviter des appels redondants
         setIsCheckoutSessionCreated(true);
 
         try {
-            const selectedPriceId = selectedPlan === 'monthly' 
-                ? product.prices.find(price => price.recurring?.interval === 'month').id 
-                : product.prices.find(price => price.recurring?.interval === 'year').id;
-            
             await createCheckoutSession(
                 invoiceData.issuer.email, 
                 invoiceData.issuer.name, 
-                selectedPriceId, 
-                (clientSecret) => setClientSecret(clientSecret), 
-                (error) => console.error('Error creating checkout session', error)
+                selectedPriceId,
+                (clientSecret) => {
+                    setClientSecret(clientSecret);  // Mettre à jour le clientSecret avec la nouvelle valeur
+                },
+                (error) => {
+                    console.error('Error creating checkout session', error);
+                }
             );
         } catch (error) {
             console.error('Error creating checkout session:', error);
         }
     };
 
+    // Appeler `fetchClientSecret` si un produit est chargé et qu'aucun clientSecret n'est actuellement stocké
+    // ou après la mise à jour de la sélection du plan.
     if (product && !clientSecret) {
         fetchClientSecret();
     }
-}, [createCheckoutSession, product, invoiceData.issuer.email, invoiceData.issuer.name, selectedPlan, clientSecret, isCheckoutSessionCreated]);
+
+    // Réinitialiser `isCheckoutSessionCreated` chaque fois que le plan change pour permettre un nouveau fetch
+    return () => setIsCheckoutSessionCreated(false);
+}, [createCheckoutSession, product, invoiceData.issuer.email, invoiceData.issuer.name, selectedPlan, clientSecret]);
 
   
 
@@ -157,49 +170,113 @@ const Abo = () => {
                 )}
               </Flex>
               <Flex direction='column' w={{ base: '100%', lg: '45%' }} mb={{ base: '3rem', lg: 'unset' }} justify="center" gap='15px'>
-                <Heading size="sm">Votre abonnement premium</Heading>
-                <Accordion allowToggle defaultIndex={[0]}>
-                  <AccordionItem borderRadius="md" borderWidth="1px" borderColor="gray.200" p='1rem'>
-                    <AccordionButton onClick={() => setSelectedPlan('monthly')}>
-                      <Box flex="1" textAlign="left" fontWeight="semibold" fontSize="xl">
-                        {product.name} (Monthly)
-                      </Box>
-                      <AccordionIcon />
-                    </AccordionButton>
-                    <AccordionPanel pb={4}>
-                      <List spacing={3}>
-                        {product.features.map((feature, index) => (
-                          <ListItem key={index}>
-                            <ListIcon as={CheckIcon} color="green.500" />
-                            {feature}
-                          </ListItem>
-                        ))}
-                      </List>
-                      <Text fontWeight="bold" mt="1rem">{monthlyPrice.unit_amount / 100} {monthlyPrice.currency.toUpperCase()} / month</Text>
-                    </AccordionPanel>
-                  </AccordionItem>
-                  <AccordionItem borderRadius="md" borderWidth="1px" borderColor="gray.200" p='1rem'>
-                    <AccordionButton onClick={() => setSelectedPlan('yearly')}>
-                      <Box flex="1" textAlign="left" fontWeight="semibold" fontSize="xl">
-                        {product.name} (Yearly)
-                      </Box>
-                      <AccordionIcon />
-                    </AccordionButton>
-                    <AccordionPanel pb={4}>
-                      <List spacing={3}>
-                        {product.features.map((feature, index) => (
-                          <ListItem key={index}>
-                            <ListIcon as={CheckIcon} color="green.500" />
-                            {feature}
-                          </ListItem>
-                        ))}
-                      </List>
-                      <Text fontWeight="bold" mt="1rem">{yearlyPrice.unit_amount / 100} {yearlyPrice.currency.toUpperCase()} / year</Text>
-                    </AccordionPanel>
-                  </AccordionItem>
-                </Accordion>
-              </Flex>
-            </Flex>
+                                <Heading size="sm">Votre abonnement premium</Heading>
+                                <Accordion allowToggle>
+                                    {monthlyPrice && (
+                                        <AccordionItem
+                                            w='100%'
+                                            className='neue-up'
+                                            borderWidth="1px"
+                                            backgroundColor='#fdfdfd'
+                                            borderColor={selectedPlan === 'yearly' ? 'inherit' : '#745FF2'}
+                                            borderRadius="lg"
+                                            overflow="hidden"
+                                            pt='0.5rem'
+                                            pb='0.5rem'
+                                            pr='1rem'
+                                            opacity={selectedPlan === 'yearly' ? 0.6 : 1}
+                                            onClick={() => setSelectedPlan('monthly')}
+                                            cursor="pointer"
+                                        >
+                                            <AccordionButton _hover={{ boxShadow: 'none' }} onClick={() => setSelectedPlan('monthly')}>
+                                                <Flex alignItems='center' w='100%' gap='15px'>
+                                                    <CheckCircleIcon color='white' backgroundColor={selectedPlan === 'yearly' ? 'white' : '#745FF2'} borderColor='#745FF2' borderRadius='100px' borderWidth='1px' />
+                                                    <Box flex="1" textAlign="left">
+                                                        <Heading color={selectedPlan === 'yearly' ? 'inherit' : '#745FF2'} fontSize="md" mb='0.5rem'>Paiement mensuel</Heading>
+                                                        <Heading size="sm">
+                                                            {monthlyPrice.unit_amount / 100} {invoiceData.devise} / Mois
+                                                        </Heading>
+                                                        <Text color='' fontSize="14px">
+                                                            Premier mois gratuit
+                                                        </Text>
+                                                    </Box>
+                                                    <AccordionIcon />
+                                                </Flex>
+                                            </AccordionButton>
+                                            <AccordionPanel pb={4}>
+                                                <List pt='1.5rem' borderTopWidth='1px' spacing={3}>
+                                                    <ListItem>
+                                                        <ListIcon as={CheckIcon} color='#745FF2' />
+                                                        {product.description}
+                                                    </ListItem>
+                                                    <ListItem>
+                                                        <ListIcon as={CheckIcon} color='#745FF2' />
+                                                        Assumenda, quia temporibus eveniet a libero incidunt suscipit
+                                                    </ListItem>
+                                                    <ListItem>
+                                                        <ListIcon as={CheckIcon} color='#745FF2' />
+                                                        Quidem, ipsam illum quis sed voluptatum quae eum fugit earum
+                                                    </ListItem>
+                                                </List>
+                                            </AccordionPanel>
+                                        </AccordionItem>
+                                    )}
+                                </Accordion>
+
+                                <Accordion allowToggle>
+                                    {yearlyPrice && (
+                                        <AccordionItem
+                                            w='100%'
+                                            className='neue-up'
+                                            borderWidth="1px"
+                                            backgroundColor='#fdfdfd'
+                                            borderColor={selectedPlan === 'monthly' ? 'inherit' : '#745FF2'}
+                                            borderRadius="lg"
+                                            overflow="hidden"
+                                            pt='0.5rem'
+                                            pb='0.5rem'
+                                            pr='1rem'
+                                            opacity={selectedPlan === 'monthly' ? 0.6 : 1}
+                                            onClick={() => setSelectedPlan('yearly')}
+                                            cursor="pointer"
+                                        >
+                                            <AccordionButton _hover={{ boxShadow: 'none' }} onClick={() => setSelectedPlan('yearly')}>
+                                                <Flex alignItems='center' w='100%' gap='20px'>
+                                                    <CheckCircleIcon color='white' backgroundColor={selectedPlan === 'monthly' ? 'white' : '#745FF2'} borderColor='#745FF2' borderRadius='100px' borderWidth='1px' />
+                                                    <Box flex="1" textAlign="left">
+                                                        <Heading color={selectedPlan === 'monthly' ? 'inherit' : '#745FF2'} fontSize="md" mb='0.5rem'>Paiement annuel</Heading>
+                                                        <Heading size="sm">
+                                                            {yearlyPrice.unit_amount / 100} {invoiceData.devise} / An
+                                                        </Heading>
+                                                        <Text fontSize="14px">
+                                                            Deux mois gratuits
+                                                        </Text>
+                                                    </Box>
+                                                    <AccordionIcon />
+                                                </Flex>
+                                            </AccordionButton>
+                                            <AccordionPanel pb={4}>
+                                                <List pt='1.5rem' borderTopWidth='1px' spacing={3}>
+                                                    <ListItem>
+                                                        <ListIcon as={CheckIcon} color='#745FF2' />
+                                                        {product.description}
+                                                    </ListItem>
+                                                    <ListItem>
+                                                        <ListIcon as={CheckIcon} color='#745FF2' />
+                                                        Assumenda, quia temporibus eveniet a libero incidunt suscipit
+                                                    </ListItem>
+                                                    <ListItem>
+                                                        <ListIcon as={CheckIcon} color='#745FF2' />
+                                                        Quidem, ipsam illum quis sed voluptatum quae eum fugit earum
+                                                    </ListItem>
+                                                </List>
+                                            </AccordionPanel>
+                                        </AccordionItem>
+                                    )}
+                                </Accordion>
+                                <Text color='#4A5568' fontSize="14px"> En continuant, vous acceptez <Link color='#745FF2'> nos termes et conditions.</Link></Text>
+                            </Flex>
+                        </Flex>
           </Flex>
         </div>
       </div>
