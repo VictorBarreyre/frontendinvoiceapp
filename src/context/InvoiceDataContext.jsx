@@ -115,18 +115,20 @@ export const InvoiceDataProvider = ({ children }) => {
         return /\S+@\S+\.\S+/.test(email);
     };
 
-    const createCheckoutSession = async (email, name, onSuccess, onError) => {
+
+    const createCheckoutSession = async (email, name, priceId, onSuccess, onError) => {
         try {
             const response = await axios.post(`${baseUrl}/abonnement/create-checkout-session`, {
                 email,
-                name
+                name,
+                priceId
             }, {
                 headers: { 'Content-Type': 'application/json' }
             });
-
+    
             const { clientSecret, sessionId } = response.data;
             if (clientSecret) {
-                onSuccess(clientSecret, sessionId);
+                onSuccess(clientSecret);
             } else {
                 console.error('No clientSecret returned from backend.');
                 onError('No clientSecret returned from backend.');
@@ -136,7 +138,9 @@ export const InvoiceDataProvider = ({ children }) => {
             onError(error.response?.data?.error?.message || error.message);
         }
     };
+    
 
+    
     const handleSendInvoice = () => {
         const { email, name } = invoiceData.issuer;
         if (!email || !name) {
@@ -144,16 +148,15 @@ export const InvoiceDataProvider = ({ children }) => {
             setShowError(true);
             return;
         }
-        createCheckoutSession(email, name, (clientSecret, sessionId) => {
-            console.log(`Checkout session created: ${clientSecret}`);
-            console.log(`Session ID: ${sessionId}`);
+        createCheckoutSession(email, name, (sessionId) => {
+            console.log(`Checkout session created: ${sessionId}`);
             onSuccess();
         }, (errorMessage) => {
             console.error("Error during checkout creation:", errorMessage);
             setShowError(true);
         });
     };
-
+    
     const createSubscription = async (email, priceId, onSuccess, onError) => {
         try {
             const response = await axios.post(`${baseUrl}/abonnement/create-subscription`, {
@@ -162,19 +165,19 @@ export const InvoiceDataProvider = ({ children }) => {
             }, {
                 headers: { 'Content-Type': 'application/json' }
             });
-
+    
             const { clientSecret } = response.data;
             if (clientSecret) {
                 // Vérifiez si l'utilisateur existe avant de le créer
                 const userResponse = await axios.post(`${baseUrl}/api/users/check`, { email }, {
                     headers: { 'Content-Type': 'application/json' }
                 });
-
+    
                 const { exists } = userResponse.data;
                 if (!exists) {
                     // Générer un mot de passe aléatoire
                     const randomPassword = Math.random().toString(36).slice(-8);
-
+    
                     // Appeler la fonction signupUser pour créer l'utilisateur
                     const signupResponse = await axios.post(`${baseUrl}/api/users/signup`, {
                         email,
@@ -183,7 +186,7 @@ export const InvoiceDataProvider = ({ children }) => {
                     }, {
                         headers: { 'Content-Type': 'application/json' }
                     });
-
+    
                     if (!signupResponse.status === 201) {
                         const signupErrorResponse = signupResponse.data;
                         console.error('Error signing up user:', signupErrorResponse);
@@ -191,7 +194,7 @@ export const InvoiceDataProvider = ({ children }) => {
                         return;
                     }
                 }
-
+    
                 onSuccess(clientSecret);
             } else {
                 console.error('No clientSecret returned from backend.');
@@ -202,6 +205,8 @@ export const InvoiceDataProvider = ({ children }) => {
             onError(error.response?.data?.error?.message || error.message);
         }
     };
+    
+    
 
     const checkActiveSubscription = async (email) => {
         try {
