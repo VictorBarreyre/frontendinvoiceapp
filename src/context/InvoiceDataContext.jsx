@@ -257,7 +257,6 @@ export const InvoiceDataProvider = ({ children }) => {
             handleInvoiceActionSendMail,
             getClassForField,
             createCheckoutSession,
-            createSubscription,
             sendButtonClicked,
             setSendButtonClicked,
             checkActiveSubscription
