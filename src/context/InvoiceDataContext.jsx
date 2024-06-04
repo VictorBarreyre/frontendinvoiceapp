@@ -118,28 +118,32 @@ export const InvoiceDataProvider = ({ children }) => {
 
     const createCheckoutSession = async (email, name, priceId, onSuccess, onError) => {
         try {
-          const response = await axios.post(`${baseUrl}/abonnement/create-checkout-session`, {
-            email,
-            name,
-            priceId
-          }, {
-            headers: { 'Content-Type': 'application/json' }
-          });
-      
-          const { clientSecret, sessionId } = response.data;
-          if (clientSecret) {
-            onSuccess(clientSecret);
-          } else {
-            console.error('No clientSecret returned from backend.');
-            onError('No clientSecret returned from backend.');
-          }
+            const response = await fetch(`${baseUrl}/abonnement/create-checkout-session`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, name, priceId }),
+            });
+    
+            if (!response.ok) {
+                const errorResponse = await response.json();
+                console.error('Error creating checkout session:', errorResponse);
+                onError(errorResponse.error.message);
+                return;
+            }
+    
+            const { clientSecret, sessionId } = await response.json();
+            if (clientSecret) {
+                onSuccess(clientSecret, sessionId);
+            } else {
+                console.error('No clientSecret returned from backend.');
+                onError('No clientSecret returned from backend.');
+            }
         } catch (error) {
-          console.error('Error creating checkout session:', error);
-          onError(error.response?.data?.error?.message || error.message);
+            console.error('Error creating checkout session:', error);
+            onError(error.message);
         }
-      };
-      
-      
+    };
+    
     
     const handleSendInvoice = () => {
         const { email, name } = invoiceData.issuer;
