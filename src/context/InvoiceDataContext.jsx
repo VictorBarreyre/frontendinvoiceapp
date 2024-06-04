@@ -161,56 +161,6 @@ export const InvoiceDataProvider = ({ children }) => {
         });
     };
     
-    const createSubscription = async (email, priceId, onSuccess, onError) => {
-        try {
-            const response = await axios.post(`${baseUrl}/abonnement/create-subscription`, {
-                email,
-                priceId
-            }, {
-                headers: { 'Content-Type': 'application/json' }
-            });
-    
-            const { clientSecret } = response.data;
-            if (clientSecret) {
-                // Vérifiez si l'utilisateur existe avant de le créer
-                const userResponse = await axios.post(`${baseUrl}/api/users/check`, { email }, {
-                    headers: { 'Content-Type': 'application/json' }
-                });
-    
-                const { exists } = userResponse.data;
-                if (!exists) {
-                    // Générer un mot de passe aléatoire
-                    const randomPassword = Math.random().toString(36).slice(-8);
-    
-                    // Appeler la fonction signupUser pour créer l'utilisateur
-                    const signupResponse = await axios.post(`${baseUrl}/api/users/signup`, {
-                        email,
-                        password: randomPassword,
-                        name: 'Utilisateur'
-                    }, {
-                        headers: { 'Content-Type': 'application/json' }
-                    });
-    
-                    if (!signupResponse.status === 201) {
-                        const signupErrorResponse = signupResponse.data;
-                        console.error('Error signing up user:', signupErrorResponse);
-                        onError(signupErrorResponse.message);
-                        return;
-                    }
-                }
-    
-                onSuccess(clientSecret);
-            } else {
-                console.error('No clientSecret returned from backend.');
-                onError('No clientSecret returned from backend.');
-            }
-        } catch (error) {
-            console.error('Error creating subscription:', error.message);
-            onError(error.response?.data?.error?.message || error.message);
-        }
-    };
-    
-    
 
     const checkActiveSubscription = async (email) => {
         try {
