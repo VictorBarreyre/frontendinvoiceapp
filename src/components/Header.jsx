@@ -19,18 +19,21 @@ import { Link as RouterLink } from 'react-router-dom';
 import { HamburgerIcon } from '@chakra-ui/icons';
 import AccountButton from '../componentslittle/AccountButton';
 import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const buttonSize = useBreakpointValue({ base: 'sm', md: 'md' });
   const { user, logout } = useAuth();
   const [isMobile] = useMediaQuery("(max-width: 1060px)");
+  const navigate = useNavigate();
 
   const toggleDrawer = () => setIsOpen(!isOpen);
 
   const handleLogout = () => {
     logout();
     toggleDrawer();
+    navigate('/');
   };
 
   return (
