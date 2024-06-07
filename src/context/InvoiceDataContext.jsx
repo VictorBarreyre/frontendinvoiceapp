@@ -127,21 +127,21 @@ export const InvoiceDataProvider = ({ children }) => {
             if (!response.ok) {
                 const errorResponse = await response.json();
                 console.error('Error creating checkout session:', errorResponse);
-                onError(errorResponse.error.message);
+                if (onError) onError(errorResponse.error.message);
                 return;
             }
     
             const { clientSecret, sessionId } = await response.json();
-            if (clientSecret) {
-                onSuccess(clientSecret, sessionId);
-            } else {
-                console.error('No clientSecret returned from backend.');
-                onError('No clientSecret returned from backend.');
-            }
-        } catch (error) {
-            console.error('Error creating checkout session:', error);
-            onError(error.message);
+        if (clientSecret) {
+            if (onSuccess) onSuccess(clientSecret, sessionId);
+        } else {
+            console.error('No clientSecret returned from backend.');
+            if (onError) onError('No clientSecret returned from backend.');
         }
+    } catch (error) {
+        console.error('Error creating checkout session:', error);
+        if (onError) onError(error.message);
+    }
     };
     
     

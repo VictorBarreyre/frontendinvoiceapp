@@ -223,10 +223,10 @@ const Profil = () => {
                   </AlertDialogBody>
 
                   <AlertDialogFooter>
-                    <Button ref={cancelRef} onClick={onClose}>
+                    <Button borderRadius='30px' ref={cancelRef} onClick={onClose}>
                       Annuler
                     </Button>
-                    <Button colorScheme="red" onClick={handleDeleteClick} ml={3}>
+                    <Button borderRadius='30px' colorScheme="red" onClick={handleDeleteClick} ml={3}>
                       Supprimer
                     </Button>
                   </AlertDialogFooter>

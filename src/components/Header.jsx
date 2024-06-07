@@ -1,5 +1,20 @@
 import React, { useState } from 'react';
-import { Flex, Box, Heading, Link, Button, useBreakpointValue, IconButton, Drawer, DrawerBody, DrawerHeader, DrawerOverlay, DrawerContent, DrawerCloseButton } from '@chakra-ui/react';
+import {
+  Flex,
+  Box,
+  Heading,
+  Link,
+  Button,
+  useBreakpointValue,
+  IconButton,
+  Drawer,
+  DrawerBody,
+  DrawerHeader,
+  DrawerOverlay,
+  DrawerContent,
+  DrawerCloseButton,
+  useMediaQuery
+} from '@chakra-ui/react';
 import { Link as RouterLink } from 'react-router-dom';
 import { HamburgerIcon } from '@chakra-ui/icons';
 import AccountButton from '../componentslittle/AccountButton';
@@ -9,6 +24,7 @@ const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const buttonSize = useBreakpointValue({ base: 'sm', md: 'md' });
   const { user, logout } = useAuth();
+  const [isMobile] = useMediaQuery("(max-width: 1060px)");
 
   const toggleDrawer = () => setIsOpen(!isOpen);
 
@@ -47,10 +63,10 @@ const Header = () => {
             aria-label="Open Menu"
             size="md"
             icon={<HamburgerIcon />}
-            display={{ sm: 'flex', md: 'none' }}
+            display={isMobile ? 'flex' : 'none'}
             onClick={toggleDrawer}
           />
-          <Flex display={{ base: 'none', md: 'flex' }} alignItems="center">
+          <Flex display={isMobile ? 'none' : 'flex'} alignItems="center">
             <AccountButton />
           </Flex>
           <Drawer isOpen={isOpen} placement="right" onClose={toggleDrawer}>

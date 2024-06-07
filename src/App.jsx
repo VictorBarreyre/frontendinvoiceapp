@@ -30,7 +30,7 @@ const stripePromise = loadStripe('pk_test_51OwLFM00KPylCGutjKAkwhqleWEzuvici1dQU
 
 function App() {
   const { user, setUser, logout } = useAuth();
-  const [isMobile] = useMediaQuery("(max-width: 768px)");
+  const [isMobile] = useMediaQuery("(max-width: 1060px)");
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
