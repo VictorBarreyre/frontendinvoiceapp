@@ -26,13 +26,13 @@ const stripePromise = loadStripe('pk_test_51OwLFM00KPylCGutjKAkwhqleWEzuvici1dQU
 
 const Paiements = () => {
   const { user } = useAuth();
-  const { checkActiveSubscription, createSubscription, baseUrl } = useInvoiceData();
+  const { checkActiveSubscription, createCheckoutSession, baseUrl } = useInvoiceData();
   const [subscriptionStatus, setSubscriptionStatus] = useState(null);
   const [loading, setLoading] = useState(true);
   const [clientSecret, setClientSecret] = useState('');
   const [product, setProduct] = useState(null);
   const [selectedPlan, setSelectedPlan] = useState('monthly');
-  const {invoiceData} = useInvoiceData()
+  const { invoiceData } = useInvoiceData();
 
   useEffect(() => {
     const fetchSubscriptionStatus = async () => {
@@ -72,20 +72,20 @@ const Paiements = () => {
         const onSuccess = (clientSecret) => {
           setClientSecret(clientSecret);
         };
-        const onError = () => {
-          console.error('Error creating subscription');
+        const onError = (error) => {
+          console.error('Error creating subscription:', error);
         };
 
         const selectedPriceId = selectedPlan === 'monthly' ? product.prices.find(price => price.recurring?.interval === 'month').id : product.prices.find(price => price.recurring?.interval === 'year').id;
         
-        await createSubscription(user.email, selectedPriceId, onSuccess, onError);
+        await createCheckoutSession(user.email, user.name, selectedPriceId, onSuccess, onError);
       } catch (error) {
         console.error('Error creating subscription:', error);
       }
     };
 
     fetchClientSecret();
-  }, [product, user, clientSecret, selectedPlan, createSubscription]);
+  }, [product, user, clientSecret, selectedPlan, createCheckoutSession]);
 
   if (loading) {
     return (

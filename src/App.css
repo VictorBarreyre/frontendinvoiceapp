@@ -120,13 +120,18 @@
 }
 
 
+.flex-stepper{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .stepper-container {
   display: flex;
   flex-direction: column;
   width: 90%;
   margin-top: 7rem;
   margin-bottom: 2rem;
-  margin-left: 3rem;
 }
 
 .tabs-container {
