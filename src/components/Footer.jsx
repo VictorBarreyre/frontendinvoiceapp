@@ -1,9 +1,10 @@
 import React from 'react';
-import { Box, Flex, Link, Text, useBreakpointValue } from '@chakra-ui/react';
+import { Box, Flex, Link, Text, useBreakpointValue,useMediaQuery } from '@chakra-ui/react';
 import { Link as RouterLink } from 'react-router-dom';
 
 const Footer = () => {
     const linkSize = useBreakpointValue({ base: 'sm', md: 'md' });
+    const [isMobile] = useMediaQuery("(max-width: 1060px)");
 
     return (
         <Box
@@ -17,27 +18,27 @@ const Footer = () => {
             color="black"
         >
             <Flex
-                direction={{ base: 'column', md: 'row' }}
+               direction={isMobile ? 'column' : 'row'}
                 align="center"
                 justify="space-between"
                 wrap="wrap"
                 margin="0 auto"
             >
-                <Flex align="center" mb={{ base: '2rem', md: '0' }}>
+                <Flex align="center" mb={isMobile ? '2rem' : '0'}>
                     <Text fontSize="lg" fontWeight="bold">
                         <Link color='black' as={RouterLink} to="/" _hover={{ textDecoration: 'none', color: 'black' }}>
                             dbill.io
                         </Link>
                     </Text>
                 </Flex>
-                <Flex direction={{ base: 'column', md: 'row' }} align="center">
-                    <Link as={RouterLink} to="/mentions-legales" mx="4" mb={{ base: '1rem', md: '0' }} color='black' fontSize={linkSize}>
+                <Flex direction={isMobile ? 'column' : 'row'} align="center">
+                    <Link as={RouterLink} to="/mentions-legales" mx="4" mb={isMobile ? '1rem' : '0'} color='black' fontSize={linkSize}>
                         Mentions légales
                     </Link>
-                    <Link as={RouterLink} to="/politique-de-confidentialite" mx="4" mb={{ base: '1rem', md: '0' }} color='black' fontSize={linkSize}>
+                    <Link as={RouterLink} to="/politique-de-confidentialite" mx="4" mb={isMobile ? '1rem' : '0'} color='black' fontSize={linkSize}>
                         Politique de confidentialité
                     </Link>
-                    <Link as={RouterLink} to="/conditions-generales" mx="4" mb={{ base: '1rem', md: '0' }} color='black' fontSize={linkSize}>
+                    <Link as={RouterLink} to="/conditions-generales" mx="4" mb={isMobile ? '1rem' : '0'} color='black' fontSize={linkSize}>
                         Conditions Générales d'Utilisation
                     </Link>
                     <Link as={RouterLink} to="/contact" mx="4" color='black' fontSize={linkSize}>
