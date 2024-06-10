@@ -25,6 +25,7 @@ import Footer from './components/Footer';
 import CGU from '../roots/CGU';
 import MentionsLegales from '../roots/MentionsLégales';
 import PolitiqueConfidentialite from '../roots/PolConf';
+import ResetPasswordForm from '../roots/ResetPasswordForm';
 
 const stripePromise = loadStripe('pk_test_51OwLFM00KPylCGutjKAkwhqleWEzuvici1dQUPCIvZHofEzLtGyM9Gdz5zEfvwSZKekKRgA1el5Ypnw7HLfYWOuB00ZdrKdygg');
 
@@ -53,6 +54,7 @@ function App() {
                     <Route path="/" element={<Stepper />} />
                     <Route path="/signin" element={!user ? <Signin /> : <Navigate to="/" />} />
                     <Route path="/signup" element={!user ? <Signup /> : <Navigate to="/" />} />
+                    <Route path="/reset-password" element={<ResetPasswordForm />} />
                     <Route path="/profil" element={<Profil />} />
                     <Route path="/factures" element={<Factures />} />
                     <Route path="/paiements" element={<Paiements />} />
