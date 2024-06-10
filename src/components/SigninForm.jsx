@@ -49,7 +49,7 @@ function SignInForm() {
       });
 
       if (response.status !== 200) {
-        throw new Error(response.data.message || 'Utilisateur ou mot de passe incorrect');
+        throw new Error(response.data.message || 'Utilisateur inconnu ou mot de passe incorrect');
       }
 
       const data = response.data;
@@ -66,10 +66,11 @@ function SignInForm() {
       login(userData); // Update global user state in your context
       navigate('/profil');
     } catch (error) {
-      setErrorMessage(error.message || 'Utilisateur ou mot de passe incorrect');
+      const errorMsg = error.response?.status === 401 ? 'Utilisateur inconnu ou mot de passe incorrect' : 'Erreur interne du serveur';
+      setErrorMessage(errorMsg);
       toast({
         title: 'Erreur de connexion',
-        description: error.message || 'Utilisateur ou mot de passe incorrect',
+        description: errorMsg,
         status: 'error',
         duration: 9000,
         isClosable: true,
