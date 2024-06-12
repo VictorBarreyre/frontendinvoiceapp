@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../src/context/AuthContext';
 import { useInvoiceData } from '../src/context/InvoiceDataContext';
 import {
@@ -7,6 +7,7 @@ import {
   Text,
   Flex,
   Spinner,
+  Button,
   Accordion,
   AccordionItem,
   AccordionButton,
@@ -67,25 +68,68 @@ const Paiements = () => {
   useEffect(() => {
     const fetchClientSecret = async () => {
       if (!product || !user || clientSecret || subscriptionStatus === 'Actif') return;
-
+  
       try {
         const onSuccess = (clientSecret) => {
           setClientSecret(clientSecret);
         };
         const onError = (error) => {
           console.error('Error creating subscription:', error);
+          alert('Error creating subscription: ' + error.message);
         };
-
+  
         const selectedPriceId = selectedPlan === 'monthly' ? product.prices.find(price => price.recurring?.interval === 'month').id : product.prices.find(price => price.recurring?.interval === 'year').id;
         
+        // Vérifier s'il existe une souscription active avant de créer une nouvelle session de paiement
+        const response = await fetch(`${baseUrl}/check-active-subscription`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ email: user.email })
+        });
+  
+        const data = await response.json();
+        if (data.hasActiveSubscription) {
+          setSubscriptionStatus('Actif');
+          return;
+        }
+  
+        // Si aucune souscription active n'est trouvée, créer une nouvelle session de paiement
         await createCheckoutSession(user.email, user.name, selectedPriceId, onSuccess, onError);
       } catch (error) {
         console.error('Error creating subscription:', error);
+        alert('Error creating subscription.');
       }
     };
-
+  
     fetchClientSecret();
   }, [product, user, clientSecret, selectedPlan, createCheckoutSession, subscriptionStatus]);
+
+  const handleCancelSubscription = async () => {
+    if (!user || !user.email) return;
+
+    try {
+      const response = await fetch(`${baseUrl}/cancel-subscription`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email: user.email })
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        setSubscriptionStatus('Inactif');
+        alert('Subscription cancelled successfully.');
+      } else {
+        throw new Error(data.error.message);
+      }
+    } catch (error) {
+      console.error('Error cancelling subscription:', error);
+      alert('Failed to cancel subscription.');
+    }
+  };
 
   if (loading) {
     return (
@@ -107,6 +151,7 @@ const Paiements = () => {
             Votre  Abonnement
             </Heading>
           <Text color='green.500'>Votre abonnement est actuellement actif.</Text>
+          <Button colorScheme='red' onClick={handleCancelSubscription}>Se désabonner</Button>
         </Flex>
         </div>
       </div>
