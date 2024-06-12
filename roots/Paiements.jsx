@@ -66,7 +66,7 @@ const Paiements = () => {
 
   useEffect(() => {
     const fetchClientSecret = async () => {
-      if (!product || !user || clientSecret) return;
+      if (!product || !user || clientSecret || subscriptionStatus === 'Actif') return;
 
       try {
         const onSuccess = (clientSecret) => {
@@ -85,7 +85,7 @@ const Paiements = () => {
     };
 
     fetchClientSecret();
-  }, [product, user, clientSecret, selectedPlan, createCheckoutSession]);
+  }, [product, user, clientSecret, selectedPlan, createCheckoutSession, subscriptionStatus]);
 
   if (loading) {
     return (
@@ -94,6 +94,23 @@ const Paiements = () => {
           <Spinner size='xl' />
         </Flex>
       </Box>
+    );
+  }
+
+  if (subscriptionStatus === 'Actif') {
+    return (
+      <div className='flex-stepper'>
+      <div className="stepper-container">
+        <div className="tabs-container">
+          <Flex direction='column'>
+            <Heading pb='1rem' mb={{ base: '0rem', lg: '2rem' }} borderBottom={{ base: 'unset', lg: '2px solid #efefef' }} fontSize={{ base: '22px', lg: '26px' }}>
+            Votre  Abonnement
+            </Heading>
+          <Text color='green.500'>Votre abonnement est actuellement actif.</Text>
+        </Flex>
+        </div>
+      </div>
+    </div>
     );
   }
 
