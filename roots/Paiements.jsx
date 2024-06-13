@@ -7,7 +7,7 @@ import {
   Text,
   Flex,
   Spinner,
-  Button,
+  Link,
   Accordion,
   AccordionItem,
   AccordionButton,
@@ -15,13 +15,13 @@ import {
   AccordionIcon,
   List,
   ListItem,
-  ListIcon,
-  Link,
+  ListIcon
 } from '@chakra-ui/react';
 import { CheckCircleIcon, CheckIcon } from '@chakra-ui/icons';
 import SubscribeForm from '../src/components/SubcribeForm';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
+import axios from 'axios';
 
 const stripePromise = loadStripe('pk_test_51OwLFM00KPylCGutjKAkwhqleWEzuvici1dQUPCIvZHofEzLtGyM9Gdz5zEfvwSZKekKRgA1el5Ypnw7HLfYWOuB00ZdrKdygg');
 
@@ -29,6 +29,7 @@ const Paiements = () => {
   const { user } = useAuth();
   const { checkActiveSubscription, createCheckoutSession, baseUrl } = useInvoiceData();
   const [subscriptionStatus, setSubscriptionStatus] = useState(null);
+  const [subscriptionDetails, setSubscriptionDetails] = useState(null);
   const [loading, setLoading] = useState(true);
   const [clientSecret, setClientSecret] = useState('');
   const [product, setProduct] = useState(null);
@@ -38,9 +39,21 @@ const Paiements = () => {
   useEffect(() => {
     const fetchSubscriptionStatus = async () => {
       if (user && user.email) {
-        const hasActiveSubscription = await checkActiveSubscription(user.email);
-        setSubscriptionStatus(hasActiveSubscription ? 'Actif' : 'Inactif');
-        setLoading(false);
+        try {
+          const { hasActiveSubscription, subscription } = await checkActiveSubscription(user.email);
+          console.log('Subscription check response:', hasActiveSubscription, subscription);
+
+          if (hasActiveSubscription) {
+            setSubscriptionStatus('Actif');
+            setSubscriptionDetails(subscription);
+          } else {
+            setSubscriptionStatus('Inactif');
+          }
+        } catch (error) {
+          console.error('Error checking subscription status:', error);
+        } finally {
+          setLoading(false);
+        }
       }
     };
 
@@ -68,7 +81,7 @@ const Paiements = () => {
   useEffect(() => {
     const fetchClientSecret = async () => {
       if (!product || !user || clientSecret || subscriptionStatus === 'Actif') return;
-  
+
       try {
         const onSuccess = (clientSecret) => {
           setClientSecret(clientSecret);
@@ -77,32 +90,28 @@ const Paiements = () => {
           console.error('Error creating subscription:', error);
           alert('Error creating subscription: ' + error.message);
         };
-  
+
         const selectedPriceId = selectedPlan === 'monthly' ? product.prices.find(price => price.recurring?.interval === 'month').id : product.prices.find(price => price.recurring?.interval === 'year').id;
-        
-        // Vérifier s'il existe une souscription active avant de créer une nouvelle session de paiement
-        const response = await fetch(`${baseUrl}/check-active-subscription`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ email: user.email })
-        });
-  
-        const data = await response.json();
-        if (data.hasActiveSubscription) {
+
+        console.log('Checking active subscription for email:', user.email);
+
+        const { hasActiveSubscription, subscription } = await checkActiveSubscription(user.email);
+
+        if (hasActiveSubscription) {
+          console.log('User has an active subscription:', subscription);
           setSubscriptionStatus('Actif');
+          setSubscriptionDetails(subscription);
           return;
         }
-  
-        // Si aucune souscription active n'est trouvée, créer une nouvelle session de paiement
+
+        console.log('Creating new checkout session for email:', user.email);
         await createCheckoutSession(user.email, user.name, selectedPriceId, onSuccess, onError);
       } catch (error) {
         console.error('Error creating subscription:', error);
         alert('Error creating subscription.');
       }
     };
-  
+
     fetchClientSecret();
   }, [product, user, clientSecret, selectedPlan, createCheckoutSession, subscriptionStatus]);
 
@@ -110,20 +119,20 @@ const Paiements = () => {
     if (!user || !user.email) return;
 
     try {
-      const response = await fetch(`${baseUrl}/cancel-subscription`, {
-        method: 'POST',
+      const response = await axios.post(`${baseUrl}/abonnement/cancel-subscription`, {
+        email: user.email
+      }, {
         headers: {
           'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ email: user.email })
+        }
       });
 
-      const data = await response.json();
-      if (data.success) {
+      if (response.data.success) {
         setSubscriptionStatus('Inactif');
+        setSubscriptionDetails(null);
         alert('Subscription cancelled successfully.');
       } else {
-        throw new Error(data.error.message);
+        throw new Error(response.data.error.message);
       }
     } catch (error) {
       console.error('Error cancelling subscription:', error);
@@ -141,7 +150,7 @@ const Paiements = () => {
     );
   }
 
-  if (subscriptionStatus === 'Actif') {
+  if (subscriptionStatus === 'Actif' && subscriptionDetails) {
     return (
       <div className='flex-stepper'>
       <div className="stepper-container">
@@ -151,7 +160,11 @@ const Paiements = () => {
             Votre  Abonnement
             </Heading>
           <Text color='green.500'>Votre abonnement est actuellement actif.</Text>
-          <Button colorScheme='red' onClick={handleCancelSubscription}>Se désabonner</Button>
+          <Text><strong>Plan:</strong> {subscriptionDetails.plan.id}</Text>
+          <Text><strong>Montant:</strong> {subscriptionDetails.plan.amount / 100} {subscriptionDetails.currency.toUpperCase()}</Text>
+          <Text><strong>Date de début:</strong> {new Date(subscriptionDetails.current_period_start * 1000).toLocaleDateString()}</Text>
+          <Text><strong>Date de fin:</strong> {new Date(subscriptionDetails.current_period_end * 1000).toLocaleDateString()}</Text>
+          <Link mt='2rem' color='red' onClick={handleCancelSubscription}>Résilier mon abonnement</Link>
         </Flex>
         </div>
       </div>

@@ -164,17 +164,18 @@ export const InvoiceDataProvider = ({ children }) => {
 
     const checkActiveSubscription = async (email) => {
         try {
-            const response = await axios.post(`${baseUrl}/abonnement/check-active-subscription`, { email }, {
-                headers: { 'Content-Type': 'application/json' }
-            });
-
-            const { hasActiveSubscription } = response.data;
-            return hasActiveSubscription;
+          const response = await axios.post(`${baseUrl}/abonnement/check-active-subscription`, { email }, {
+            headers: { 'Content-Type': 'application/json' }
+          });
+      
+          const { hasActiveSubscription, subscription } = response.data;
+          return { hasActiveSubscription, subscription };
         } catch (error) {
-            console.error('Error checking subscription:', error.message);
-            return false;
+          console.error('Error checking subscription:', error.message);
+          return { hasActiveSubscription: false, subscription: null };
         }
-    };
+      };
+      
 
     const handleInvoiceActionSendMail = async (invoiceData, onSuccess, onError) => {
         const { number, issuer, client, total } = invoiceData;

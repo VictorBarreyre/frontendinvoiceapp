@@ -47,7 +47,7 @@ function App() {
           <Router>
             <Flex direction="column" minHeight="100vh">
               <Header />
-              <Flex flex="1" overflow="hidden">
+              <Flex flex="1" overflow="hidden" mb='5rem'>
                 {user && !isMobile && <Sidebar />}
                 <Box flex="1" overflowY="auto" mb='5rem'>
                   <Routes>
