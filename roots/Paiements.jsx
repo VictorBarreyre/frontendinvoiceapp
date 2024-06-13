@@ -151,6 +151,7 @@ const Paiements = () => {
   }
 
   if (subscriptionStatus === 'Actif' && subscriptionDetails) {
+  
     return (
       <div className='flex-stepper'>
       <div className="stepper-container">
