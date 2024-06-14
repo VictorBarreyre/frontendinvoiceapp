@@ -83,19 +83,28 @@ const Paramètres = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+  
     if (newPassword !== confirmPassword) {
       setErrorMessage('Les mots de passe ne correspondent pas');
       return;
     }
-
+  
     setIsSubmitting(true);
-
+  
     try {
-      const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/users/reset-password`, {
-        token: user.token,
-        newPassword
-      });
-
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_BASE_URL}/api/users/change-password`,
+        {
+          currentPassword: password,
+          newPassword
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${user.token}`
+          }
+        }
+      );
+  
       toast({
         title: 'Mot de passe réinitialisé',
         description: response.data.message,
@@ -103,7 +112,7 @@ const Paramètres = () => {
         duration: 9000,
         isClosable: true,
       });
-
+  
       setNewPassword('');
       setConfirmPassword('');
     } catch (error) {
@@ -119,6 +128,7 @@ const Paramètres = () => {
       setIsSubmitting(false);
     }
   };
+  
 
   if (accountDeleted) {
     return (
