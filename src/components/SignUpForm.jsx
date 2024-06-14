@@ -30,7 +30,7 @@ function SignupForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const toast = useToast();
-  const { baseUrl, isValidEmail } = useInvoiceData();
+  const {  isValidEmail } = useInvoiceData();
   const { login } = useAuth();
   const navigate = useNavigate();
 
@@ -54,7 +54,7 @@ function SignupForm() {
     }
 
     try {
-      const response = await axios.post(`${baseUrl}/api/users/signup`, {
+      const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/users/signup`, {
         email,
         password,
         name

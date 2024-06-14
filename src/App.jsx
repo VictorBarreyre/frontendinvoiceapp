@@ -58,6 +58,7 @@ function App() {
                     <Route path="/profil" element={<Profil />} />
                     <Route path="/factures" element={<Factures />} />
                     <Route path="/paiements" element={<Paiements />} />
+                    <Route path="/parametres" element={<Paramètres  />} />
                     <Route path="*" element={<Navigate to="/" />} />
                     <Route path="/payment-success" element={<PaymentSuccess />} />
                     <Route path="/abonnement" element={<Abo />} />

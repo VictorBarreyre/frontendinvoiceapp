@@ -63,7 +63,7 @@ const Paiements = () => {
   useEffect(() => {
     const fetchProductsAndPrices = async () => {
       try {
-        const response = await fetch(`${baseUrl}/abonnement/products-and-prices`);
+        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/abonnement/products-and-prices`);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -119,7 +119,7 @@ const Paiements = () => {
     if (!user || !user.email) return;
 
     try {
-      const response = await axios.post(`${baseUrl}/abonnement/cancel-subscription`, {
+      const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/abonnement/cancel-subscription`, {
         email: user.email
       }, {
         headers: {
@@ -160,7 +160,7 @@ const Paiements = () => {
             <Heading pb='1rem' mb={{ base: '0rem', lg: '2rem' }} borderBottom={{ base: 'unset', lg: '2px solid #efefef' }} fontSize={{ base: '22px', lg: '26px' }}>
             Votre  Abonnement
             </Heading>
-          <Text color='green.500'>Votre abonnement est actuellement actif.</Text>
+          <Text mb='1rem' color='green.500'>Votre abonnement est actuellement actif.</Text>
           <Text><strong>Plan:</strong> {subscriptionDetails.plan.id}</Text>
           <Text><strong>Montant:</strong> {subscriptionDetails.plan.amount / 100} {subscriptionDetails.currency.toUpperCase()}</Text>
           <Text><strong>Date de début:</strong> {new Date(subscriptionDetails.current_period_start * 1000).toLocaleDateString()}</Text>

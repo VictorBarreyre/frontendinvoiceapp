@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import {
   Button,
@@ -33,13 +33,17 @@ function SignInForm() {
   const { login } = useAuth();
   const navigate = useNavigate();
 
+  useEffect(() => {
+    console.log('API Base URL:', import.meta.env.VITE_API_BASE_URL);
+  }, []);
+
   const handlePasswordVisibility = () => setShowPassword(!showPassword);
 
   const handleForgotPassword = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      const response = await axios.post(`${baseUrl}/api/users/send-reset-email`, { email });
+      const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/users/send-reset-email`, { email });
       toast({
         title: 'Email de réinitialisation envoyé',
         description: response.data.message,
@@ -67,7 +71,7 @@ function SignInForm() {
     setIsSubmitting(true); // Prevent multiple submissions
 
     try {
-      const response = await axios.post(`${baseUrl}/api/users/signin`, {
+      const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/users/signin`, {
         email,
         password
       }, {

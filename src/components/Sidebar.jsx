@@ -53,6 +53,11 @@ const Sidebar = () => {
           <Link to="/paiements" onClick={() => handleTabClick('tab3')}>Abonnement</Link>
         </li>
 
+        <li className={`tab ${getActiveClass('/parametres')}`}>
+          <Link to="/parametres" onClick={() => handleTabClick('tab4')}>Paramètres</Link>
+        </li>
+
+
       </ul>
       <Chakralink onClick={handleLogout} type="submit" color='red' borderRadius='30px' mb='1.5rem' mt="4" w='100%' colorScheme="gray">
         Déconnexion

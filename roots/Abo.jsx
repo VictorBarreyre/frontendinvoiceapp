@@ -35,7 +35,7 @@ const Abo = () => {
     useEffect(() => {
         const fetchProductsAndPrices = async () => {
             try {
-                const response = await fetch(`${baseUrl}/abonnement/products-and-prices`);
+                const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/abonnement/products-and-prices`);
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }

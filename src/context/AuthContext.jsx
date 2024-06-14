@@ -70,7 +70,7 @@ export const AuthProvider = ({ children }) => {
     }
 
     try {
-      const response = await axios.get(`http://localhost:8000/api/users/${user._id}/invoices`, {
+      const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/users/${user._id}/invoices`, {
         headers: {
           'Authorization': `Bearer ${user.token}`,  // Assurez-vous que l'authentification est correctement gérée
           'Content-Type': 'application/json'
@@ -92,7 +92,7 @@ export const AuthProvider = ({ children }) => {
     const cleanUpdates = cleanObject(userData);  // Nettoyer les données de l'utilisateur
 
     try {
-      const response = await axios.put(`http://localhost:8000/api/users/${userData._id}`, cleanUpdates, {
+      const response = await axios.put(`${import.meta.env.VITE_API_BASE_URL}/api/users/${userData._id}`, cleanUpdates, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${user.token}`
@@ -116,7 +116,7 @@ export const AuthProvider = ({ children }) => {
   
   const deleteAccount = async (password) => {
     try {
-      const response = await axios.delete(`http://localhost:8000/api/users/${user._id}`, {
+      const response = await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/api/users/${user._id}`, {
         headers: {
           'Authorization': `Bearer ${user.token}` // Assurez-vous que l'authentification est correctement gérée
         },

@@ -52,7 +52,7 @@ export const InvoiceDataProvider = ({ children }) => {
         }
     }, [user]);
 
-    const baseUrl = "http://localhost:8000";
+
     const [requiredFieldsValid, setRequiredFieldsValid] = useState({
         number: false,
         issuerName: false,
@@ -118,7 +118,7 @@ export const InvoiceDataProvider = ({ children }) => {
 
     const createCheckoutSession = async (email, name, priceId, onSuccess, onError) => {
         try {
-            const response = await fetch(`${baseUrl}/abonnement/create-checkout-session`, {
+            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/abonnement/create-checkout-session`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, name, priceId }),
@@ -164,7 +164,7 @@ export const InvoiceDataProvider = ({ children }) => {
 
     const checkActiveSubscription = async (email) => {
         try {
-          const response = await axios.post(`${baseUrl}/abonnement/check-active-subscription`, { email }, {
+          const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/abonnement/check-active-subscription`, { email }, {
             headers: { 'Content-Type': 'application/json' }
           });
       
@@ -193,7 +193,7 @@ export const InvoiceDataProvider = ({ children }) => {
             const pdfBlob = await asPDF.toBlob();
 
             if (client.email && isValidEmail(client.email)) {
-                const factureIdResponse = await axios.get(`${baseUrl}/email/generateFactureId`);
+                const factureIdResponse = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/email/generateFactureId`);
                 const { factureId } = factureIdResponse.data;
 
                 const confirmationLink = `http://localhost:5173/confirmation?facture=${factureId}&montant=${total}`;
@@ -209,7 +209,7 @@ export const InvoiceDataProvider = ({ children }) => {
                 formData.append('destinataire', JSON.stringify(client));
                 formData.append('factureId', factureId);
 
-                const createAndSendEmailResponse = await axios.post(`${baseUrl}/email/sendEmail`, formData);
+                const createAndSendEmailResponse = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/email/sendEmail`, formData);
 
                 if (createAndSendEmailResponse.status === 200) {
                     console.log("Facture créée et email envoyé avec succès !");
@@ -229,7 +229,6 @@ export const InvoiceDataProvider = ({ children }) => {
     return (
         <InvoiceDataContext.Provider value={{
             invoiceData,
-            baseUrl,
             handleInvoiceDataChange,
             requiredFieldsValid,
             setRequiredFieldsValid,

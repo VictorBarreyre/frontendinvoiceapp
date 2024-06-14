@@ -111,7 +111,7 @@ function ConfirmationPage() {
     // Votre code existant pour créer l'intention de paiement
     // Assurez-vous d'utiliser le montant correct ici
     const createPaymentIntent = async () => {
-      const response = await fetch('http://localhost:8000/paiement/create-payment-intent', {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/paiement/create-payment-intent`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

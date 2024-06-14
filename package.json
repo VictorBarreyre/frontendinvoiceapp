@@ -19,6 +19,7 @@
     "@stripe/stripe-js": "^3.4.0",
     "axios": "^1.7.2",
     "country-list": "^2.3.0",
+    "dotenv": "^16.4.5",
     "framer-motion": "^11.0.6",
     "mkcert": "^3.2.0",
     "nodemailer": "^6.9.11",

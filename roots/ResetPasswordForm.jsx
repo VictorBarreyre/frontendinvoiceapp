@@ -28,7 +28,6 @@ function ResetPasswordForm() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const toast = useToast();
-  const { baseUrl } = useInvoiceData();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const token = searchParams.get('token');
@@ -46,7 +45,7 @@ function ResetPasswordForm() {
     setIsSubmitting(true);
 
     try {
-      const response = await axios.post(`${baseUrl}/api/users/reset-password`, {
+      const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/users/reset-password`, {
         token,
         newPassword
       });
