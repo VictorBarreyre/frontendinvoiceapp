@@ -129,6 +129,32 @@ const Paramètres = () => {
     }
   };
 
+  const handleDownloadData = async () => {
+    try {
+      const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/users/download-data`, {
+        headers: {
+          Authorization: `Bearer ${user.token}`
+        },
+        responseType: 'blob'
+      });
+
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'user-data.json');
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (error) {
+      toast({
+        title: 'Erreur',
+        description: 'Erreur lors du téléchargement des données',
+        status: 'error',
+        duration: 9000,
+        isClosable: true,
+      });
+    }
+  };
 
   if (accountDeleted) {
     return (
@@ -153,11 +179,11 @@ const Paramètres = () => {
         <div className="tabs-container">
           <Flex direction='column'>
             <Heading pb='1rem' mb={{ base: '0rem', lg: '2rem' }} borderBottom={{ base: 'unset', lg: '2px solid #efefef' }} fontSize={{ base: '22px', lg: '26px' }}>Paramètres de votre compte</Heading>
-
+            <Flex direction='column' h={{ base: 'content', lg: '20rem' }}  mb='1rem'>
             {!isPasswordVerified ? (
               <Box mt="4" w={{ base: '100%', lg: '35rem' }}>
                 <FormControl isRequired>
-                  <FormLabel htmlFor="password">Réinitialiser votre mot de passe</FormLabel>
+                <Heading mb='1rem' size="sm">Réinitialiser votre mot de passe</Heading>
                   <InputGroup
                    width={{ base: 'unset', lg: '20rem' }}
                     mb='1rem'>
@@ -262,9 +288,20 @@ const Paramètres = () => {
               </Box>
             )}
 
-            <Chakralink textAlign={{ base: 'center', lg: 'unset' }} onClick={onOpen} color='red !important' mt="3rem">
+       
+          <Flex mt='2rem' direction='column'> 
+          <Heading mb='1rem' size="sm">Vos données personnelles</Heading>
+             <Chakralink mt="0.5rem" color="#745FF2"  onClick={handleDownloadData}  colorScheme="blue">
+              Télécharger mes données
+            </Chakralink>
+            </Flex>
+
+            <Flex mt='2rem' direction='column'> 
+            <Heading mb='1rem' size="sm"> Suppression du compte</Heading>
+            <Chakralink textAlign={{ base: 'center', lg: 'unset' }} onClick={onOpen} color='red !important' mt="0.5rem">
               Supprimer mon compte
             </Chakralink>
+            </Flex>
 
             <AlertDialog
               isOpen={isOpen}
@@ -322,6 +359,7 @@ const Paramètres = () => {
                 </AlertDialogContent>
               </AlertDialogOverlay>
             </AlertDialog>
+            </Flex>
           </Flex>
         </div>
       </div>

@@ -78,7 +78,7 @@ const Profil = () => {
                 if (field !== 'password' && field !== 'token' && field !== '_id') {
                   return (
                     <FormControl width={{ base: 'unset', lg: '20rem' }} mt='4' isRequired key={field}>
-                      <Text mb='0.5rem' size="sm">{field.charAt(0).toUpperCase() + field.slice(1)}</Text>
+                      <Heading mb='1rem' size="sm">{field.charAt(0).toUpperCase() + field.slice(1)}</Heading>
                       <InputGroup display='flex' alignContent='center' alignItems='center' >
                         <Input
                           mb='2'

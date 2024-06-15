@@ -47,9 +47,9 @@ function App() {
           <Router>
             <Flex direction="column" minHeight="100vh">
               <Header />
-              <Flex flex="1" overflow="hidden" mb='5rem'>
+              <Flex flex="1" overflow="hidden" pb='5rem'>
                 {user && !isMobile && <Sidebar />}
-                <Box flex="1" overflowY="auto" mb='5rem'>
+                <Box flex="1" overflowY="auto" pb='5rem'>
                   <Routes>
                     <Route path="/" element={<Stepper />} />
                     <Route path="/signin" element={!user ? <Signin /> : <Navigate to="/" />} />
