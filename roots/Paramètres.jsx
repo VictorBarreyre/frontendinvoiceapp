@@ -83,14 +83,14 @@ const Paramètres = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     if (newPassword !== confirmPassword) {
       setErrorMessage('Les mots de passe ne correspondent pas');
       return;
     }
-  
+
     setIsSubmitting(true);
-  
+
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_API_BASE_URL}/api/users/change-password`,
@@ -104,7 +104,7 @@ const Paramètres = () => {
           }
         }
       );
-  
+
       toast({
         title: 'Mot de passe réinitialisé',
         description: response.data.message,
@@ -112,7 +112,7 @@ const Paramètres = () => {
         duration: 9000,
         isClosable: true,
       });
-  
+
       setNewPassword('');
       setConfirmPassword('');
     } catch (error) {
@@ -128,7 +128,7 @@ const Paramètres = () => {
       setIsSubmitting(false);
     }
   };
-  
+
 
   if (accountDeleted) {
     return (
@@ -152,13 +152,15 @@ const Paramètres = () => {
       <div className="stepper-container">
         <div className="tabs-container">
           <Flex direction='column'>
-            <Heading pb='1rem' mb={{ base: '0rem', lg: '2rem' }} borderBottom={{ base: 'unset', lg: '2px solid #efefef' }} fontSize={{ base: '22px', lg: '26px' }}>Paramètres</Heading>
-            
+            <Heading pb='1rem' mb={{ base: '0rem', lg: '2rem' }} borderBottom={{ base: 'unset', lg: '2px solid #efefef' }} fontSize={{ base: '22px', lg: '26px' }}>Paramètres de votre compte</Heading>
+
             {!isPasswordVerified ? (
               <Box mt="4" w={{ base: '100%', lg: '35rem' }}>
                 <FormControl isRequired>
-                  <FormLabel htmlFor="password">Mot de passe actuel</FormLabel>
-                  <InputGroup>
+                  <FormLabel htmlFor="password">Réinitialiser votre mot de passe</FormLabel>
+                  <InputGroup
+                   width={{ base: 'unset', lg: '20rem' }}
+                    mb='1rem'>
                     <ChakraInput
                       className='neue-down'
                       _focus={{ borderColor: "#745FF2", boxShadow: "none" }}
@@ -166,6 +168,7 @@ const Paramètres = () => {
                       type={showPassword ? "text" : "password"}
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
+                      placeholder='Entrez votre mot de passe actuel'
                     />
                     <InputRightElement width="4.5rem">
                       <IconButton
@@ -188,9 +191,9 @@ const Paramètres = () => {
                     </Text>
                   )}
                 </FormControl>
-                <Button onClick={handleVerifyPassword} color='white' borderRadius='30px' backgroundColor='black' mt="4" colorScheme="gray">
+                <Chakralink mt='1rem' color="#745FF2" onClick={handleVerifyPassword} >
                   Vérifier le mot de passe
-                </Button>
+                </Chakralink>
               </Box>
             ) : (
               <Box mt="4" w={{ base: '100%', lg: '35rem' }}>
