@@ -179,14 +179,14 @@ const Paramètres = () => {
         <div className="tabs-container">
           <Flex direction='column'>
             <Heading pb='1rem' mb={{ base: '0rem', lg: '2rem' }} borderBottom={{ base: 'unset', lg: '2px solid #efefef' }} fontSize={{ base: '22px', lg: '26px' }}>Paramètres de votre compte</Heading>
-            <Flex direction='column' h={{ base: 'content', lg: '20rem' }}  mb='1rem'>
+            <Flex direction='column' h={{ base: 'content', lg: 'content' }}  mb='1rem'>
             {!isPasswordVerified ? (
-              <Box mt="4" w={{ base: '100%', lg: '35rem' }}>
-                <FormControl isRequired>
+              <Flex direction='column' mt="4" w={{ base: '100%', lg: '25rem' }} borderBottom='1px solid #efefef' pb='1rem'>
+                <FormControl  isRequired>
                 <Heading mb='1rem' size="sm">Réinitialiser votre mot de passe</Heading>
                   <InputGroup
-                   width={{ base: 'unset', lg: '20rem' }}
-                    mb='1rem'>
+                   width={{ base: 'unset', lg: '25rem' }}
+                    mb='0.5rem'>
                     <ChakraInput
                       className='neue-down'
                       _focus={{ borderColor: "#745FF2", boxShadow: "none" }}
@@ -220,15 +220,16 @@ const Paramètres = () => {
                 <Chakralink mt='1rem' color="#745FF2" onClick={handleVerifyPassword} >
                   Vérifier le mot de passe
                 </Chakralink>
-              </Box>
+              </Flex>
             ) : (
-              <Box mt="4" w={{ base: '100%', lg: '35rem' }}>
+              <Flex direction='column' mt="4" w={{ base: '100%', lg: 'content' }} borderBottom='1px solid #efefef' pb='1rem'>
                 <form onSubmit={handleSubmit}>
                   <VStack spacing={4}>
                     <FormControl isRequired>
                       <FormLabel htmlFor="newPassword">Nouveau mot de passe</FormLabel>
-                      <InputGroup>
+                      <InputGroup >
                         <ChakraInput
+                          w={{ base: '100%', lg: '25rem' }}
                           className='neue-down'
                           _focus={{ borderColor: "#745FF2", boxShadow: "none" }}
                           id="newPassword"
@@ -285,19 +286,19 @@ const Paramètres = () => {
                     </Button>
                   </VStack>
                 </form>
-              </Box>
+              </Flex>
             )}
 
        
-          <Flex mt='2rem' direction='column'> 
-          <Heading mb='1rem' size="sm">Vos données personnelles</Heading>
+          <Flex mt='2rem' w={{ base: '100%', lg: '25rem' }} borderBottom='1px solid #efefef' pb='1rem' direction='column'> 
+          <Heading mb='0.5rem' size="sm">Vos données personnelles</Heading>
              <Chakralink mt="0.5rem" color="#745FF2"  onClick={handleDownloadData}  colorScheme="blue">
               Télécharger mes données
             </Chakralink>
             </Flex>
 
-            <Flex mt='2rem' direction='column'> 
-            <Heading mb='1rem' size="sm"> Suppression du compte</Heading>
+            <Flex mt='2rem' w={{ base: '100%', lg: '25rem' }} direction='column'> 
+            <Heading mb='0.5rem' size="sm"> Suppression du compte</Heading>
             <Chakralink textAlign={{ base: 'center', lg: 'unset' }} onClick={onOpen} color='red !important' mt="0.5rem">
               Supprimer mon compte
             </Chakralink>
