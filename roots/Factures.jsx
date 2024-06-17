@@ -29,7 +29,7 @@ const Factures = () => {
     <div className='flex-stepper'>
       <div className="stepper-container">
         <div className="tabs-container">
-          <Flex direction='column'>
+          <Flex direction='column' h={{ base: '100vh', lg: 'content' }}>
           <Heading pb='1rem' mb={{ base: '0rem', lg: '2rem' }} borderBottom={{ base: 'unset', lg: '2px solid #efefef' }} fontSize={{ base: '22px', lg: '26px' }}>Factures</Heading>
             {message && <Text>{message}</Text>}
             {invoices.map(invoice => (

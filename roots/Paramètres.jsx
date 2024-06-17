@@ -177,7 +177,7 @@ const Paramètres = () => {
     <div className='flex-stepper'>
       <div className="stepper-container">
         <div className="tabs-container">
-          <Flex direction='column'>
+          <Flex direction='column' h={{ base: '100vh', lg: 'content' }} >
             <Heading pb='1rem' mb={{ base: '0rem', lg: '2rem' }} borderBottom={{ base: 'unset', lg: '2px solid #efefef' }} fontSize={{ base: '22px', lg: '26px' }}>Paramètres de votre compte</Heading>
             <Flex direction='column' h={{ base: 'content', lg: 'content' }}  mb='1rem'>
             {!isPasswordVerified ? (
@@ -299,7 +299,7 @@ const Paramètres = () => {
 
             <Flex mt='2rem' w={{ base: '100%', lg: '25rem' }} direction='column'> 
             <Heading mb='0.5rem' size="sm"> Suppression du compte</Heading>
-            <Chakralink textAlign={{ base: 'center', lg: 'unset' }} onClick={onOpen} color='red !important' mt="0.5rem">
+            <Chakralink textAlign={{ base: 'left', lg: 'unset' }} onClick={onOpen} color='red !important' mt="0.5rem">
               Supprimer mon compte
             </Chakralink>
             </Flex>
