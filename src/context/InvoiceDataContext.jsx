@@ -177,54 +177,60 @@ export const InvoiceDataProvider = ({ children }) => {
       };
       
 
-    const handleInvoiceActionSendMail = async (invoiceData, onSuccess, onError) => {
+      const handleInvoiceActionSendMail = async (invoiceData, onSuccess, onError) => {
         const { number, issuer, client, total } = invoiceData;
         const areAllRequiredFieldsValid = number !== '' && issuer.name !== '' && client.name !== '';
-
+      
         if (!areAllRequiredFieldsValid) {
-            console.log('Champs requis manquants ou invalides');
-            return;
+          console.log('Champs requis manquants ou invalides');
+          return;
         }
-
+      
         try {
-            const file = <InvoicePDF invoiceData={invoiceData} />;
-            const asPDF = pdf([]);
-            asPDF.updateContainer(file);
-            const pdfBlob = await asPDF.toBlob();
-
-            if (client.email && isValidEmail(client.email)) {
-                const factureIdResponse = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/email/generateFactureId`);
-                const { factureId } = factureIdResponse.data;
-
-                const confirmationLink = `http://localhost:5173/confirmation?facture=${factureId}&montant=${total}`;
-                const messageEmail = `Cher ${client.name},\n\nVeuillez trouver ci-joint votre facture n° ${number}.\n\nPour confirmer votre accord et signer électroniquement le contrat, veuillez cliquer sur le lien ci-dessous :\n\n${confirmationLink}\n\nNous vous remercions pour votre confiance et restons à votre disposition pour toute information complémentaire.\n\nCordialement,\n${issuer.name}`;
-
-                const formData = new FormData();
-                formData.append('file', pdfBlob, `Facture-${number}.pdf`);
-                formData.append('email', client.email);
-                formData.append('subject', 'Votre Facture');
-                formData.append('message', messageEmail);
-                formData.append('montant', total);
-                formData.append('emetteur', JSON.stringify(issuer));
-                formData.append('destinataire', JSON.stringify(client));
-                formData.append('factureId', factureId);
-
-                const createAndSendEmailResponse = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/email/sendEmail`, formData);
-
-                if (createAndSendEmailResponse.status === 200) {
-                    console.log("Facture créée et email envoyé avec succès !");
-                    onSuccess();
-                } else {
-                    console.log('Erreur lors de la création de la facture et de l’envoi de l’email', createAndSendEmailResponse.data);
-                    onError();
-                }
+          const file = <InvoicePDF invoiceData={invoiceData} />;
+          const asPDF = pdf([]);
+          asPDF.updateContainer(file);
+          const pdfBlob = await asPDF.toBlob();
+      
+          if (client.email && isValidEmail(client.email)) {
+            const factureIdResponse = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/email/generateFactureId`);
+            const { factureId } = factureIdResponse.data;
+      
+            const confirmationLink = `http://localhost:5173/confirmation?facture=${factureId}&montant=${total}`;
+            const messageEmail = `Cher ${client.name},\n\nVeuillez trouver ci-joint votre facture n° ${number}.\n\nPour confirmer votre accord et signer électroniquement le contrat, veuillez cliquer sur le lien ci-dessous :\n\n${confirmationLink}\n\nNous vous remercions pour votre confiance et restons à votre disposition pour toute information complémentaire.\n\nCordialement,\n${issuer.name}`;
+      
+            const formData = new FormData();
+            formData.append('file', pdfBlob, `Facture-${number}.pdf`);
+            formData.append('email', client.email);
+            formData.append('subject', 'Votre Facture');
+            formData.append('message', messageEmail);
+            formData.append('montant', total);
+            formData.append('emetteur', JSON.stringify(issuer));
+            formData.append('destinataire', JSON.stringify(client));
+            formData.append('factureId', factureId);
+      
+            const createAndSendEmailResponse = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/email/sendEmail`, formData, {
+              headers: {
+                'Authorization': `Bearer ${user.token}`, // Ajoutez le token ici
+                'Content-Type': 'multipart/form-data'
+              }
+            });
+      
+            if (createAndSendEmailResponse.status === 200) {
+              console.log("Facture créée et email envoyé avec succès !");
+              onSuccess();
             } else {
-                console.log('Email invalide ou absent, téléchargement de la facture...');
+              console.log('Erreur lors de la création de la facture et de l’envoi de l’email', createAndSendEmailResponse.data);
+              onError();
             }
+          } else {
+            console.log('Email invalide ou absent, téléchargement de la facture...');
+          }
         } catch (error) {
-            console.error('Erreur lors de la génération ou de l’envoi du PDF', error);
+          console.error('Erreur lors de la génération ou de l’envoi du PDF', error);
         }
-    };
+      };
+      
 
     return (
         <InvoiceDataContext.Provider value={{

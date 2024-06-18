@@ -66,27 +66,29 @@ export const AuthProvider = ({ children }) => {
   const fetchUserInvoices = async () => {
     if (!user) {
       console.error('Aucun utilisateur connecté pour récupérer les factures.');
-      return { invoices: [], message: 'Aucun utilisateur connecté.' }; // Retourne un message spécifique
+      return { invoices: [], message: 'Aucun utilisateur connecté.' };
     }
-
+  
     try {
       const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/users/${user._id}/invoices`, {
         headers: {
-          'Authorization': `Bearer ${user.token}`,  // Assurez-vous que l'authentification est correctement gérée
+          'Authorization': `Bearer ${user.token}`,
           'Content-Type': 'application/json'
         }
       });
-
+  
+      console.log('Response data:', response.data); // Ajoutez ce log pour vérifier la réponse de l'API
       const invoices = response.data;
       if (invoices.length === 0) {
-        return { invoices: [], message: 'Aucune facture disponible.' }; // Retourne un message si aucune facture n'est trouvée
+        return { invoices: [], message: 'Aucune facture disponible.' };
       }
-      return { invoices: invoices, message: '' }; // Retourne les factures si disponibles
+      return { invoices: invoices, message: '' };
     } catch (error) {
       console.error('Failed to fetch invoices:', error);
-      return { invoices: [], message: error.response?.data?.message || 'Erreur lors de la récupération des factures.' }; // Retourne un message d'erreur
+      return { invoices: [], message: error.response?.data?.message || 'Erreur lors de la récupération des factures.' };
     }
   };
+  
 
   const updateUserProfile = async (userData) => {
     const cleanUpdates = cleanObject(userData);  // Nettoyer les données de l'utilisateur
