@@ -46,7 +46,7 @@ const PolitiqueConfidentialite = () => {
           <Text>- Vous opposer au traitement de vos données.</Text>
 
           <Text mt="1rem"><strong>8. Contact</strong></Text>
-          <Text>Pour toute question concernant cette politique de confidentialité ou pour exercer vos droits, veuillez nous contacter à : privacy@dbill.io</Text>
+          <Text>Pour toute question concernant cette politique de confidentialité ou pour exercer vos droits, veuillez nous contacter à : contact@dbill.io</Text>
 
           <Flex mt="2rem" w="fit-content" direction="column">
             <ChakraLink as={Link} to="/">Retour à la page d'accueil</ChakraLink>

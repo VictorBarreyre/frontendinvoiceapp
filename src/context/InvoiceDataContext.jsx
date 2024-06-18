@@ -193,7 +193,7 @@ export const InvoiceDataProvider = ({ children }) => {
             const pdfBlob = await asPDF.toBlob();
 
             if (client.email && isValidEmail(client.email)) {
-                const factureIdResponse = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/email/generateFactureId`);
+                const factureIdResponse = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/email/generateFactureId`);
                 const { factureId } = factureIdResponse.data;
 
                 const confirmationLink = `http://localhost:5173/confirmation?facture=${factureId}&montant=${total}`;
