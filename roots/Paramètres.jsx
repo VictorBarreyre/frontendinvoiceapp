@@ -115,6 +115,9 @@ const Paramètres = () => {
 
       setNewPassword('');
       setConfirmPassword('');
+      setPassword('');
+      setIsPasswordVerified(false);
+      setShowPasswordInput(false);
     } catch (error) {
       setErrorMessage(error.response?.data.message || 'Erreur lors de la réinitialisation du mot de passe');
       toast({
