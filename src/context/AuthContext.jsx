@@ -63,12 +63,12 @@ export const AuthProvider = ({ children }) => {
     return newObj;
   }
 
+
   const fetchUserInvoices = async () => {
     if (!user) {
-      console.error('Aucun utilisateur connecté pour récupérer les factures.');
       return { invoices: [], message: 'Aucun utilisateur connecté.' };
     }
-  
+
     try {
       const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/users/${user._id}/invoices`, {
         headers: {
@@ -76,15 +76,10 @@ export const AuthProvider = ({ children }) => {
           'Content-Type': 'application/json'
         }
       });
-  
-      console.log('Response data:', response.data); // Ajoutez ce log pour vérifier la réponse de l'API
+
       const invoices = response.data;
-      if (invoices.length === 0) {
-        return { invoices: [], message: 'Aucune facture disponible.' };
-      }
-      return { invoices: invoices, message: '' };
+      return { invoices, message: '' };
     } catch (error) {
-      console.error('Failed to fetch invoices:', error);
       return { invoices: [], message: error.response?.data?.message || 'Erreur lors de la récupération des factures.' };
     }
   };

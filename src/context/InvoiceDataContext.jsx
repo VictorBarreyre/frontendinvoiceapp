@@ -209,12 +209,15 @@ export const InvoiceDataProvider = ({ children }) => {
             formData.append('destinataire', JSON.stringify(client));
             formData.append('factureId', factureId);
       
-            const createAndSendEmailResponse = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/email/sendEmail`, formData, {
-              headers: {
-                'Authorization': `Bearer ${user.token}`, // Ajoutez le token ici
-                'Content-Type': 'multipart/form-data'
-              }
-            });
+            const headers = {
+              'Content-Type': 'multipart/form-data'
+            };
+      
+            if (user && user.token) {
+              headers['Authorization'] = `Bearer ${user.token}`;
+            }
+      
+            const createAndSendEmailResponse = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/email/sendEmail`, formData, { headers });
       
             if (createAndSendEmailResponse.status === 200) {
               console.log("Facture créée et email envoyé avec succès !");
@@ -230,6 +233,8 @@ export const InvoiceDataProvider = ({ children }) => {
           console.error('Erreur lors de la génération ou de l’envoi du PDF', error);
         }
       };
+      
+      
       
 
     return (
