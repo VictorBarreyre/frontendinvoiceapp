@@ -201,6 +201,7 @@ export const InvoiceDataProvider = ({ children }) => {
       
             const formData = new FormData();
             formData.append('file', pdfBlob, `Facture-${number}.pdf`);
+            formData.append('number', number);
             formData.append('email', client.email);
             formData.append('subject', 'Votre Facture');
             formData.append('message', messageEmail);
