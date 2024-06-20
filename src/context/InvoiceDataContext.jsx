@@ -178,7 +178,7 @@ export const InvoiceDataProvider = ({ children }) => {
       
 
       const handleInvoiceActionSendMail = async (invoiceData, onSuccess, onError) => {
-        const { number, issuer, client, total } = invoiceData;
+        const { number, devise, issuer, client, total } = invoiceData;
         const areAllRequiredFieldsValid = number !== '' && issuer.name !== '' && client.name !== '';
       
         if (!areAllRequiredFieldsValid) {
@@ -206,6 +206,7 @@ export const InvoiceDataProvider = ({ children }) => {
             formData.append('subject', 'Votre Facture');
             formData.append('message', messageEmail);
             formData.append('montant', total);
+            formData.append('devise', devise);
             formData.append('emetteur', JSON.stringify(issuer));
             formData.append('destinataire', JSON.stringify(client));
             formData.append('factureId', factureId);

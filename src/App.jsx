@@ -26,6 +26,7 @@ import CGU from '../roots/CGU';
 import MentionsLegales from '../roots/MentionsLégales';
 import PolitiqueConfidentialite from '../roots/PolConf';
 import ResetPasswordForm from '../roots/ResetPasswordForm';
+import PrivateRoute from '../roots/PrivateRoute';
 
 const stripePromise = loadStripe('pk_test_51OwLFM00KPylCGutjKAkwhqleWEzuvici1dQUPCIvZHofEzLtGyM9Gdz5zEfvwSZKekKRgA1el5Ypnw7HLfYWOuB00ZdrKdygg');
 
@@ -38,7 +39,7 @@ function App() {
     if (storedUser) {
       setUser(JSON.parse(storedUser));
     }
-  }, []);
+  }, [setUser]);
 
   return (
     <Elements stripe={stripePromise}> 
@@ -55,17 +56,17 @@ function App() {
                     <Route path="/signin" element={!user ? <Signin /> : <Navigate to="/" />} />
                     <Route path="/signup" element={!user ? <Signup /> : <Navigate to="/" />} />
                     <Route path="/reset-password" element={<ResetPasswordForm />} />
-                    <Route path="/profil" element={<Profil />} />
-                    <Route path="/factures" element={<Factures />} />
-                    <Route path="/paiements" element={<Paiements />} />
-                    <Route path="/parametres" element={<Paramètres  />} />
-                    <Route path="*" element={<Navigate to="/" />} />
-                    <Route path="/payment-success" element={<PaymentSuccess />} />
-                    <Route path="/abonnement" element={<Abo />} />
-                    <Route path="/success" element={<Success />} />
+                    <Route path="/profil" element={<PrivateRoute><Profil /></PrivateRoute>} />
+                    <Route path="/factures" element={<PrivateRoute><Factures /></PrivateRoute>} />
+                    <Route path="/paiements" element={<PrivateRoute><Paiements /></PrivateRoute>} />
+                    <Route path="/parametres" element={<PrivateRoute><Paramètres /></PrivateRoute>} />
+                    <Route path="/payment-success" element={<PrivateRoute><PaymentSuccess /></PrivateRoute>} />
+                    <Route path="/abonnement" element={<PrivateRoute><Abo /></PrivateRoute>} />
+                    <Route path="/success" element={<PrivateRoute><Success /></PrivateRoute>} />
                     <Route path="/conditions-generales" element={<CGU />} />
                     <Route path="/mentions-legales" element={<MentionsLegales />} />
                     <Route path="/politique-de-confidentialite" element={<PolitiqueConfidentialite />} />
+                    <Route path="*" element={<Navigate to="/" />} />
                   </Routes>
                 </Box>
               </Flex>
