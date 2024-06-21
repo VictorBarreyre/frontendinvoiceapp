@@ -11,7 +11,6 @@ import {
   IconButton,
   Text,
   Button,
-  Alert,
   FormLabel,
   Input as ChakraInput,
   Link as Chakralink,
@@ -84,10 +83,10 @@ const Profil = () => {
           <Flex direction='column' >
             <Heading pb='1rem' mb={{ base: '0rem', lg: '2rem' }} borderBottom={{ base: 'unset', lg: '2px solid #efefef' }} fontSize={{ base: '22px', lg: '26px' }}>Votre Profil</Heading>
             {success && (
-              <ChakraText mt='1rem' textAlign='center' color="green">{success}</ChakraText>
+              <ChakraText mb='0.5rem' textAlign='left' color="green">{success}</ChakraText>
             )}
             {error && (
-              <ChakraText mt='1rem' textAlign='center' color="red">{error}</ChakraText>
+              <ChakraText mb='0.5rem' textAlign='left' color="red">{error}</ChakraText>
             )}
             <Flex direction='column' h={{ base: 'content', lg: 'content' }}  mb='1rem'>
               {Object.entries(userData).map(([field, value]) => {

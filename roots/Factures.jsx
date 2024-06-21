@@ -83,17 +83,17 @@ const Factures = () => {
                 <Table variant='simple'>
                   <Thead>
                     <Tr>
-                      <Th>Numéro de Facture</Th>
+                      <Th pl='0rem'>Numéro de Facture</Th>
                       <Th>Montant</Th>
-                      <Th textAlign='end'>Action</Th>
+                      <Th pr='0rem' textAlign='end'>Action</Th>
                     </Tr>
                   </Thead>
                   <Tbody>
                     {invoices.map(invoice => (
                       <Tr key={invoice._id}>
-                        <Td>Facture n°{invoice.number}</Td>
+                        <Td pl='0rem'>Facture n°{invoice.number}</Td>
                         <Td>{invoice.montant}{invoice.devise}</Td>
-                        <Td textAlign='end'>
+                        <Td pr='0rem' textAlign='end'>
                           <Chakralink color="#745FF2" onClick={() => handlePreviewClick(invoice.urlImage)}>
                             Voir la facture
                           </Chakralink>

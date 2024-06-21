@@ -151,25 +151,26 @@ const Paiements = () => {
   }
 
   if (subscriptionStatus === 'Actif' && subscriptionDetails) {
-  
+    const { plan, currency, current_period_start, current_period_end, status } = subscriptionDetails;
+
     return (
       <div className='flex-stepper'>
-      <div className="stepper-container">
-        <div className="tabs-container">
-          <Flex direction='column' h={{ base: '100vh', lg: 'content' }}>
-            <Heading pb='1rem' mb={{ base: '0rem', lg: '2rem' }} borderBottom={{ base: 'unset', lg: '2px solid #efefef' }} fontSize={{ base: '22px', lg: '26px' }}>
-            Votre  Abonnement
-            </Heading>
-          <Text mb='1rem' color='green.500'>Votre abonnement est actuellement actif.</Text>
-          <Text><strong>Plan:</strong> {subscriptionDetails.plan.id}</Text>
-          <Text><strong>Montant:</strong> {subscriptionDetails.plan.amount / 100} {subscriptionDetails.currency.toUpperCase()}</Text>
-          <Text><strong>Date de début:</strong> {new Date(subscriptionDetails.current_period_start * 1000).toLocaleDateString()}</Text>
-          <Text><strong>Date de fin:</strong> {new Date(subscriptionDetails.current_period_end * 1000).toLocaleDateString()}</Text>
-          <Link mt='2rem' color='red' onClick={handleCancelSubscription}>Résilier mon abonnement</Link>
-        </Flex>
+        <div className="stepper-container">
+          <div className="tabs-container">
+            <Flex direction='column' h={{ base: '100vh', lg: 'content' }}>
+              <Heading pb='1rem' mb={{ base: '0rem', lg: '2rem' }} borderBottom={{ base: 'unset', lg: '2px solid #efefef' }} fontSize={{ base: '22px', lg: '26px' }}>
+                Votre Abonnement
+              </Heading>
+              <Text mb='1rem' color='green.500'>Votre abonnement est actuellement actif.</Text>
+              <Text><strong>Montant:</strong> {plan.amount / 100} {currency.toUpperCase()}</Text>
+              <Text><strong>Date de début:</strong> {new Date(current_period_start * 1000).toLocaleDateString()}</Text>
+              <Text><strong>Date de fin:</strong> {new Date(current_period_end * 1000).toLocaleDateString()}</Text>
+              <Text><strong>Statut:</strong> {status}</Text>
+              <Link mt='2rem' color='red' onClick={handleCancelSubscription}>Résilier mon abonnement</Link>
+            </Flex>
+          </div>
         </div>
       </div>
-    </div>
     );
   }
 
@@ -180,33 +181,32 @@ const Paiements = () => {
   const stripeAppearance = {
     theme: 'flat',
     variables: {
-        fontFamily: 'SF Pro Display, sans-serif',
+      fontFamily: 'SF Pro Display, sans-serif',
     },
     rules: {
-        '.Label': {
-            'fontSize': 'SF Pro Display, sans-serif',
-            'fontWeight': '600',
-            'marginBottom': '0.5rem',
-        },
-        '.Input': {
-            'backgroundColor': '#fdfdfd',
-            'border': '1px solid #E2E8F0',
-            'boxShadow': 'rgba(174, 174, 192, 0.4) -1.5px -1.5px 3px 0px, rgb(255, 255, 255) 1.5px 1.5px 3px 0px',
-            'borderRadius': '4px',
-            'padding': '10px',
-        },
-        '.Tab': {
-          'backgroundColor': '#fdfdfd',
-          'border': '1px solid #e2e8f0',
-          'borderRadius': '0.4rem',
-
-        },
-        '.Tab--selected': {
-          'backgroundColor': '#745FF2',
-          'borderColor': '#745FF2',
-        },
+      '.Label': {
+        fontSize: 'SF Pro Display, sans-serif',
+        fontWeight: '600',
+        marginBottom: '0.5rem',
+      },
+      '.Input': {
+        backgroundColor: '#fdfdfd',
+        border: '1px solid #E2E8F0',
+        boxShadow: 'rgba(174, 174, 192, 0.4) -1.5px -1.5px 3px 0px, rgb(255, 255, 255) 1.5px 1.5px 3px 0px',
+        borderRadius: '4px',
+        padding: '10px',
+      },
+      '.Tab': {
+        backgroundColor: '#fdfdfd',
+        border: '1px solid #e2e8f0',
+        borderRadius: '0.4rem',
+      },
+      '.Tab--selected': {
+        backgroundColor: '#745FF2',
+        borderColor: '#745FF2',
+      },
     },
-};
+  };
 
   const monthlyPrice = product.prices.find(price => price.recurring?.interval === 'month');
   const yearlyPrice = product.prices.find(price => price.recurring?.interval === 'year');
@@ -218,7 +218,7 @@ const Paiements = () => {
         <div className="tabs-container">
           <Flex direction='column' h={{ base: '100vh', lg: 'content' }}>
             <Heading pb='1rem' mb={{ base: '0rem', lg: '2rem' }} borderBottom={{ base: 'unset', lg: '2px solid #efefef' }} fontSize={{ base: '22px', lg: '26px' }}>
-            Votre  Abonnement
+              Votre Abonnement
             </Heading>
 
             {subscriptionStatus === 'Actif' ? (
@@ -228,7 +228,7 @@ const Paiements = () => {
                 <Text color='red'>Vous n'avez pas d'abonnement actif.</Text>
                 <Text mt='0.5rem'>Pour continuer à créer et envoyer des factures automatiquement, n'hésitez pas à renouveler votre abonnement premium.</Text>
                 <Flex direction={{ base: 'column-reverse', lg: 'unset' }} justifyContent='space-between' alignItems='start' mt='3rem'>
-                  <Flex  direction='column' w={{ base: '100%', lg: '50%' }} gap='15px'>
+                  <Flex direction='column' w={{ base: '100%', lg: '50%' }} gap='15px'>
                     <Heading size="sm">Vos informations</Heading>
                     {clientSecret ? (
                       <Elements stripe={stripePromise} options={{ clientSecret, appearance: stripeAppearance }}>
