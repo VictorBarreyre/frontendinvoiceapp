@@ -15,6 +15,7 @@ import {
   FormLabel,
   Input as ChakraInput,
   Link as Chakralink,
+  Text as ChakraText,
 } from '@chakra-ui/react';
 import { EditIcon } from '@chakra-ui/icons';
 import { Link, useNavigate } from 'react-router-dom';
@@ -22,6 +23,7 @@ import { Link, useNavigate } from 'react-router-dom';
 const Profil = () => {
   const { user, updateUserProfile } = useAuth();
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const [userData, setUserData] = useState({
     _id: user ? user._id : '',
     email: user ? user.email : '',
@@ -48,6 +50,7 @@ const Profil = () => {
   const handleChange = (e, field) => {
     setUserData({ ...userData, [field]: e.target.value });
     setError('');
+    setSuccess('');
   };
 
   const handleFocus = (field) => {
@@ -58,8 +61,15 @@ const Profil = () => {
     setFocusedField(null);
   };
 
-  const handleUpdateClick = () => {
-    updateUserProfile(userData);
+  const handleUpdateClick = async () => {
+    try {
+      await updateUserProfile(userData);
+      setSuccess('Les informations ont été mises à jour avec succès.');
+      setError('');
+    } catch (error) {
+      setError('Une erreur est survenue lors de la mise à jour du profil.');
+      setSuccess('');
+    }
     console.log(userData);
   };
 
@@ -73,6 +83,12 @@ const Profil = () => {
         <div className="tabs-container">
           <Flex direction='column' >
             <Heading pb='1rem' mb={{ base: '0rem', lg: '2rem' }} borderBottom={{ base: 'unset', lg: '2px solid #efefef' }} fontSize={{ base: '22px', lg: '26px' }}>Votre Profil</Heading>
+            {success && (
+              <ChakraText mt='1rem' textAlign='center' color="green">{success}</ChakraText>
+            )}
+            {error && (
+              <ChakraText mt='1rem' textAlign='center' color="red">{error}</ChakraText>
+            )}
             <Flex direction='column' h={{ base: 'content', lg: 'content' }}  mb='1rem'>
               {Object.entries(userData).map(([field, value]) => {
                 if (field !== 'password' && field !== 'token' && field !== '_id') {
@@ -115,11 +131,7 @@ const Profil = () => {
                 return null;
               })}
             </Flex>
-            {error && (
-              <Alert status="error" mb="4">
-                {error}
-              </Alert>
-            )}
+           
             <Button onClick={handleUpdateClick} w={{ base: '100%', lg: '20rem' }} color='white' borderRadius='30px' pt='12px' pb='12px' pl='24px' pr='24px' backgroundColor='black' mt="4" colorScheme="gray" >
               Mettre les informations à jour
             </Button>

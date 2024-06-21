@@ -84,10 +84,9 @@ export const AuthProvider = ({ children }) => {
     }
   };
   
-
   const updateUserProfile = async (userData) => {
     const cleanUpdates = cleanObject(userData);  // Nettoyer les données de l'utilisateur
-
+  
     try {
       const response = await axios.put(`${import.meta.env.VITE_API_BASE_URL}/api/users/${userData._id}`, cleanUpdates, {
         headers: {
@@ -95,20 +94,20 @@ export const AuthProvider = ({ children }) => {
           'Authorization': `Bearer ${user.token}`
         }
       });
-
+  
       const updatedUser = response.data;
-      if (updatedUser.token) {  // Vérifiez si un nouveau token est renvoyé et mettez à jour si nécessaire
-        user.token = updatedUser.token;  // Mettez à jour le token dans l'état utilisateur actuel
-        localStorage.setItem('user', JSON.stringify({ ...user, token: updatedUser.token }));  // Mettez à jour le localStorage avec le nouveau token
-      } else {
-        localStorage.setItem('user', JSON.stringify(user));  // Pas de nouveau token, juste ré-enregistrer les données actuelles
-      }
-
-      setUser(user);  // Mettre à jour l'utilisateur dans l'état de l'application
+      const newUser = {
+        ...user,
+        ...updatedUser,
+        token: user.token  // Assurez-vous de conserver le token actuel
+      };
+      setUser(newUser);  // Mettre à jour l'utilisateur dans l'état de l'application
+      localStorage.setItem('user', JSON.stringify(newUser));  // Mettre à jour le localStorage avec les nouvelles données utilisateur
     } catch (error) {
       console.error('Failed to update profile:', error);
     }
   };
+  
 
   
   const deleteAccount = async (password) => {
