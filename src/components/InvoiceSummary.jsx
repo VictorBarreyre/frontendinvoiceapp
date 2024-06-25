@@ -150,7 +150,7 @@ const InvoiceSummary = () => {
                         </Flex>
                     </Flex>
 
-                    <Flex direction='column' width='100%' mb="2rem">
+                    <Flex direction='column' width='100%' mb="1rem" borderWidth='1px' borderRadius='5px' backgroundColor='#fdfdfd'>
                         <Heading {...styleProps.subHeading} ml='2.5vh' mb='2vh' size="md">{itemsTitle}</Heading>
                         {isMobile ? (
                             <>
@@ -245,19 +245,25 @@ const InvoiceSummary = () => {
                                 </Table>
                             </>
                         )}
-                    </Flex>
-
-                    <Text p='0' color='#4A5568' w='97%' mt={isMobile ? "0rem" : "1rem"}>
-                        Si toutes les informations sont correctes vous pouvez envoyer la facture, <br />
-                        {invoiceData.client.name} recevra un email avec celle-ci en pièce jointe.
-                    </Text>
-                    <Flex width='100%' alignItems='end' direction='column'  {...styleProps.totalSection}>
+                        <Flex pr='0.7rem' width='100%' alignItems='end' direction='column'  {...styleProps.totalSection}>
                         <Text {...styleProps.subHeading}>Sous-total HT : {invoiceData.subtotal} {invoiceData.devise}</Text>
                         <Text {...styleProps.subHeading}>
                             TVA : {invoiceData.vatRate} % ({invoiceData.vatAmount.toFixed(2)} {invoiceData.devise})
                         </Text>
                         <Text {...styleProps.heading}>Total TTC : {invoiceData.total} {invoiceData.devise}</Text>
                     </Flex>
+                    </Flex>
+                
+
+                    <Flex direction='column' width='fit-content' mb="1rem" borderRadius='5px' borderWidth='1px' pr='2.5rem' backgroundColor='#fdfdfd'>
+                    <Heading {...styleProps.subHeading} ml='2.5vh' mb='2vh' size="md">Vos informations bancaires</Heading>
+                    <Text pb='1rem' ml='2.5vh'> Votre IBAN : {invoiceData.issuer.iban}</Text>
+                    </Flex>
+
+                    <Text pb='0' color='#4A5568' w='97%' mt={isMobile ? "0rem" : "1rem"}>
+                        Si toutes les informations sont correctes vous pouvez envoyer la facture, {invoiceData.client.name} recevra un email avec celle-ci en pièce jointe.
+                    </Text>
+                 
                 </VStack>
             </Box>
         </>
