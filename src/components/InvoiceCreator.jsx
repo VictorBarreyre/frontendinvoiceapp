@@ -363,11 +363,11 @@ const InvoiceCreator = ({ totalError }) => {
             </Table>
           )}
         </Flex>
-        <Flex direction="column" alignItems='start' mt="2rem">
+        <Flex direction="column" alignItems='start' mt={isMobile ? "2rem" : "1rem"}>
           <Heading mb='1rem' size="sm">Saisissez votre RIB/IBAN</Heading>
           <Input
             _focus={{ borderColor: "#745FF2", boxShadow: "none" }}
-            className={getClassForField(invoiceData.issuer.iban)}
+            className='neue-down'
             placeholder="Votre IBAN"
             name="issuer.iban"
             value={invoiceData.issuer.iban}

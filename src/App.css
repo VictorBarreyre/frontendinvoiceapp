@@ -203,7 +203,6 @@
   }
 
   .tabs-container {
-
     width: 100vw;
     padding-left: 1rem;
     padding-right: 1rem;
@@ -233,7 +232,7 @@
 
 
   .tab-panel {
-    margin-bottom: 0rem;
+    margin-bottom: 2rem;
   }
 }
 

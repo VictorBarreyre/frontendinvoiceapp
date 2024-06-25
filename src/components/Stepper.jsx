@@ -81,7 +81,6 @@ const Stepper = () => {
       const isIssuerAdresseFilled = invoiceData.issuer.adresse.trim() !== '';
       const isIssuerSiretFilled = invoiceData.issuer.siret.trim() !== '';
       const isIssuerEmailFilled = invoiceData.issuer.email.trim() !== '';
-      const isIssuerIbanFilled = invoiceData.issuer.iban.trim() !== '';
       const isClientAdresseFilled = invoiceData.client.adresse.trim() !== '';
       const isClientSiretFilled = invoiceData.client.siret.trim() !== '';
       const isClientEmailFilled = invoiceData.client.email.trim() !== '';
@@ -93,35 +92,15 @@ const Stepper = () => {
       const isUserEmailFilled = user && user.email && user.email.trim() !== '';
       const isUserAdresseFilled = user && user.adresse && user.adresse.trim() !== '';
       const isUserSiretFilled = user && user.siret && user.siret.trim() !== '';
-      const isUserIbanFilled = user && user.iban && user.iban.trim() !== '';
+
 
       const isNextStepAvailable = isNumberFilled && isIssuerNameFilled && isClientNameFilled &&
-        isIssuerAdresseFilled && isIssuerSiretFilled && isIssuerEmailFilled && isIssuerIbanFilled &&
+        isIssuerAdresseFilled && isIssuerSiretFilled && isIssuerEmailFilled && 
         isClientAdresseFilled && isClientSiretFilled && isClientEmailFilled && areQuantitiesValid && isTotalValid &&
-        isUserNameFilled && isUserEmailFilled && isUserAdresseFilled && isUserSiretFilled && isUserIbanFilled;
-
-      console.log('Check Next Step Availability:', {
-        isNumberFilled,
-        isIssuerNameFilled,
-        isClientNameFilled,
-        isIssuerAdresseFilled,
-        isIssuerSiretFilled,
-        isIssuerEmailFilled,
-        isIssuerIbanFilled,
-        isClientAdresseFilled,
-        isClientSiretFilled,
-        isClientEmailFilled,
-        areQuantitiesValid,
-        isTotalValid,
-        isUserNameFilled,
-        isUserEmailFilled,
-        isUserAdresseFilled,
-        isUserSiretFilled,
-        isUserIbanFilled
-      });
+        isUserNameFilled && isUserEmailFilled && isUserAdresseFilled && isUserSiretFilled;
 
       setIsStepNextAvailable(isNextStepAvailable);
-      console.log('Is Step Next Available:', isNextStepAvailable);
+
     };
 
     checkStepNextAvailability();
