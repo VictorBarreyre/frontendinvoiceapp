@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useAuth } from './AuthContext';
 import InvoicePDF from '../components/InvoicePDF';
-import { pdf, PDFViewer } from '@react-pdf/renderer';
+import { pdf } from '@react-pdf/renderer';
 import axios from 'axios';
 
 const InvoiceDataContext = createContext();
@@ -37,7 +37,8 @@ export const InvoiceDataProvider = ({ children }) => {
     });
 
     useEffect(() => {
-        console.log(user)
+        console.log('User:', user);
+        console.log('Invoice Data before update:', invoiceData);
         if (user) {
             setInvoiceData(prevData => ({
                 ...prevData,
@@ -49,9 +50,9 @@ export const InvoiceDataProvider = ({ children }) => {
                     iban: user.iban || ''
                 }
             }));
+            console.log('Invoice Data after update:', invoiceData);
         }
     }, [user]);
-
 
     const [requiredFieldsValid, setRequiredFieldsValid] = useState({
         number: false,
@@ -115,7 +116,6 @@ export const InvoiceDataProvider = ({ children }) => {
         return /\S+@\S+\.\S+/.test(email);
     };
 
-
     const createCheckoutSession = async (email, name, priceId, onSuccess, onError) => {
         try {
             const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/abonnement/create-checkout-session`, {
@@ -132,18 +132,17 @@ export const InvoiceDataProvider = ({ children }) => {
             }
     
             const { clientSecret, sessionId } = await response.json();
-        if (clientSecret) {
-            if (onSuccess) onSuccess(clientSecret, sessionId);
-        } else {
-            console.error('No clientSecret returned from backend.');
-            if (onError) onError('No clientSecret returned from backend.');
+            if (clientSecret) {
+                if (onSuccess) onSuccess(clientSecret, sessionId);
+            } else {
+                console.error('No clientSecret returned from backend.');
+                if (onError) onError('No clientSecret returned from backend.');
+            }
+        } catch (error) {
+            console.error('Error creating checkout session:', error);
+            if (onError) onError(error.message);
         }
-    } catch (error) {
-        console.error('Error creating checkout session:', error);
-        if (onError) onError(error.message);
-    }
     };
-    
     
     const handleSendInvoice = () => {
         const { email, name } = invoiceData.issuer;
@@ -161,83 +160,74 @@ export const InvoiceDataProvider = ({ children }) => {
         });
     };
     
-
     const checkActiveSubscription = async (email) => {
         try {
-          const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/abonnement/check-active-subscription`, { email }, {
-            headers: { 'Content-Type': 'application/json' }
-          });
-      
-          const { hasActiveSubscription, subscription } = response.data;
-          return { hasActiveSubscription, subscription };
+            const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/abonnement/check-active-subscription`, { email }, {
+                headers: { 'Content-Type': 'application/json' }
+            });
+        
+            const { hasActiveSubscription, subscription } = response.data;
+            return { hasActiveSubscription, subscription };
         } catch (error) {
-          console.error('Error checking subscription:', error.message);
-          return { hasActiveSubscription: false, subscription: null };
+            console.error('Error checking subscription:', error.message);
+            return { hasActiveSubscription: false, subscription: null };
         }
-      };
-      
+    };
 
-      const handleInvoiceActionSendMail = async (invoiceData, onSuccess, onError) => {
+    const handleInvoiceActionSendMail = async (invoiceData, onSuccess, onError) => {
         const { number, devise, issuer, client, total } = invoiceData;
         const areAllRequiredFieldsValid = number !== '' && issuer.name !== '' && client.name !== '';
-      
+    
         if (!areAllRequiredFieldsValid) {
-          console.log('Champs requis manquants ou invalides');
-          return;
+            console.log('Champs requis manquants ou invalides');
+            return;
         }
-      
+    
         try {
-          const file = <InvoicePDF invoiceData={invoiceData} />;
-          const asPDF = pdf([]);
-          asPDF.updateContainer(file);
-          const pdfBlob = await asPDF.toBlob();
-      
-          if (client.email && isValidEmail(client.email)) {
-            const factureIdResponse = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/email/generateFactureId`);
-            const { factureId } = factureIdResponse.data;
-      
-            const confirmationLink = `http://localhost:5173/confirmation?facture=${factureId}&montant=${total}`;
-            const messageEmail = `Cher ${client.name},\n\nVeuillez trouver ci-joint votre facture n° ${number}.\n\nPour confirmer votre accord et signer électroniquement le contrat, veuillez cliquer sur le lien ci-dessous :\n\n${confirmationLink}\n\nNous vous remercions pour votre confiance et restons à votre disposition pour toute information complémentaire.\n\nCordialement,\n${issuer.name}`;
-      
-            const formData = new FormData();
-            formData.append('file', pdfBlob, `Facture-${number}.pdf`);
-            formData.append('number', number);
-            formData.append('email', client.email);
-            formData.append('subject', 'Votre Facture');
-            formData.append('message', messageEmail);
-            formData.append('montant', total);
-            formData.append('devise', devise);
-            formData.append('emetteur', JSON.stringify(issuer));
-            formData.append('destinataire', JSON.stringify(client));
-            formData.append('factureId', factureId);
-      
-            const headers = {
-              'Content-Type': 'multipart/form-data'
-            };
-      
-            if (user && user.token) {
-              headers['Authorization'] = `Bearer ${user.token}`;
-            }
-      
-            const createAndSendEmailResponse = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/email/sendEmail`, formData, { headers });
-      
-            if (createAndSendEmailResponse.status === 200) {
-              console.log("Facture créée et email envoyé avec succès !");
-              onSuccess();
+            const file = <InvoicePDF invoiceData={invoiceData} />;
+            const asPDF = pdf([]);
+            asPDF.updateContainer(file);
+            const pdfBlob = await asPDF.toBlob();
+    
+            if (client.email && isValidEmail(client.email)) {
+                const factureIdResponse = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/email/generateFactureId`);
+                const { factureId } = factureIdResponse.data;
+    
+                const formData = new FormData();
+                formData.append('file', pdfBlob, `Facture-${number}.pdf`);
+                formData.append('number', number);
+                formData.append('email', client.email);
+                formData.append('subject', 'Votre Facture');
+                formData.append('montant', total);
+                formData.append('devise', devise);
+                formData.append('emetteur', JSON.stringify(issuer));
+                formData.append('destinataire', JSON.stringify(client));
+                formData.append('factureId', factureId);
+    
+                const headers = {
+                    'Content-Type': 'multipart/form-data'
+                };
+    
+                if (user && user.token) {
+                    headers['Authorization'] = `Bearer ${user.token}`;
+                }
+    
+                const createAndSendEmailResponse = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/email/sendEmail`, formData, { headers });
+    
+                if (createAndSendEmailResponse.status === 200) {
+                    console.log("Facture créée et email envoyé avec succès !");
+                    onSuccess();
+                } else {
+                    console.log('Erreur lors de la création de la facture et de l’envoi de l’email', createAndSendEmailResponse.data);
+                    onError();
+                }
             } else {
-              console.log('Erreur lors de la création de la facture et de l’envoi de l’email', createAndSendEmailResponse.data);
-              onError();
+                console.log('Email invalide ou absent, téléchargement de la facture...');
             }
-          } else {
-            console.log('Email invalide ou absent, téléchargement de la facture...');
-          }
         } catch (error) {
-          console.error('Erreur lors de la génération ou de l’envoi du PDF', error);
+            console.error('Erreur lors de la génération ou de l’envoi du PDF', error);
         }
-      };
-      
-      
-      
+    };
 
     return (
         <InvoiceDataContext.Provider value={{

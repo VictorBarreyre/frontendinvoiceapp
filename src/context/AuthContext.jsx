@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useInvoiceData } from './InvoiceDataContext';
 import axios from 'axios';
 
 const AuthContext = createContext(null); // Utiliser null pour une valeur initiale claire
@@ -21,8 +20,8 @@ export const AuthProvider = ({ children }) => {
         iban: storedUser.iban || '',
         ...storedUser // Cela garantit que les valeurs non spécifiées seront prises depuis le localStorage
       };
+      console.log('User Loaded from Local Storage:', completeUser);
       setUser(completeUser);
-      console.log(completeUser)
     }
   }, []);
 
@@ -38,7 +37,7 @@ export const AuthProvider = ({ children }) => {
       ...userData
     };
     setUser(completeUser);
-    console.log(userData)
+    console.log('User Logged in:', completeUser);
     localStorage.setItem('user', JSON.stringify(completeUser));
   };
 
@@ -62,7 +61,6 @@ export const AuthProvider = ({ children }) => {
     }
     return newObj;
   }
-
 
   const fetchUserInvoices = async () => {
     if (!user) {
@@ -107,9 +105,7 @@ export const AuthProvider = ({ children }) => {
       console.error('Failed to update profile:', error);
     }
   };
-  
 
-  
   const deleteAccount = async (password) => {
     try {
       const response = await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/api/users/${user._id}`, {
@@ -130,7 +126,6 @@ export const AuthProvider = ({ children }) => {
       throw error;
     }
   };
-  
 
   return (
     <AuthContext.Provider value={{ user, setUser, login, logout, updateUserProfile, deleteAccount, fetchUserInvoices }}>

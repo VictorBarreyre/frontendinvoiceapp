@@ -7,6 +7,7 @@ import PaymentScheduleForm from './PaymentScheduleForm';
 import InvoiceSummary from './InvoiceSummary';
 import { useTheme } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 const Stepper = () => {
   const [tabIndex, setTabIndex] = useState(0);
@@ -22,6 +23,8 @@ const Stepper = () => {
     handleInvoiceActionSendMail,
     checkActiveSubscription
   } = useInvoiceData();
+
+  const { user } = useAuth();
   const [isStepNextAvailable, setIsStepNextAvailable] = useState(false);
   const [showError, setShowError] = useState(false);
   const theme = useTheme();
@@ -58,8 +61,7 @@ const Stepper = () => {
         navigate('/abonnement');
         setIsSubmitting(false);
     }
-};
-
+  };
 
   useEffect(() => {
     const handleResize = () => {
@@ -86,13 +88,45 @@ const Stepper = () => {
       const isClientEmailFilled = invoiceData.client.email.trim() !== '';
       const areQuantitiesValid = invoiceData.items.every(item => item.quantity > 0);
       const isTotalValid = invoiceData.total > 0;
-      return isNumberFilled && isIssuerNameFilled && isClientNameFilled &&
+
+      // Vérification des données utilisateur
+      const isUserNameFilled = user && user.name && user.name.trim() !== '';
+      const isUserEmailFilled = user && user.email && user.email.trim() !== '';
+      const isUserAdresseFilled = user && user.adresse && user.adresse.trim() !== '';
+      const isUserSiretFilled = user && user.siret && user.siret.trim() !== '';
+      const isUserIbanFilled = user && user.iban && user.iban.trim() !== '';
+
+      const isNextStepAvailable = isNumberFilled && isIssuerNameFilled && isClientNameFilled &&
         isIssuerAdresseFilled && isIssuerSiretFilled && isIssuerEmailFilled && isIssuerIbanFilled &&
-        isClientAdresseFilled && isClientSiretFilled && isClientEmailFilled && areQuantitiesValid && isTotalValid;
+        isClientAdresseFilled && isClientSiretFilled && isClientEmailFilled && areQuantitiesValid && isTotalValid &&
+        isUserNameFilled && isUserEmailFilled && isUserAdresseFilled && isUserSiretFilled && isUserIbanFilled;
+
+      console.log('Check Next Step Availability:', {
+        isNumberFilled,
+        isIssuerNameFilled,
+        isClientNameFilled,
+        isIssuerAdresseFilled,
+        isIssuerSiretFilled,
+        isIssuerEmailFilled,
+        isIssuerIbanFilled,
+        isClientAdresseFilled,
+        isClientSiretFilled,
+        isClientEmailFilled,
+        areQuantitiesValid,
+        isTotalValid,
+        isUserNameFilled,
+        isUserEmailFilled,
+        isUserAdresseFilled,
+        isUserSiretFilled,
+        isUserIbanFilled
+      });
+
+      setIsStepNextAvailable(isNextStepAvailable);
+      console.log('Is Step Next Available:', isNextStepAvailable);
     };
-    setShowError(false);
-    setIsStepNextAvailable(checkStepNextAvailability());
-  }, [invoiceData]);
+
+    checkStepNextAvailability();
+  }, [invoiceData, user]);
 
   const handleTabClick = (index) => {
     if (index > 0 && !isStepNextAvailable) {
@@ -114,8 +148,7 @@ const Stepper = () => {
         setAttemptedNavigation(true);
         setShowError(true);
     }
-};
-
+  };
 
   useEffect(() => {
     updateButtonLabel();
@@ -205,17 +238,6 @@ const Stepper = () => {
     const mobileTexts = ["Votre facture", "Vos échéances", "Envoi"];
     return isMobile ? mobileTexts[index] : texts[index];
   };
-
-  useEffect(() => {
-    const checkStepNextAvailability = () => {
-        return Object.values(requiredFieldsValid).every(value => value === true) &&
-            invoiceData.items.every(item => item.quantity > 0) &&
-            invoiceData.total > 0;
-    };
-    setShowError(false);
-    setIsStepNextAvailable(checkStepNextAvailability());
-}, [invoiceData, requiredFieldsValid]);
-
 
   return (
     <div className='flex-stepper'>
