@@ -3,8 +3,7 @@ import { useInvoiceData } from '../context/InvoiceDataContext';
 import InvoiceCreator from './InvoiceCreator';
 import { Heading, Text, Button } from '@chakra-ui/react';
 import { ArrowForwardIcon } from '@chakra-ui/icons';
-import PaymentScheduleForm from './PaymentScheduleForm';
-import InvoiceSummary from './InvoiceSummary';
+import InvoiceSummary from './InvoiceSummary'; // Suppression de PaymentScheduleForm
 import { useTheme } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -140,7 +139,7 @@ const Stepper = () => {
 
   const handleNavigateTo = () => {
     const isTotalValid = invoiceData.total > 0;
-    if (isStepNextAvailable && tabIndex < 2 && isTotalValid) {
+    if (isStepNextAvailable && tabIndex < 1 && isTotalValid) { // Changement ici pour tabIndex < 1
         setTabIndex(prevTabIndex => prevTabIndex + 1);
         setShowError(false);
     } else {
@@ -157,16 +156,13 @@ const Stepper = () => {
   const updateButtonLabel = () => {
     switch (tabIndex) {
       case 0:
-        setButtonLabel("Définir mes échéances de paiement");
+        setButtonLabel("Finalisez et envoyez votre facture"); // Changement du label du bouton
         break;
       case 1:
-        setButtonLabel("Finalisez et envoyez votre facture");
-        break;
-      case 2:
         setButtonLabel("Envoyer ma facture");
         break;
       default:
-        setButtonLabel("Définir mes échéances de paiement");
+        setButtonLabel("Finalisez et envoyez votre facture");
     }
   };
 
@@ -190,16 +186,6 @@ const Stepper = () => {
 
   const renderButton = () => {
     if (tabIndex === 1) {
-      return remainingPercentage > 0 ? (
-        <Button borderRadius='30px' mt="4" colorScheme="red" w={{ base: '100%', lg: 'unset' }} isDisabled>
-          Pourcentage restant à attribuer : {remainingPercentage}%
-        </Button>
-      ) : (
-        <Button onClick={handleSubmit} rightIcon={<ArrowForwardIcon />} w={{ base: '100%', lg: 'unset' }} color='white' borderRadius='30px' backgroundColor='black'>
-          {buttonLabel}
-        </Button>
-      );
-    } else if (tabIndex === 2) {
       return (
         <Button onClick={handleSendInvoice} disabled={isSubmitting} rightIcon={<ArrowForwardIcon />} w={{ base: '100%', lg: 'unset' }} color='white' borderRadius='30px' backgroundColor='black'>
           {buttonLabel}
@@ -215,27 +201,21 @@ const Stepper = () => {
   };
 
   const handleSubmit = () => {
-    if (remainingPercentage <= 0) {
-      handleNavigateTo();
-    } else {
-      setShowError(true);
-    }
+    handleNavigateTo(); // Suppression de la vérification du pourcentage restant
   };
 
   const getHeadingText = (index) => {
     switch (index) {
       case 0:
         return "Créez votre facture en ligne";
-      case 1:
-        return "Vos échéances de paiement";
       default:
         return "Envoyez votre facture";
     }
   };
 
   const tabText = (index, isMobile) => {
-    const texts = ["Votre Facture", "Vos échéances de paiements", "Résumé & Envoi"];
-    const mobileTexts = ["Votre facture", "Vos échéances", "Envoi"];
+    const texts = ["Votre Facture", "Résumé & Envoi"];
+    const mobileTexts = ["Votre facture", "Envoi"];
     return isMobile ? mobileTexts[index] : texts[index];
   };
 
@@ -249,13 +229,11 @@ const Stepper = () => {
           <div className="tab-list">
             <button className={`tab ${tabIndex === 0 ? 'active' : ''}`} onClick={() => handleTabClick(0)}>{tabText(0, isMobile)}</button>
             <button className={`tab ${tabIndex === 1 ? 'active' : ''} ${!isStepNextAvailable ? 'disabled' : 'abled'}`} onClick={() => handleTabClick(1)}>{tabText(1, isMobile)}</button>
-            <button className={`tab ${tabIndex === 2 ? 'active' : ''} ${!isStepNextAvailable ? 'disabled' : 'abled'}`} onClick={() => handleTabClick(2)}>{tabText(2, isMobile)}</button>
           </div>
 
           <div className="tab-panel">
             {tabIndex === 0 && <InvoiceCreator totalError={totalError} errorMsg={errorMsg} handleNavigateTo={handleNavigateTo} attemptedNavigation={attemptedNavigation} />}
-            {tabIndex === 1 && <PaymentScheduleForm handleNavigateTo={handleNavigateTo} />}
-            {tabIndex === 2 && <InvoiceSummary />}
+            {tabIndex === 1 && <InvoiceSummary />}
           </div>
           {renderButton()}
         </div>

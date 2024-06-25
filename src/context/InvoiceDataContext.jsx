@@ -20,7 +20,7 @@ export const InvoiceDataProvider = ({ children }) => {
             adresse: '',
             siret: '',
             email: '',
-            iban: ''
+            iban: '',
         },
         client: {
             name: 'Victor Barreyre',

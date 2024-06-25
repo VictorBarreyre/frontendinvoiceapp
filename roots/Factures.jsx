@@ -36,8 +36,8 @@ const Factures = () => {
     <div className='flex-stepper'>
       <div className="stepper-container">
         <div className="tabs-container">
-          <Flex direction='column' h={{ base: '100vh', lg: 'content' }}>
-            <Heading pb='1rem' mb={{ base: '0rem', lg: '2rem' }} borderBottom={{ base: 'unset', lg: '2px solid #efefef' }} fontSize={{ base: '22px', lg: '26px' }}>Vos Factures</Heading>
+          <Flex direction='column' h={{ base: 'content', lg: 'content' }}>
+            <Heading pb='1rem' mb={{ base: '0rem', lg: '2rem' }} borderBottom={{ base: 'unset', lg: '2px solid #efefef' }} fontSize={{ base: '22px', lg: '26px' }}>Vos factures</Heading>
             {message && <Text>{message}</Text>}
 
             {isMobile ? (
@@ -64,7 +64,7 @@ const Factures = () => {
                     fontSize="xs"
                     color="gray.600">Montant</Text>
                 </Flex>
-                {invoices.map(invoice => (
+                {invoices.slice().reverse().map(invoice => (
                   <Box key={invoice._id} borderBottom="1px solid #efefef" pt='1rem' pb='1rem' mb='1rem'>
                     <Flex justifyContent="space-between">
                       <Text>Facture n°{invoice.number}</Text>
@@ -89,7 +89,7 @@ const Factures = () => {
                     </Tr>
                   </Thead>
                   <Tbody>
-                    {invoices.map(invoice => (
+                  {invoices.slice().reverse().map(invoice => (
                       <Tr key={invoice._id}>
                         <Td pl='0rem'>Facture n°{invoice.number}</Td>
                         <Td>{invoice.montant}{invoice.devise}</Td>

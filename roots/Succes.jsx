@@ -14,8 +14,8 @@ const SuccessPage = () => {
         <div className="tabs-container">
           <Heading fontSize={{ base: '24px', lg: '26px' }}>Facture envoyée avec Succès!</Heading>
           <Text>Votre facture a été envoyée avec succès à l'adresse email du destinataire.</Text>
-          <Text>Vous pouvez aussi définir des relances de paiement par mail à {invoiceData.client.name}</Text>
-          <Text>Les relances sont définies en fonction des dates de vos échéances</Text>
+          <Text>{invoiceData.client.name} recevra des relances de paiement par email tous les 30 jours après l'émission de votre facture, jusqu'à ce que vous changiez le statut de celle-ci.</Text>
+          <Text>Vous pouvez retrouver toutes vos factures émises sur notre page </Text> <Link to="/factures">Vos factures</Link>
            <Flex  mt='2rem' w='fit-content' direction='column'>        
           <Link to="/">Retour à la page d'accueil</Link>
           </Flex>
