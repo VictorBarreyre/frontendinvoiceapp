@@ -70,6 +70,7 @@ export const InvoiceDataProvider = ({ children }) => {
     const [isTotalPercentage100, setIsTotalPercentage100] = useState(false);
     const [remainingPercentage, setRemainingPercentage] = useState(100);
     const [sendButtonClicked, setSendButtonClicked] = useState(null);
+    const [reminderFrequency, setReminderFrequency] = useState(null);
 
     const handleInvoiceDataChange = (newData) => {
         setInvoiceData(newData);
@@ -264,7 +265,9 @@ export const InvoiceDataProvider = ({ children }) => {
             createCheckoutSession,
             sendButtonClicked,
             setSendButtonClicked,
-            checkActiveSubscription
+            checkActiveSubscription,
+            reminderFrequency,
+            setReminderFrequency
         }}>
             {children}
         </InvoiceDataContext.Provider>
