@@ -36,17 +36,22 @@ const Factures = () => {
 
   const handleDeleteInvoice = async (invoiceId) => {
     try {
-      await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/users/delete-invoice`, { invoiceId }, {
+      const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/users/delete-invoices`, { invoiceId }, {
         headers: {
           Authorization: `Bearer ${user.token}`
         }
       });
-      setInvoices(prevInvoices => prevInvoices.filter(invoice => invoice._id !== invoiceId));
-      console.log('Invoice deleted:', invoiceId);
+      if (response.status === 200) {
+        setInvoices(prevInvoices => prevInvoices.filter(invoice => invoice._id !== invoiceId));
+        console.log('Invoice deleted:', invoiceId);
+      } else {
+        console.error('Failed to delete invoice:', response.data);
+      }
     } catch (error) {
       console.error('Error deleting invoice:', error);
     }
   };
+  
 
   const handleMarkAsPaid = async (invoiceId) => {
     try {
@@ -64,6 +69,25 @@ const Factures = () => {
       console.log('Invoice marked as paid:', invoiceId);
     } catch (error) {
       console.error('Error marking invoice as paid:', error);
+    }
+  };
+
+  const handleMarkAsUnpaid = async (invoiceId) => {
+    try {
+      await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/users/mark-invoice-unpaid`, { invoiceId }, {
+        headers: {
+          Authorization: `Bearer ${user.token}`
+        }
+      });
+      setInvoices(prevInvoices => prevInvoices.map(invoice => {
+        if (invoice._id === invoiceId) {
+          return { ...invoice, status: 'en attente' };
+        }
+        return invoice;
+      }));
+      console.log('Invoice marked as unpaid:', invoiceId);
+    } catch (error) {
+      console.error('Error marking invoice as unpaid:', error);
     }
   };
 
@@ -94,9 +118,15 @@ const Factures = () => {
                       <Chakralink color="#745FF2" onClick={() => handlePreviewClick(invoice.urlImage)}>
                         Voir la facture
                       </Chakralink>
-                      <Chakralink color="#745FF2" onClick={() => handleMarkAsPaid(invoice._id)}>
-                        Marquer comme traitée
-                      </Chakralink>
+                      {invoice.status === 'paid' ? (
+                        <Chakralink color="#745FF2" onClick={() => handleMarkAsUnpaid(invoice._id)}>
+                          Marquer comme non traitée
+                        </Chakralink>
+                      ) : (
+                        <Chakralink color="#745FF2" onClick={() => handleMarkAsPaid(invoice._id)}>
+                          Marquer comme traitée
+                        </Chakralink>
+                      )}
                     </Flex>
                   </Box>
                 ))}
@@ -121,9 +151,15 @@ const Factures = () => {
                             <Chakralink color="#745FF2" onClick={() => handlePreviewClick(invoice.urlImage)}>
                               Voir la facture
                             </Chakralink>
-                            <Chakralink color="#745FF2" onClick={() => handleMarkAsPaid(invoice._id)}>
-                              Marquer comme traitée
-                            </Chakralink>
+                            {invoice.status === 'paid' ? (
+                              <Chakralink color="#745FF2" onClick={() => handleMarkAsUnpaid(invoice._id)}>
+                                Marquer comme non traitée
+                              </Chakralink>
+                            ) : (
+                              <Chakralink color="#745FF2" onClick={() => handleMarkAsPaid(invoice._id)}>
+                                Marquer comme traitée
+                              </Chakralink>
+                            )}
                             <IconButton
                               aria-label="Supprimer la facture"
                               icon={<DeleteIcon />}
