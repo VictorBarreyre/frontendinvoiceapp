@@ -70,7 +70,7 @@ export const InvoiceDataProvider = ({ children }) => {
     const [isTotalPercentage100, setIsTotalPercentage100] = useState(false);
     const [remainingPercentage, setRemainingPercentage] = useState(100);
     const [sendButtonClicked, setSendButtonClicked] = useState(null);
-    const [reminderFrequency, setReminderFrequency] = useState(null);
+    const [reminderFrequency, setReminderFrequency] = useState('');
 
     const handleInvoiceDataChange = (newData) => {
         setInvoiceData(newData);
@@ -84,6 +84,8 @@ export const InvoiceDataProvider = ({ children }) => {
             return valueAsString.trim() === '' && attemptedNavigation ? 'emptyinput' : 'classicinput';
         }
     };
+
+    
 
     const handleChange = (e) => {
         const { name, value } = e.target;
