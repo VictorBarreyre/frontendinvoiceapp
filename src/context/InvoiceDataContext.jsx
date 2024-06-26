@@ -226,8 +226,10 @@ export const InvoiceDataProvider = ({ children }) => {
             }
         } catch (error) {
             console.error('Erreur lors de la génération ou de l’envoi du PDF', error);
+            onError(); // Appeler onError en cas d'erreur
         }
     };
+    
 
     return (
         <InvoiceDataContext.Provider value={{
