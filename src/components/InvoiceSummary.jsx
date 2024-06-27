@@ -16,14 +16,28 @@ import {
 import { useInvoiceData } from '../context/InvoiceDataContext';
 import { useTheme } from '@chakra-ui/react';
 
-
 const InvoiceSummary = () => {
-    const { invoiceData, payments } = useInvoiceData();
+    const { invoiceData, payments, reminderFrequency } = useInvoiceData();
     const theme = useTheme();
     // Accéder au point de rupture 'md' à partir du thème
     const breakpointMd = parseInt(theme.breakpoints.md, 10);
-
     const [isMobile, setIsMobile] = useState(window.innerWidth < breakpointMd);
+    const [reminderText, setReminderText] = useState('');
+
+    const reminderFrequencyText = () => {
+        const frequency = Number(reminderFrequency); // Convertir reminderFrequency en nombre
+        if (frequency === 1) {
+            return 'tous les jours';
+        } else if (frequency === 7) {
+            return 'toutes les semaines';
+        } else if (frequency === 15) {
+            return 'tous les 15 jours';
+        } else if (frequency === 30) {
+            return 'tous les mois';
+        } else {
+            return 'Fréquence inconnue';
+        }
+    };
 
     useEffect(() => {
         const handleResize = () => {
@@ -33,11 +47,13 @@ const InvoiceSummary = () => {
         // Ajoute l'écouteur d'événement
         window.addEventListener('resize', handleResize);
 
-        console.log(invoiceData);
-
         // Nettoie l'écouteur d'événement lors du démontage du composant
         return () => window.removeEventListener('resize', handleResize);
-    }, [breakpointMd]); // S'exécute à nouveau seulement si breakpointMd change
+    }, [breakpointMd]);
+
+    useEffect(() => {
+        setReminderText(reminderFrequencyText());
+    }, [reminderFrequency]);
 
     // Styles directement inspirés du composant InvoicePDF adaptés pour Chakra UI
     const styleProps = {
@@ -246,24 +262,29 @@ const InvoiceSummary = () => {
                             </>
                         )}
                         <Flex pr='0.7rem' width='100%' alignItems='end' direction='column'  {...styleProps.totalSection}>
-                        <Text {...styleProps.subHeading}>Sous-total HT : {invoiceData.subtotal} {invoiceData.devise}</Text>
-                        <Text {...styleProps.subHeading}>
-                            TVA : {invoiceData.vatRate} % ({invoiceData.vatAmount.toFixed(2)} {invoiceData.devise})
-                        </Text>
-                        <Text {...styleProps.heading}>Total TTC : {invoiceData.total} {invoiceData.devise}</Text>
+                            <Text {...styleProps.subHeading}>Sous-total HT : {invoiceData.subtotal} {invoiceData.devise}</Text>
+                            <Text {...styleProps.subHeading}>
+                                TVA : {invoiceData.vatRate} % ({invoiceData.vatAmount.toFixed(2)} {invoiceData.devise})
+                            </Text>
+                            <Text {...styleProps.heading}>Total TTC : {invoiceData.total} {invoiceData.devise}</Text>
+                        </Flex>
                     </Flex>
-                    </Flex>
-                
 
-                    <Flex direction='column' width='fit-content' mb="1rem" borderRadius='5px' borderWidth='1px' pr='2.5rem' backgroundColor='#fdfdfd'>
-                    <Heading {...styleProps.subHeading} ml='2.5vh' mb='2vh' size="md">Vos informations bancaires</Heading>
-                    <Text pb='1rem' ml='2.5vh'> Votre IBAN : {invoiceData.issuer.iban}</Text>
+                    <Flex flexWrap='wrap' justifyContent='space-between' width='100%'>
+                        <Flex direction='column' width='fit-content' mb="1rem" borderRadius='5px' borderWidth='1px' pr='2.5rem' backgroundColor='#fdfdfd'>
+                            <Heading {...styleProps.subHeading} ml='2.5vh' mb='2vh' size="md">Vos informations bancaires</Heading>
+                            <Text color='#4A5568' pb='1rem' ml='2.5vh'> Votre IBAN : {invoiceData.issuer.iban}</Text>
+                        </Flex>
+
+                        <Flex direction='column' width='fit-content' mb="1rem" borderRadius='5px' borderWidth='1px' pr='2.5rem' backgroundColor='#fdfdfd'>
+                            <Heading {...styleProps.subHeading} ml='2.5vh' mb='2vh' size="md">Votre fréquence de relance par mail</Heading>
+                            <Text color='#4A5568' pb='1rem' ml='2.5vh'> Une email de rappel avec la facture sera renvoyer {reminderText}</Text>
+                        </Flex>
                     </Flex>
 
                     <Text pb='0' color='#4A5568' w='97%' mt={isMobile ? "0rem" : "1rem"}>
                         Si toutes les informations sont correctes vous pouvez envoyer la facture, {invoiceData.client.name} recevra un email avec celle-ci en pièce jointe.
                     </Text>
-                 
                 </VStack>
             </Box>
         </>

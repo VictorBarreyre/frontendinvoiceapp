@@ -14,9 +14,11 @@ const PaymentScheduleForm = ({ showSchedError, setShowErrorSched }) => {
   const [isMobile, setIsMobile] = useState(window.innerWidth < breakpointMd);
 
   const handleFrequencyChange = (e) => {
-    setReminderFrequency(e.target.value);
+    const newValue = e.target.value;
+    setReminderFrequency(newValue);
     setShowErrorSched(false); // Assurez-vous que cette fonction est définie dans le parent
   };
+
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < breakpointMd);

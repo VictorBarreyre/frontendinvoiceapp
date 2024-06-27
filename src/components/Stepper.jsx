@@ -143,7 +143,7 @@ const Stepper = () => {
   const updateButtonLabel = () => {
     switch (tabIndex) {
       case 0:
-        setButtonLabel("Définir mes échéances de relance");
+        setButtonLabel("Définir mes échéances de relances");
         break;
       case 1:
         setButtonLabel("Finalisez et envoyez votre facture");
@@ -152,7 +152,7 @@ const Stepper = () => {
         setButtonLabel("Envoyer ma facture");
         break;
       default:
-        setButtonLabel("Définir mes échéances de relance");
+        setButtonLabel("Définir mes échéances de relances");
     }
   };
 
@@ -212,14 +212,14 @@ const Stepper = () => {
       case 0:
         return "Créez votre facture en ligne";
       case 1:
-        return "Vos échéances de relance";
+        return "Vos échéances de relances";
       default:
         return "Envoyez votre facture";
     }
   };
 
   const tabText = (index, isMobile) => {
-    const texts = ["Votre Facture", "Vos échéances de relance", "Résumé & Envoi"];
+    const texts = ["Votre Facture", "Vos échéances de relances", "Résumé & Envoi"];
     const mobileTexts = ["Votre facture", "Vos échéances", "Envoi"];
     return isMobile ? mobileTexts[index] : texts[index];
   };
