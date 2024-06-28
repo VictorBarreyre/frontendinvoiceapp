@@ -206,6 +206,7 @@ export const InvoiceDataProvider = ({ children }) => {
                 formData.append('emetteur', JSON.stringify(issuer));
                 formData.append('destinataire', JSON.stringify(client));
                 formData.append('factureId', factureId);
+                formData.append('reminderFrequency', reminderFrequency);
     
                 const headers = {
                     'Content-Type': 'multipart/form-data'
