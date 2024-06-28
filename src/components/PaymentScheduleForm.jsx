@@ -35,24 +35,9 @@ const PaymentScheduleForm = ({ showSchedError, setShowErrorSched }) => {
       {isMobile ? (
         <Box borderBottom="1px solid #f2f2f2" pt='1rem' pb='1rem' mb='1rem'>
           <Flex direction='column' justifyContent='space-between'>
-            <Heading
-              fontFamily="heading"
-              fontWeight="bold"
-              textTransform="uppercase"
-              letterSpacing="wider"
-              textAlign="center"
-              mb='1rem'
-              pb={3}
-              lineHeight="4"
-              fontSize="xs"
-              color="gray.600"
-              borderBottom="1px"
-              borderColor="gray.100"
-            >
-              Fréquence de relance
-            </Heading>
+          <Heading  mb='2rem' size="sm">Choisissez la fréquence de vos relances </Heading>
             <Select
-              className='neue-down'
+    
               placeholder="Choisissez la fréquence de relance"
               value={reminderFrequency}
               onChange={handleFrequencyChange}
@@ -67,7 +52,10 @@ const PaymentScheduleForm = ({ showSchedError, setShowErrorSched }) => {
           </Flex>
         </Box>
       ) : (
-        <Table variant="simple" className='neue-up' mt='2rem' mb='1rem' borderWidth='1px' pt='1rem' pl='2rem' pr='2rem' pb='1rem' w='100%' borderRadius='10px'>
+        <Flex direction='column'>
+        <Heading size="sm">Choisissez la fréquence de relance de vos emails</Heading>
+        <Table variant="simple" className='neue-up' mt='1rem' mb='1rem' borderWidth='1px' pt='1rem' pl='2rem' pr='2rem' pb='1rem' w='100%' borderRadius='10px'>
+          
           <Tbody>
             <Tr>
               <Td pl='0'>
@@ -87,6 +75,7 @@ const PaymentScheduleForm = ({ showSchedError, setShowErrorSched }) => {
             </Tr>
           </Tbody>
         </Table>
+        </Flex>
       )}
     </>
   );

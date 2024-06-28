@@ -198,6 +198,11 @@
 /* Smartphones en portrait */
 @media only screen and (max-width: 600px) {
 
+
+  .tab{
+    margin-right: 0 !important;
+  }
+
   .sidebar {
     display: none;
   }
