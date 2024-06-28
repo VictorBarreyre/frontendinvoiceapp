@@ -278,7 +278,7 @@ const InvoiceSummary = () => {
 
                         <Flex direction='column' width='fit-content' mb="1rem" borderRadius='5px' borderWidth='1px' pr='2.5rem' backgroundColor='#fdfdfd'>
                             <Heading {...styleProps.subHeading} ml='2.5vh' mb='2vh' size="md">Votre fréquence de relance par mail</Heading>
-                            <Text color='#4A5568' pb='1rem' ml='2.5vh'> Une email de rappel avec la facture sera renvoyer {reminderText}</Text>
+                            <Text color='#4A5568' pb='1rem' ml='2.5vh'> Une email de rappel avec la facture sera renvoyé {reminderText}</Text>
                         </Flex>
                     </Flex>
 
