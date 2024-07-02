@@ -27,17 +27,18 @@ const PaymentScheduleForm = ({ showSchedError, setShowErrorSched }) => {
 
   return (
     <>
-      {showSchedError && (
-        <Text color="red" fontSize={{ base: '13px', lg: '16px' }}>
-          Veuillez sélectionner une fréquence de relance afin de passer à l'étape suivante
-        </Text>
-      )}
+    
       {isMobile ? (
         <Box borderBottom="1px solid #f2f2f2" pt='1rem' pb='1rem' mb='1rem'>
           <Flex direction='column' justifyContent='space-between'>
-          <Heading  mb='2rem' size="sm">Choisissez la fréquence de vos relances </Heading>
+          <Heading  mb='1rem' size="sm">Choisissez la fréquence de vos relances </Heading>
+
+          {showSchedError && (
+        <Text mb='1rem' color="red" fontSize={{ base: '13px', lg: '16px' }}>
+          Veuillez sélectionner une fréquence de relance afin de passer à l'étape suivante
+        </Text>
+      )}
             <Select
-    
               placeholder="Choisissez la fréquence de relance"
               value={reminderFrequency}
               onChange={handleFrequencyChange}
@@ -54,6 +55,12 @@ const PaymentScheduleForm = ({ showSchedError, setShowErrorSched }) => {
       ) : (
         <Flex direction='column'>
         <Heading size="sm">Choisissez la fréquence de relance de vos emails</Heading>
+
+        {showSchedError && (
+        <Text color="red" fontSize={{ base: '13px', lg: '16px' }}>
+          Veuillez sélectionner une fréquence de relance afin de passer à l'étape suivante
+        </Text>
+      )}
         <Table variant="simple" className='neue-up' mt='1rem' mb='1rem' borderWidth='1px' pt='1rem' pl='2rem' pr='2rem' pb='1rem' w='100%' borderRadius='10px'>
           
           <Tbody>

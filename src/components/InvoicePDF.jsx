@@ -247,7 +247,7 @@ const InvoicePDF = ({ invoiceData }) => (
         <View style={styles.total}>
           <View style={styles.totalDetails}>
             <Text style={styles.subtitletotal}>Sous-total HT: {invoiceData.subtotal}{invoiceData.devise}</Text>
-            <Text style={styles.subtitletotal}>TVA: {invoiceData.vatAmount}%</Text>
+            <Text style={styles.subtitletotal}>TVA: {invoiceData.vatRate} % ({invoiceData.vatAmount.toFixed(2)} {invoiceData.devise})</Text>
             <Text style={styles.subtitletotal}>Total TTC: {invoiceData.total}{invoiceData.devise}</Text>
           </View>
         </View>
